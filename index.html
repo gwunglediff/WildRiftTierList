@@ -33,6 +33,7 @@
   .badge { position: absolute; top: -5px; right: 0; min-width: 17px; height: 17px; border-radius: 9px; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; padding: 0 3px; color: #0A1428; }
   .badge.pos { background: #35D0A0; }
   .badge.neg { background: #E85D5D; color: #fff; }
+  .badge.ag { left: 0; right: auto; background: #17614B; color: #7FEBC8; border: 1px solid #35D0A0; }
   .panel { margin: 10px 12px 0; background: #13233F; border: 1px solid #2A4166; border-radius: 12px; padding: 14px; }
   .panel .pname { font-family: 'Cinzel', serif; font-weight: 600; color: #C8AA6E; font-size: 15px; margin-bottom: 10px; }
   .voteRow { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -195,7 +196,9 @@ function switchRole(r){ role = r; selected = null; confirmWipe = null; listenTie
 async function castVote(champ, type){
   if (!user){ showToast("Sign in with Google to vote"); return; }
   const mine = myVotes[champ] || {};
-  const next = Object.assign({}, mine); next[type] = !mine[type];
+  // exclusive: picking one clears the others; tapping your current vote removes it
+  const next = { agree: false, up: false, down: false };
+  next[type] = !mine[type];
   try {
     await db.collection("votes").doc(eraId(role)).collection("users").doc(user.uid)
       .set({ [champ]: next }, { merge: true });
@@ -315,7 +318,9 @@ function render(){
       const border = heatColor(n) || "#2A4166";
       const glow = Math.abs(n) >= 3 ? heatColor(n) : null;
       const badge = n !== 0 ? `<span class="badge ${n>0?"pos":"neg"}">${n>0?"▲"+n:"▼"+(-n)}</span>` : "";
-      html += `<button class="chip ${selected===c?"sel":""}" data-c="${encodeURIComponent(c)}">${champIconHtml(c, border, glow)}${badge}<span class="nm">${c}</span></button>`;
+      const agrees = agg[c] ? agg[c].agree : 0;
+      const agBadge = agrees > 0 ? `<span class="badge ag">✓${agrees}</span>` : "";
+      html += `<button class="chip ${selected===c?"sel":""}" data-c="${encodeURIComponent(c)}">${champIconHtml(c, border, glow)}${badge}${agBadge}<span class="nm">${c}</span></button>`;
     }
     html += `</div></div>`;
     if (selected && tiers[t].includes(selected)){
