@@ -254,9 +254,19 @@ async function shiftEra(delta){
 // ============ AUTH ============
 function signIn(){
   const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).catch(() => auth.signInWithRedirect(provider));
+  auth.signInWithPopup(provider).catch(e => {
+    console.error(e);
+    if (e.code === "auth/unauthorized-domain"){
+      showToast("This domain isn't authorized in Firebase yet");
+    } else if (e.code === "auth/popup-blocked"){
+      showToast("Popup blocked — allow popups for this site and try again");
+    } else if (e.code === "auth/popup-closed-by-user" || e.code === "auth/cancelled-popup-request"){
+      // user closed it, no message needed
+    } else {
+      showToast("Sign-in failed: " + (e.code || e.message));
+    }
+  });
 }
-auth.getRedirectResult().catch(e => { if (e && e.code !== "auth/no-auth-event") console.error(e); });
 auth.onAuthStateChanged(u => {
   user = u;
   isOwner = !!(u && u.email && u.email.toLowerCase() === OWNER_EMAIL.toLowerCase());
