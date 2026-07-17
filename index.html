@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wild Rift Meta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body { min-height: 100vh; background: #0A1428; color: #E8EDF4; font-family: 'Inter', system-ui, sans-serif; padding-bottom: 60px; }
+  .header { padding: 22px 16px 14px; text-align: center; background: linear-gradient(180deg, #0E1B33 0%, #0A1428 100%); border-bottom: 1px solid #1E3252; }
+  .header h1 { font-family: 'Cinzel', serif; font-weight: 800; font-size: 22px; letter-spacing: 2px; color: #C8AA6E; text-transform: uppercase; }
+  .header .sub { font-size: 12px; color: #7B8BA3; margin-top: 4px; }
+  .authRow { margin-top: 10px; }
+  .authBtn { background: #13233F; border: 1px solid #2A4166; color: #E8EDF4; padding: 7px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
+  .authRow .who { font-size: 11px; color: #7B8BA3; margin-right: 8px; }
+  .tabs { display: flex; gap: 6px; padding: 12px 12px 0; overflow-x: auto; position: sticky; top: 0; background: #0A1428; z-index: 10; border-bottom: 1px solid #1E3252; }
+  .tab { flex: 1; min-width: 70px; padding: 10px 6px; background: none; border: none; border-bottom: 3px solid transparent; color: #7B8BA3; font-family: 'Cinzel', serif; font-weight: 600; font-size: 13px; letter-spacing: 1px; cursor: pointer; }
+  .tab.active { color: #C8AA6E; border-bottom-color: #C8AA6E; }
+  .toolbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px 0; gap: 8px; }
+  .toolbar .hint { font-size: 11px; color: #7B8BA3; }
+  .editBtn { background: #13233F; border: 1px solid #2A4166; color: #C8AA6E; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
+  .editBtn.on { background: #C8AA6E; color: #0A1428; border-color: #C8AA6E; }
+  .tierRow { display: flex; margin: 12px 12px 0; border-radius: 10px; overflow: hidden; background: #0F1F35; }
+  .tierLabel { width: 52px; min-height: 76px; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-weight: 800; font-size: 20px; flex-shrink: 0; }
+  .champGrid { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px; flex: 1; align-content: flex-start; }
+  .empty { color: #4A5A72; font-size: 12px; align-self: center; padding: 4px; }
+  .chip { background: none; border: none; padding: 0; cursor: pointer; width: 56px; position: relative; font-family: inherit; }
+  .chip .nm { display: block; font-size: 9px; color: #AEBBCC; margin-top: 3px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .champIcon { width: 48px; height: 48px; border-radius: 10px; border: 2px solid #2A4166; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-size: cover; background-position: center; color: #EBD9AE; font-family: 'Cinzel', serif; font-weight: 800; font-size: 16px; text-shadow: 0 1px 3px rgba(0,0,0,0.55); }
+  .chip.sel .champIcon { border-color: #C8AA6E !important; }
+  .badge { position: absolute; top: -5px; right: 0; min-width: 17px; height: 17px; border-radius: 9px; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; padding: 0 3px; color: #0A1428; }
+  .badge.pos { background: #35D0A0; }
+  .badge.neg { background: #E85D5D; color: #fff; }
+  .panel { margin: 10px 12px 0; background: #13233F; border: 1px solid #2A4166; border-radius: 12px; padding: 14px; }
+  .panel .pname { font-family: 'Cinzel', serif; font-weight: 600; color: #C8AA6E; font-size: 15px; margin-bottom: 10px; }
+  .voteRow { display: flex; gap: 8px; flex-wrap: wrap; }
+  .vbtn { flex: 1; min-width: 90px; padding: 10px 8px; border-radius: 10px; border: 1px solid #2A4166; background: #0F1F35; color: #E8EDF4; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+  .vbtn.mine { border-color: #C8AA6E; background: #1D2F4E; }
+  .vbtn:disabled { opacity: 0.35; cursor: default; }
+  .vbtn .cnt { display: block; font-size: 16px; margin-top: 2px; }
+  .vbtn.agree .cnt { color: #35D0A0; }
+  .vbtn.up .cnt { color: #0AC8B9; }
+  .vbtn.down .cnt { color: #E85D5D; }
+  .vbtn.wipe { border-color: #7A3B3B; color: #E88; }
+  .tierPick { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  .tpick { padding: 8px 14px; border-radius: 8px; border: 1px solid #2A4166; background: #0F1F35; font-family: 'Cinzel', serif; font-weight: 800; cursor: pointer; font-size: 13px; }
+  .tpick.rm { color: #E85D5D; font-family: 'Inter', sans-serif; font-weight: 600; }
+  .addRow { display: flex; gap: 8px; margin: 14px 12px 0; }
+  .addRow input, .addRow select { background: #0F1F35; border: 1px solid #2A4166; color: #E8EDF4; border-radius: 8px; padding: 10px; font-size: 13px; }
+  .addRow input { flex: 1; min-width: 0; }
+  .addRow button { background: #C8AA6E; border: none; color: #0A1428; font-weight: 600; border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 13px; }
+  .resetBtn { display: block; margin: 12px auto 0; background: none; border: none; color: #7B8BA3; font-size: 11px; text-decoration: underline; cursor: pointer; }
+  .statsLine { font-size: 12px; color: #AEBBCC; margin-bottom: 10px; }
+  .toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: #C8AA6E; color: #0A1428; font-weight: 600; font-size: 13px; padding: 10px 18px; border-radius: 20px; z-index: 50; white-space: nowrap; display: none; }
+  .loading { text-align: center; padding: 50px 0; color: #7B8BA3; font-size: 13px; }
+  .signinNote { font-size: 12px; color: #AEBBCC; }
+  .signinNote button { margin-left: 8px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Wild Rift Meta</h1>
+  <div class="sub">Patch 7.2a Tierlist. Anyone with link can vote :)</div>
+  <div class="authRow" id="authRow"></div>
+</div>
+<div class="tabs" id="tabs"></div>
+<div class="toolbar">
+  <span class="hint" id="hint">Tap a champion to vote on their placement</span>
+  <div style="display:flex;gap:8px;flex-shrink:0">
+    <button class="editBtn" id="imgBtn">&#128248; Image</button>
+    <button class="editBtn" id="editBtn" style="display:none">Edit</button>
+  </div>
+</div>
+<div id="content"><div class="loading">Summoning the tierlist…</div></div>
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+// ============ CONFIG ============
+const OWNER_EMAIL = "gwendiffyt@gmail.com";
+const firebaseConfig = {
+  apiKey: "AIzaSyDgqKhO9ulzdRN9NODDC3RegAQwYDAOFZ4",
+  authDomain: "wr-metalist.firebaseapp.com",
+  projectId: "wr-metalist",
+  storageBucket: "wr-metalist.firebasestorage.app",
+  messagingSenderId: "807701502288",
+  appId: "1:807701502288:web:78051d42eaf3cfd8337455"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// ============ DATA ============
+const DD_VER = "15.10.1";
+const ICON_ID = {
+  "Wukong": "MonkeyKing", "Kha'Zix": "Khazix", "Nunu & Willump": "Nunu",
+  "Kog'Maw": "KogMaw", "Kai'Sa": "Kaisa", "Vel'Koz": "Velkoz",
+  "Dr. Mundo": "DrMundo", "Miss Fortune": "MissFortune", "Master Yi": "MasterYi",
+  "Jarvan IV": "JarvanIV", "Lee Sin": "LeeSin", "Xin Zhao": "XinZhao",
+  "Twisted Fate": "TwistedFate", "Aurelion Sol": "AurelionSol", "K'Sante": "KSante",
+  "Cho'Gath": "Chogath", "Rek'Sai": "RekSai", "Bel'Veth": "Belveth"
+};
+const ddId = n => ICON_ID[n] || n.replace(/[^A-Za-z]/g, "");
+const iconUrl = n => `https://ddragon.leagueoflegends.com/cdn/${DD_VER}/img/champion/${ddId(n)}.png`;
+const iconUrl2 = n => `https://cdn.communitydragon.org/latest/champion/${ddId(n)}/square`;
+const ROLES = [["baron","Baron"],["jungle","Jungle"],["mid","Mid"],["duo","Dragon"],["support","Support"]];
+const TIERS = ["S+","S","A+","A","B+","B","C","D"];
+const TIER_COLORS = {"S+":"#FFB93B","S":"#0AC8B9","A+":"#4FB3E8","A":"#3C9BD8","B+":"#9BB0C6","B":"#8AA0B8","C":"#6B7D93","D":"#566578"};
+const heatColor = n => { if (!n) return null; const t = Math.min(Math.abs(n),6)/6; const h = n>0 ? 210-70*t : 210*(1-t); return `hsl(${h}, 75%, 55%)`; };
+const SEED = {
+  baron: {"S+":["K'Sante","Ambessa"],"S":["Wukong","Poppy","Malphite","Ornn","Sion","Aatrox","Renekton","Gwen","Fiora","Rumble","Mordekaiser","Garen"],"A":["Jax","Camille","Irelia","Darius","Nasus","Teemo","Warwick","Singed","Jayce","Shen","Volibear","Ryze","Sett","Riven","Olaf","Gnar"],"B":["Dr. Mundo","Kayle","Urgot","Yasuo","Yone","Akali","Kennen","Tryndamere"]},
+  jungle: {"S+":["Nidalee","Viego","Taliyah"],"S":["Lee Sin","Rammus","Amumu","Shyvana","Vi","Xin Zhao","Warwick","Hecarim","Evelynn","Aatrox","Lillia","Ambessa","Kha'Zix","Nunu & Willump"],"A":["Riven","Wukong","Talon","Fiddlesticks","Pantheon","Kayn","Zed","Nocturne","Olaf","Kindred","Gragas","Master Yi","Jarvan IV"],"B":["Yone","Nilah","Tryndamere","Volibear","Graves","Fizz","Ekko","Rengar","Diana","Skarner"]},
+  mid: {"S+":["Aurora","Ryze","Taliyah"],"S":["Twisted Fate","Norra","Orianna","Syndra","Kassadin","Swain","Aurelion Sol","Viktor","Ahri"],"A":["Zoe","Galio","Mel","Heimerdinger","Kennen","Akali","Brand","Yasuo","Teemo","Vladimir","Veigar","Zyra","Jayce","Zed","Vex","Lissandra","Annie"],"B":["Ekko","Kayle","Irelia","Ziggs","Lux","Katarina","Vel'Koz","Fizz","Morgana","Yone","Gragas"],"C":["Akshan","Diana"]},
+  duo: {"S+":["Smolder","Ezreal"],"S":["Zeri","Corki","Lucian","Xayah","Jhin","Kog'Maw","Vayne"],"A":["Varus","Kalista","Sivir","Kai'Sa","Draven","Ashe","Miss Fortune","Jinx","Caitlyn"],"B":["Samira"],"C":["Tristana","Twitch"]},
+  support: {"S+":["Nami","Braum","Zilean"],"S":["Thresh","Sona","Nautilus","Galio","Ornn","Milio","Lulu","Senna","Leona","Maokai","Rell"],"A":["Pyke","Seraphine","Soraka","Blitzcrank","Alistar","Rakan","Janna","Bard","Karma","Zyra"],"B":["Morgana","Lux","Brand"],"C":["Swain","Yuumi"]}
+};
+const normalizeTiers = t => { const o = {}; for (const x of TIERS) o[x] = Array.isArray(t && t[x]) ? t[x] : []; return o; };
+
+// ============ STATE ============
+let user = null, isOwner = false;
+let role = "baron";
+let tiers = null;            // normalized
+let epochs = {};             // {role:{cur,max}}
+let voteDocs = {};           // uid -> {champ:{agree,up,down}} for current role+era
+let myVotes = {};            // my own doc content
+let selected = null, editMode = false, confirmWipe = null;
+let undoStack = [];
+let unsubTiers = null, unsubVotes = null, unsubMeta = null;
+
+const $ = id => document.getElementById(id);
+const toastEl = $("toast");
+let toastTimer = null;
+function showToast(msg){ toastEl.textContent = msg; toastEl.style.display = "block"; clearTimeout(toastTimer); toastTimer = setTimeout(()=>toastEl.style.display="none", 2600); }
+const eraOf = r => (epochs && epochs[r]) ? epochs[r] : {cur:0, max:0};
+const eraId = r => `${r}_e${eraOf(r).cur}`;
+const roleLabel = () => ROLES.find(x=>x[0]===role)[1];
+
+// ============ AGGREGATION ============
+function aggVotes(){
+  const agg = {};
+  for (const uid of Object.keys(voteDocs)){
+    const doc = voteDocs[uid] || {};
+    for (const champ of Object.keys(doc)){
+      const v = doc[champ] || {};
+      if (!agg[champ]) agg[champ] = {agree:0, up:0, down:0};
+      if (v.agree) agg[champ].agree++;
+      if (v.up) agg[champ].up++;
+      if (v.down) agg[champ].down++;
+    }
+  }
+  return agg;
+}
+const net = (agg, c) => agg[c] ? (agg[c].up - agg[c].down) : 0;
+
+// ============ FIRESTORE LISTENERS ============
+function listenMeta(){
+  if (unsubMeta) unsubMeta();
+  unsubMeta = db.collection("meta").doc("epochs").onSnapshot(snap => {
+    const newEpochs = (snap.exists && snap.data().epochs) || {};
+    const changed = JSON.stringify(newEpochs) !== JSON.stringify(epochs);
+    epochs = newEpochs;
+    if (changed) listenVotes();
+    render();
+  }, err => console.error("meta listener:", err));
+}
+function listenTiers(){
+  if (unsubTiers) unsubTiers();
+  tiers = null; render();
+  unsubTiers = db.collection("tiers").doc(role).onSnapshot(snap => {
+    if (snap.exists) tiers = normalizeTiers(snap.data());
+    else {
+      tiers = normalizeTiers(SEED[role]);
+      if (isOwner) db.collection("tiers").doc(role).set(tiers).catch(e => console.error(e));
+    }
+    render();
+  }, err => { console.error("tiers listener:", err); tiers = normalizeTiers(SEED[role]); render(); });
+}
+function listenVotes(){
+  if (unsubVotes) unsubVotes();
+  voteDocs = {}; myVotes = {};
+  unsubVotes = db.collection("votes").doc(eraId(role)).collection("users").onSnapshot(snap => {
+    voteDocs = {};
+    snap.forEach(d => { voteDocs[d.id] = d.data(); });
+    myVotes = (user && voteDocs[user.uid]) || {};
+    render();
+  }, err => console.error("votes listener:", err));
+}
+function switchRole(r){ role = r; selected = null; confirmWipe = null; listenTiers(); listenVotes(); render(); }
+
+// ============ ACTIONS ============
+async function castVote(champ, type){
+  if (!user){ showToast("Sign in with Google to vote"); return; }
+  const mine = myVotes[champ] || {};
+  const next = Object.assign({}, mine); next[type] = !mine[type];
+  try {
+    await db.collection("votes").doc(eraId(role)).collection("users").doc(user.uid)
+      .set({ [champ]: next }, { merge: true });
+  } catch(e){ console.error(e); showToast("Vote failed — try again"); }
+}
+function pushUndo(){ undoStack.push({ role, snapshot: JSON.parse(JSON.stringify(tiers)) }); if (undoStack.length > 10) undoStack.shift(); }
+async function saveTiers(r, t){ try { await db.collection("tiers").doc(r).set(t); return true; } catch(e){ console.error(e); showToast("Save failed"); return false; } }
+async function moveChamp(champ, from, to){
+  if (from === to) return; pushUndo();
+  const t = JSON.parse(JSON.stringify(tiers));
+  t[from] = t[from].filter(c => c !== champ); t[to].push(champ);
+  selected = null;
+  if (await saveTiers(role, t)) showToast(`${champ} moved to ${to}`);
+}
+async function removeChamp(champ, from){
+  pushUndo();
+  const t = JSON.parse(JSON.stringify(tiers));
+  t[from] = t[from].filter(c => c !== champ);
+  selected = null;
+  if (await saveTiers(role, t)) showToast(`${champ} removed`);
+}
+async function addChamp(){
+  const name = $("addName").value.trim(); const tier = $("addTier").value;
+  if (!name) return;
+  if (TIERS.some(x => tiers[x].some(c => c.toLowerCase() === name.toLowerCase()))){ showToast(`${name} is already on this list`); return; }
+  pushUndo();
+  const t = JSON.parse(JSON.stringify(tiers)); t[tier].push(name);
+  if (await saveTiers(role, t)) showToast(`${name} added to ${tier}`);
+}
+async function resetRole(){
+  pushUndo();
+  if (await saveTiers(role, normalizeTiers(SEED[role]))) showToast("Reset to Patch 7.2a seed (votes kept)");
+}
+async function undoTierEdit(){
+  const last = undoStack.pop(); if (!last) return;
+  if (await saveTiers(last.role, last.snapshot)) showToast("Tier edit undone");
+}
+async function saveEpochs(eps){ try { await db.collection("meta").doc("epochs").set({ epochs: eps }); return true; } catch(e){ console.error(e); showToast("Save failed"); return false; } }
+async function wipeVotes(scope){
+  const eps = JSON.parse(JSON.stringify(epochs));
+  const targets = scope === "all" ? ROLES.map(x=>x[0]) : [role];
+  for (const r of targets){ const e = eps[r] || {cur:0,max:0}; const nm = Math.max(e.cur, e.max) + 1; eps[r] = {cur:nm, max:nm}; }
+  confirmWipe = null;
+  if (await saveEpochs(eps)) showToast(scope === "all" ? "New era started for all roles" : "New era started (old votes archived)");
+}
+async function shiftEra(delta){
+  const eps = JSON.parse(JSON.stringify(epochs));
+  const e = eps[role] || {cur:0,max:0};
+  const trueMax = Math.max(e.cur, e.max);
+  const next = Math.min(trueMax, Math.max(0, e.cur + delta));
+  if (next === e.cur) return;
+  eps[role] = {cur: next, max: trueMax};
+  if (await saveEpochs(eps)) showToast(`Era ${next+1} is now live for ${roleLabel()}`);
+}
+
+// ============ AUTH ============
+function signIn(){
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider).catch(() => auth.signInWithRedirect(provider));
+}
+auth.getRedirectResult().catch(e => { if (e && e.code !== "auth/no-auth-event") console.error(e); });
+auth.onAuthStateChanged(u => {
+  user = u;
+  isOwner = !!(u && u.email && u.email.toLowerCase() === OWNER_EMAIL.toLowerCase());
+  $("editBtn").style.display = isOwner ? "" : "none";
+  if (!isOwner) editMode = false;
+  listenVotes();
+  renderAuth(); render();
+});
+function renderAuth(){
+  const el = $("authRow");
+  if (user){
+    el.innerHTML = `<span class="who">${user.displayName || user.email}${isOwner ? " · owner" : ""}</span><button class="authBtn" id="outBtn">Sign out</button>`;
+    $("outBtn").onclick = () => auth.signOut();
+  } else {
+    el.innerHTML = `<button class="authBtn" id="inBtn">Sign in with Google to vote</button>`;
+    $("inBtn").onclick = signIn;
+  }
+}
+
+// ============ RENDER ============
+function champIconHtml(name, borderColor, glow){
+  const style = `border-color:${borderColor};${glow ? `box-shadow:0 0 8px ${glow};` : ""}`;
+  let h = 0; for (let i=0;i<name.length;i++) h = (h*31 + name.charCodeAt(i)) % 360;
+  const initials = name.split(/[\s'&]+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
+  const grad = `linear-gradient(135deg, hsl(${h},45%,26%) 0%, hsl(${(h+40)%360},40%,14%) 100%)`;
+  return `<div class="champIcon" style="${style}background-image:url('${iconUrl(name)}'),url('${iconUrl2(name)}'),${grad}"><span class="ini" data-n="${name}"></span></div>`;
+  // background-image stack: ddragon, then communitydragon, then gradient — browser uses first that loads
+}
+function render(){
+  // tabs
+  $("tabs").innerHTML = ROLES.map(([k,l]) => `<button class="tab ${k===role?"active":""}" data-r="${k}">${l}</button>`).join("");
+  document.querySelectorAll(".tab").forEach(b => b.onclick = () => switchRole(b.dataset.r));
+  $("hint").textContent = editMode ? "Tap a champion to move or remove them" : "Tap a champion to vote on their placement";
+  $("editBtn").textContent = editMode ? "Done" : "Edit";
+  $("editBtn").className = "editBtn" + (editMode ? " on" : "");
+
+  const content = $("content");
+  if (!tiers){ content.innerHTML = `<div class="loading">Summoning the tierlist…</div>`; return; }
+  const agg = aggVotes();
+  let html = "";
+  for (const t of TIERS){
+    html += `<div class="tierRow"><div class="tierLabel" style="background:${TIER_COLORS[t]}22;color:${TIER_COLORS[t]}">${t}</div><div class="champGrid">`;
+    if (!tiers[t].length) html += `<span class="empty">No champions yet</span>`;
+    for (const c of tiers[t]){
+      const n = net(agg, c);
+      const border = heatColor(n) || "#2A4166";
+      const glow = Math.abs(n) >= 3 ? heatColor(n) : null;
+      const badge = n !== 0 ? `<span class="badge ${n>0?"pos":"neg"}">${n>0?"▲"+n:"▼"+(-n)}</span>` : "";
+      html += `<button class="chip ${selected===c?"sel":""}" data-c="${encodeURIComponent(c)}">${champIconHtml(c, border, glow)}${badge}<span class="nm">${c}</span></button>`;
+    }
+    html += `</div></div>`;
+    if (selected && tiers[t].includes(selected)){
+      html += `<div class="panel"><div class="pname">${selected} · ${t} tier</div>`;
+      if (!editMode){
+        if (!user){
+          html += `<div class="signinNote">Sign in with Google to vote<button class="authBtn" id="inBtn2">Sign in</button></div>`;
+        } else {
+          const a = agg[selected] || {agree:0,up:0,down:0};
+          const m = myVotes[selected] || {};
+          html += `<div class="voteRow">
+            <button class="vbtn agree ${m.agree?"mine":""}" data-v="agree">✓ Agree<span class="cnt">${a.agree}</span></button>
+            <button class="vbtn up ${m.up?"mine":""}" data-v="up">▲ Should be higher<span class="cnt">${a.up}</span></button>
+            <button class="vbtn down ${m.down?"mine":""}" data-v="down">▼ Should be lower<span class="cnt">${a.down}</span></button>
+          </div>`;
+        }
+      } else {
+        html += `<div class="tierPick">` + TIERS.filter(x=>x!==t).map(x =>
+          `<button class="tpick" style="color:${TIER_COLORS[x]}" data-mv="${x}">→ ${x}</button>`).join("") +
+          `<button class="tpick rm" data-rm="${t}">Remove</button></div>`;
+      }
+      html += `</div>`;
+    }
+  }
+  if (editMode && isOwner){
+    const e = eraOf(role);
+    let a=0,u=0,d=0,nn=0;
+    for (const c of Object.keys(agg)){ a+=agg[c].agree; u+=agg[c].up; d+=agg[c].down; if (agg[c].agree+agg[c].up+agg[c].down>0) nn++; }
+    html += `<div class="addRow"><input id="addName" placeholder="Add a champion (e.g. Yunara)"><select id="addTier">${TIERS.map(x=>`<option>${x}</option>`).join("")}</select><button id="addBtn">Add</button></div>`;
+    html += `<div class="panel"><div class="pname">Owner tools · ${roleLabel()}</div>
+      <div class="statsLine">${nn} champions voted on · ✓ ${a} agrees · ▲ ${u} up · ▼ ${d} down</div>
+      <div class="statsLine">Vote era ${e.cur+1} of ${Math.max(e.cur,e.max)+1}${e.cur<e.max ? " · viewing a past era — new votes land here!" : ""}</div>
+      <div class="voteRow" style="margin-bottom:8px">
+        <button class="vbtn" id="prevEra" ${e.cur<=0?"disabled":""}>◀ Prev era</button>
+        <button class="vbtn" id="nextEra" ${e.cur>=e.max?"disabled":""}>Next era ▶</button>
+        <button class="vbtn" id="undoBtn" ${!undoStack.length?"disabled":""}>↩ Undo tier edit</button>
+      </div>
+      <div class="voteRow">
+        <button class="vbtn wipe" id="wipeRole">${confirmWipe==="role"?"Tap again to confirm":"Wipe votes: this role"}</button>
+        <button class="vbtn wipe" id="wipeAll">${confirmWipe==="all"?"Tap again to confirm":"Wipe votes: ALL roles"}</button>
+        ${confirmWipe ? `<button class="vbtn" id="wipeCancel">Cancel</button>` : ""}
+      </div></div>
+      <button class="resetBtn" id="resetBtn">Reset this role to the Patch 7.2a seed</button>`;
+  }
+  content.innerHTML = html;
+
+  // wire events
+  document.querySelectorAll(".chip").forEach(b => b.onclick = () => {
+    const c = decodeURIComponent(b.dataset.c);
+    selected = (selected === c) ? null : c; render();
+  });
+  document.querySelectorAll("[data-v]").forEach(b => b.onclick = () => castVote(selected, b.dataset.v));
+  document.querySelectorAll("[data-mv]").forEach(b => b.onclick = () => {
+    const from = TIERS.find(x => tiers[x].includes(selected));
+    moveChamp(selected, from, b.dataset.mv);
+  });
+  document.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => removeChamp(selected, b.dataset.rm));
+  const w = {"addBtn":addChamp, "resetBtn":resetRole, "undoBtn":undoTierEdit,
+    "prevEra":()=>shiftEra(-1), "nextEra":()=>shiftEra(1),
+    "wipeRole":()=>{ confirmWipe==="role" ? wipeVotes("role") : (confirmWipe="role", render()); },
+    "wipeAll":()=>{ confirmWipe==="all" ? wipeVotes("all") : (confirmWipe="all", render()); },
+    "wipeCancel":()=>{ confirmWipe=null; render(); },
+    "inBtn2":signIn};
+  for (const id of Object.keys(w)){ const el = $(id); if (el) el.onclick = w[id]; }
+}
+$("editBtn").onclick = () => { editMode = !editMode; selected = null; render(); };
+
+// ============ IMAGE EXPORT ============
+function loadImgCors(src){
+  return new Promise(res => { const im = new Image(); im.crossOrigin = "anonymous"; im.onload = () => res(im); im.onerror = () => res(null); im.src = src; });
+}
+const rr = (ctx,x,y,w,h,r) => { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x,y,w,h,r); else ctx.rect(x,y,w,h); };
+const hexToRgba = (hex,a) => { const n = parseInt(hex.slice(1),16); return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`; };
+$("imgBtn").onclick = async () => {
+  if (!tiers) return;
+  showToast("Rendering image…");
+  const agg = aggVotes();
+  const W=1080, pad=28, labelW=96, cellW=88, cellH=98, iconS=64, rowGap=14, headH=96;
+  const perRow = Math.floor((W - pad*2 - labelW - 12) / cellW);
+  const rows = TIERS.map(t => ({t, champs: tiers[t]})).filter(r => r.champs.length);
+  const rowHeights = rows.map(r => Math.ceil(r.champs.length/perRow)*cellH + 16);
+  const H = headH + rowHeights.reduce((a,b)=>a+b+rowGap, 0) + pad;
+  const canvas = document.createElement("canvas"); canvas.width=W; canvas.height=H;
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#0A1428"; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle = "#C8AA6E"; ctx.font = "800 34px Cinzel, Georgia, serif"; ctx.textAlign = "center";
+  ctx.fillText(`WILD RIFT META · ${roleLabel().toUpperCase()}`, W/2, 58);
+  const imgs = {};
+  await Promise.all(rows.flatMap(r=>r.champs).map(async c => {
+    imgs[c] = await loadImgCors(iconUrl(c)) || await loadImgCors(iconUrl2(c));
+  }));
+  let y = headH;
+  rows.forEach(({t, champs}, i) => {
+    const rh = rowHeights[i];
+    ctx.fillStyle = "#0F1F35"; rr(ctx, pad, y, W-pad*2, rh, 10); ctx.fill();
+    ctx.fillStyle = hexToRgba(TIER_COLORS[t], 0.15); rr(ctx, pad, y, labelW, rh, 10); ctx.fill();
+    ctx.fillStyle = TIER_COLORS[t]; ctx.font = "800 30px Cinzel, Georgia, serif"; ctx.textAlign = "center";
+    ctx.fillText(t, pad + labelW/2, y + rh/2 + 11);
+    champs.forEach((c, idx) => {
+      const col = idx % perRow, rowIdx = Math.floor(idx/perRow);
+      const x = pad + labelW + 12 + col*cellW + (cellW-iconS)/2;
+      const cy = y + 10 + rowIdx*cellH;
+      const n = net(agg, c);
+      ctx.fillStyle = heatColor(n) || "#2A4166";
+      rr(ctx, x-3, cy-3, iconS+6, iconS+6, 12); ctx.fill();
+      ctx.save(); rr(ctx, x, cy, iconS, iconS, 9); ctx.clip();
+      if (imgs[c]) ctx.drawImage(imgs[c], x, cy, iconS, iconS);
+      else {
+        let h=0; for (let k=0;k<c.length;k++) h=(h*31+c.charCodeAt(k))%360;
+        const g = ctx.createLinearGradient(x,cy,x+iconS,cy+iconS);
+        g.addColorStop(0, `hsl(${h},45%,26%)`); g.addColorStop(1, `hsl(${(h+40)%360},40%,14%)`);
+        ctx.fillStyle = g; ctx.fillRect(x,cy,iconS,iconS);
+        ctx.fillStyle = "#EBD9AE"; ctx.font = "800 22px Cinzel, Georgia, serif";
+        ctx.fillText(c.split(/[\s'&]+/).map(w=>w[0]).join("").slice(0,2).toUpperCase(), x+iconS/2, cy+iconS/2+8);
+      }
+      ctx.restore();
+      ctx.fillStyle = "#AEBBCC"; ctx.font = "11px system-ui, sans-serif";
+      let nm = c; if (nm.length > 12) nm = nm.slice(0,11) + "…";
+      ctx.fillText(nm, x+iconS/2, cy+iconS+16);
+    });
+    ctx.textAlign = "left"; y += rh + rowGap;
+  });
+  try {
+    canvas.toBlob(blob => {
+      if (!blob){ showToast("Image failed — try again"); return; }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = `wild-rift-${role}-tierlist.png`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url), 5000);
+      showToast("Image saved!");
+    }, "image/png");
+  } catch(e){ console.error(e); showToast("Image blocked by icon CDN — screenshot instead"); }
+};
+
+// ============ FALLBACK INITIALS (only when both CDNs fail) ============
+// Initials are drawn via gradient background; when an icon loads it covers them.
+// We set initials text only if the primary image fails to load.
+document.addEventListener("DOMContentLoaded", () => {});
+new MutationObserver(() => {
+  document.querySelectorAll(".ini:not([data-done])").forEach(el => {
+    el.dataset.done = "1";
+    const name = el.dataset.n;
+    const probe = new Image();
+    probe.onerror = () => {
+      const probe2 = new Image();
+      probe2.onerror = () => { el.textContent = name.split(/[\s'&]+/).map(w=>w[0]).join("").slice(0,2).toUpperCase(); };
+      probe2.src = iconUrl2(name);
+    };
+    probe.src = iconUrl(name);
+  });
+}).observe(document.body, {childList: true, subtree: true});
+
+// ============ BOOT ============
+listenMeta(); listenTiers(); listenVotes(); render();
+</script>
+</body>
+</html>
