@@ -14,19 +14,22 @@
     background-image: radial-gradient(ellipse at 50% 0%, rgba(10,200,185,0.06), transparent 60%),
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cg fill='none' stroke='%23234270' stroke-width='1.2' opacity='0.7'%3E%3Cpath d='M28 1 52 15 52 43 28 57 4 43 4 15z'/%3E%3Cpath d='M28 49 52 63 52 91 28 105 4 91 4 63z'/%3E%3C/g%3E%3C/svg%3E");
     opacity: 0.6;
-    animation: hexdrift 40s linear infinite; }
+    animation: hexdrift 16s linear infinite; }
   .bgfx2 { position: fixed; inset: -50% 0; z-index: -1; pointer-events: none; opacity: 0.8;
     background: linear-gradient(115deg, transparent 40%, rgba(10,200,185,0.09) 45%, rgba(200,170,110,0.12) 50%, rgba(10,200,185,0.09) 55%, transparent 60%);
     animation: sheen 26s linear infinite; }
   @keyframes sheen { 0% { transform: translateY(-22%); } 100% { transform: translateY(22%); } }
   @keyframes hexdrift {
     0% { background-position: 0 0, 0 0; }
-    100% { background-position: 0 0, 56px 0; }
+    100% { background-position: 0 0, 56px 97px; }
   }
   @media (prefers-reduced-motion: reduce) { .bgfx, .bgfx2 { animation: none; } }
   .header { padding: 22px 16px 14px; text-align: center; background: linear-gradient(180deg, #0E1B33 0%, rgba(10,20,40,0.6) 100%); border-bottom: 1px solid #1E3252; }
   .header h1 { font-family: 'Cinzel', serif; font-weight: 800; font-size: 22px; letter-spacing: 2px; color: #C8AA6E; text-transform: uppercase; }
-  .header .sub { font-size: 12px; color: #7B8BA3; margin-top: 4px; }
+  .header .sub { font-size: 12px; color: #8FA0B8; margin-top: 10px; text-align: left;
+    max-height: 130px; overflow-y: auto; background: rgba(15,31,53,0.75);
+    border: 1px solid #22375A; border-radius: 10px; padding: 10px 14px;
+    max-width: 640px; margin-left: auto; margin-right: auto; line-height: 1.55; }
   .authRow { margin-top: 10px; display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; }
   .authBtn { background: #13233F; border: 1px solid #2A4166; color: #E8EDF4; padding: 7px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
   .authBtn.gold { color: #C8AA6E; }
@@ -108,13 +111,14 @@
   <div class="authRow" id="authRow"></div>
 </div>
 <div class="contested" id="contested"></div>
+<div class="contested" id="pressure"></div>
 <div class="tabs" id="tabs"></div>
 <div class="toolbar">
   <span class="hint" id="hint">Tap a champion to vote on their placement</span>
   <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap">
     <button class="editBtn" id="musicBtn">&#127925;</button>
-    <button class="editBtn" id="imgCleanBtn">&#128248; Clean</button>
-    <button class="editBtn" id="imgVotesBtn">&#128202; Votes</button>
+    <button class="editBtn" id="imgCleanBtn">Clean Photo</button>
+    <button class="editBtn" id="imgVotesBtn">Votes Photo</button>
     <button class="editBtn" id="editBtn" style="display:none">Edit</button>
   </div>
 </div>
@@ -526,6 +530,48 @@ function renderContested(){
   });
 }
 
+// ============ MOVE PRESSURE STRIP ============
+function renderPressure(){
+  const items = [];
+  const scalesC = {};
+  for (const r of ROLE_KEYS){
+    const A = aggFor(r);
+    let m = 0;
+    for (const c of Object.keys(A)) m = Math.max(m, Math.abs(A[c].up - A[c].down));
+    scalesC[r] = Math.max(3, m);
+    for (const c of Object.keys(A)){
+      const u = A[c].up, d = A[c].down, a = A[c].agree;
+      const net = u - d;
+      if (net === 0) continue;
+      const ud = u + d;
+      items.push({c, r, u, d, a, net, raw: Math.abs(net) * (ud / (ud + a))});
+    }
+  }
+  const el = $("pressure");
+  if (!items.length){ el.innerHTML = ""; return; }
+  const maxRaw = Math.max(...items.map(it => it.raw), 0.0001);
+  for (const it of items) it.score = Math.round(100 * it.raw / maxRaw);
+  items.sort((x, y) => y.score - x.score || (y.u + y.d + y.a) - (x.u + x.d + x.a));
+  const keepScroll = el.scrollLeft;
+  el.innerHTML = `<span class="cLabel">MOVE PRESSURE<br> {It's all RELATIVE}</span>` + items.map(it => {
+    const hc = heatColor(it.net, scalesC[it.r]) || "#2A4166";
+    const dirCol = it.net > 0 ? "#4FA8E8" : "#E85D5D";
+    const arrow = it.net > 0 ? "⬆" : "⬇";
+    return `<button class="cchip" data-hc="${encodeURIComponent(it.c)}" data-hr="${it.r}">` +
+      `<span class="ci" style="border-color:${hc};background-image:url('${iconUrl(it.c)}'),url('${iconUrl2(it.c)}')"></span>` +
+      `<span><span class="cn">${esc(it.c)}<span class="rtag" style="background:${ROLE_TAG[it.r].col}">${ROLE_TAG[it.r].ch}</span></span>` +
+      `<span class="cv">▲${it.u} ▼${it.d} ✓${it.a}</span></span>` +
+      `<span class="ctier" style="color:${TIER_COLORS[tierOfChamp(it.r, it.c)] || "#5A6B85"}">${tierOfChamp(it.r, it.c) || "–"}</span>` +
+      `<span class="cscore" style="color:${dirCol}">${arrow}${it.score}</span></button>`;
+  }).join("");
+  el.scrollLeft = keepScroll;
+  el.querySelectorAll(".cchip").forEach(b => b.onclick = () => {
+    switchRole(b.dataset.hr);
+    selected = {c: decodeURIComponent(b.dataset.hc), r: b.dataset.hr};
+    render();
+  });
+}
+
 // ============ RENDER ============
 function champIconHtml(name, borderColor, glow){
   const style = `border-color:${borderColor};${glow ? `box-shadow:0 0 8px ${glow};` : ""}`;
@@ -535,6 +581,7 @@ function champIconHtml(name, borderColor, glow){
 }
 function render(){
   renderContested();
+  renderPressure();
   $("tabs").innerHTML = TABS.map(([k,l]) => `<button class="tab ${k===role?"active":""}" data-r="${k}">${l}</button>`).join("");
   document.querySelectorAll(".tab").forEach(b => b.onclick = () => switchRole(b.dataset.r));
   $("hint").textContent = editMode ? "Tap a champion to move or remove them" : "Tap a champion to vote on their placement";
