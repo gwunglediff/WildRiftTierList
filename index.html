@@ -503,7 +503,7 @@ function renderContested(){
   items.sort((x, y) => y.score - x.score || (y.u + y.d + y.a) - (x.u + x.d + x.a));
   const el = $("contested");
   if (!items.length){ el.innerHTML = ""; return; }
-  el.innerHTML = `<span class="cLabel">🔥 CONTESTED<br>RATING</span>` + items.map(it => {
+  el.innerHTML = `<span class="cLabel">CONTESTED RATING<br> {It's all RELATIVE}</span>` + items.map(it => {
     const n = it.u - it.d;
     const hc = heatColor(n, scalesC[it.r]) || "#2A4166";
     return `<button class="cchip" data-hc="${encodeURIComponent(it.c)}" data-hr="${it.r}">` +
