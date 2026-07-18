@@ -110,6 +110,38 @@
   .cchip .ctier { font-family: 'Cinzel', serif; font-weight: 800; font-size: 13px; margin-left: 4px; align-self: center; }
   .cchip .cscore { font-family: 'Cinzel', serif; font-weight: 800; font-size: 15px; color: #C8AA6E; margin-left: 4px; align-self: center; }
   .cchip .rtag { display: inline-flex; width: 13px; height: 13px; border-radius: 4px; font-size: 8px; font-weight: 700; align-items: center; justify-content: center; color: #0A1428; vertical-align: 1px; margin-left: 3px; }
+  .cchip .cmove { font-family: 'Cinzel', serif; font-weight: 800; font-size: 13px; margin-left: 4px; align-self: center; white-space: nowrap; }
+  /* auth panel */
+  .authPanel { flex-basis: 100%; display: flex; flex-direction: column; gap: 8px; max-width: 340px; margin: 4px auto 0; background: #0F1F35; border: 1px solid #22375A; border-radius: 12px; padding: 12px; text-align: left; }
+  .authPanel input, .authPanel textarea { background: #0A1428; border: 1px solid #2A4166; color: #E8EDF4; border-radius: 8px; padding: 9px 10px; font-size: 13px; font-family: inherit; width: 100%; box-sizing: border-box; }
+  .authPanel textarea { resize: vertical; min-height: 64px; }
+  .authPanel .row { display: flex; gap: 8px; }
+  .authPanel .row > * { flex: 1; }
+  .authNote { font-size: 10px; color: #7B8BA3; line-height: 1.4; }
+  /* auto-move banner */
+  .autoBanner { margin: 10px 12px 0; background: rgba(26,42,20,0.95); border: 1px solid #3F6B2A; border-radius: 12px; padding: 10px 12px; font-size: 12px; color: #CDE8B0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  /* builds (owner preview) */
+  .bWrap { margin: 10px 12px; }
+  .bBar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 10px; }
+  .bBar select, .bWrap input[type=text] { background: #0F1F35; border: 1px solid #2A4166; color: #E8EDF4; border-radius: 8px; padding: 8px 10px; font-size: 13px; font-family: inherit; }
+  .bSlotRow { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+  .bSlot { width: 48px; height: 48px; border-radius: 10px; border: 2px dashed #2A4166; background-color: #0F1F35; background-size: cover; background-position: center; color: #4A5A72; font-size: 20px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
+  .bSlot.filled { border-style: solid; border-color: #C8AA6E; }
+  .bSlot.sel { border-color: #35D0A0; }
+  .bPick { background: #0F1F35; border: 1px solid #22375A; border-radius: 12px; padding: 10px; margin: 8px 0; }
+  .bCats { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 8px; }
+  .bCat { flex: 0 0 auto; background: #13233F; border: 1px solid #2A4166; color: #8FA0B8; border-radius: 14px; padding: 5px 10px; font-size: 11px; cursor: pointer; font-family: inherit; }
+  .bCat.on { color: #C8AA6E; border-color: #C8AA6E; }
+  .bGrid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 280px; overflow-y: auto; }
+  .bItem { width: 64px; background: none; border: none; cursor: pointer; color: #AEBBCC; font-family: inherit; padding: 0; }
+  .bItem .ic { width: 44px; height: 44px; margin: 0 auto; border-radius: 8px; border: 2px solid #2A4166; background-size: cover; background-position: center; background-color: #13233F; }
+  .bItem.on .ic { border-color: #35D0A0; }
+  .bItem .lb { font-size: 8px; display: block; text-align: center; margin-top: 2px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .bCard { background: rgba(19,35,63,0.95); border: 1px solid #2A4166; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+  .bCard .t { font-family: 'Cinzel', serif; color: #C8AA6E; font-weight: 600; margin-bottom: 6px; }
+  .bMini { width: 32px; height: 32px; border-radius: 6px; border: 1px solid #2A4166; background-size: cover; background-position: center; display: inline-block; margin-right: 4px; vertical-align: middle; }
+  .bNote { font-size: 11px; color: #7B8BA3; margin: 6px 0; line-height: 1.4; }
+  .bSec { font-family: 'Cinzel', serif; font-size: 12px; color: #C8AA6E; letter-spacing: 1px; margin: 12px 0 4px; }
 </style>
 </head>
 <body>
@@ -117,13 +149,15 @@
 <div class="bgfx2"></div>
 <div class="header">
   <h1>Wild Rift Meta</h1>
-  <div class="sub"> (Patch 7.2a) Wild Rift Meta Tierlist brought to you by GwenDiffYT. <br> Champions within a tier have no particular order. <br><br>Sign in to google to vote - only your email address and name (on your account) will be shared to me. <br>It is only to ensure no easy repeat voting, <br>trust me I have literally no use for your email and google account name. <br><br>Please vote if you want to help develop the tierlist. <br>Every single vote matters, and will affect placements.<br> use the agree to unvoted button to agree to all on the current page if you're lazy :) <br><br>When you disagree with a placement please vote up or down. <br> If you agree with a placement, please vote "Agree", this is just as valuable data as up/down votes. <br> When champions have enough "move pressure" the tiers will be changed. <br>I'm currently searching for a good way to automate this process. <br><br>Note about tiers: <br>A and A+, along with B and B+ tiers, are similar tiers (little difference). <br>The "+" tiers are only an extension of the tier to subdivide and allow more nuance. <br>Do not treat B+ tier as a completely different tier to B etc.<br><br>I hope this is useful for you, and thank you for visiting :)<br> Feel free to leave a comment at the bottom about anything you want to mention. <br> </div>
+  <div class="sub"> (Patch 7.2a) Wild Rift Meta Tierlist brought to you by GwenDiffYT. <br> Champions within a tier have no particular order. <br><br>Sign in to google to vote - only your email address and name (on your account) will be shared to the tierlist. <br>Please do vote if you want to help develop the tierlist; every vote matters, and will affect placements. <br><br>When you disagree with a placement please vote up or down. <br> If you agree with a placement, please vote "Agree", this is as valuable as up/down votes. <br> When champions have enough up/down votes after a period the tiers will be changed. <br><br>Note: A and A+, along with B and B+ tiers, are similar tiers (little difference). The "+" tiers are only an extension of the tier to subdivide and allow more nuance. <br>Do not treat B+ tier as a completely different tier to B etc.<br><br>I hope this is useful for you, and thank you for visiting :)<br> Feel free to leave a comment at the bottom about anything you want to mention. </div>
   <div class="authRow" id="authRow"></div>
 </div>
 <div class="stripZone" id="stripZone">
   <div class="contested" id="contested"></div>
   <div class="contested" id="pressure"></div>
+  <div class="contested" id="autoMoves"></div>
 </div>
+<div id="autoBanner"></div>
 <div class="tabs" id="tabs"></div>
 <div class="toolbar">
   <span class="hint" id="hint">Tap a champion to vote on their placement</span>
@@ -131,6 +165,7 @@
     <button class="editBtn" id="musicBtn">&#127925;</button>
     <button class="editBtn" id="imgCleanBtn">Clean Photo</button>
     <button class="editBtn" id="imgVotesBtn">Votes Photo</button>
+    <button class="editBtn" id="buildsBtn" style="display:none">Builds</button>
     <button class="editBtn" id="editBtn" style="display:none">Edit</button>
   </div>
 </div>
@@ -144,11 +179,13 @@
   </div>
 </div>
 <div class="toast" id="toast"></div>
+
 <audio id="bgm" loop preload="none" src="music.mp3"></audio>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="wr_data.js"></script>
 <script>
 // ============ CONFIG ============
 const OWNER_EMAIL = "gwendiffyt@gmail.com";
@@ -323,7 +360,7 @@ function switchRole(r){
 
 // ============ ACTIONS ============
 async function castVote(champ, r, type){
-  if (!user){ showToast("Sign in with Google to vote"); return; }
+  if (!user){ showToast("Sign in to vote"); return; }
   const mine = myVotesFor(r)[champ] || {};
   const next = { agree: false, up: false, down: false };
   next[type] = !mine[type];
@@ -485,24 +522,131 @@ function signIn(){
     else showToast("Sign-in failed: " + (e.code || e.message));
   });
 }
+const AUTH_ERRORS = {
+  "auth/invalid-email": "That email doesn't look right",
+  "auth/email-already-in-use": "That email already has an account — try Sign in",
+  "auth/weak-password": "Password needs at least 6 characters",
+  "auth/user-not-found": "No account with that email — try Create account",
+  "auth/wrong-password": "Wrong password",
+  "auth/invalid-credential": "Wrong email or password",
+  "auth/too-many-requests": "Too many tries — wait a bit and try again"
+};
+const authErr = e => { console.error(e); showToast(AUTH_ERRORS[e.code] || "Failed: " + (e.code || e.message)); };
+let authMode = null;
+async function emailAuth(create){
+  const em = $("emEmail").value.trim(), pw = $("emPw").value;
+  if (!em || !pw){ showToast("Enter email and password"); return; }
+  try {
+    if (create) await auth.createUserWithEmailAndPassword(em, pw);
+    else await auth.signInWithEmailAndPassword(em, pw);
+  } catch(e){ authErr(e); }
+}
+async function forgotPw(){
+  const em = $("emEmail").value.trim();
+  if (!em){ showToast("Type your email first, then tap Forgot"); return; }
+  try { await auth.sendPasswordResetEmail(em); showToast("Reset email sent — check your inbox"); }
+  catch(e){ authErr(e); }
+}
+// ---- usernames ----
+let usernames = {}, myName = null, nameEditOpen = false, cfgOpen = false;
+db.collection("users").onSnapshot(snap => {
+  usernames = {};
+  snap.forEach(d => { usernames[d.id] = (d.data() && d.data().name) || ""; });
+  myName = (user && usernames[user.uid]) || null;
+  renderAuth(); renderComments();
+}, err => console.error("users listener:", err));
+const nameOf = (uid, fallback) => usernames[uid] || fallback || "Anonymous";
+async function saveUsername(){
+  const n = $("unInput").value.trim();
+  if (n.length < 2 || n.length > 20){ showToast("Name must be 2–20 characters"); return; }
+  try {
+    await db.collection("users").doc(user.uid).set({name: n, ts: firebase.firestore.FieldValue.serverTimestamp()});
+    nameEditOpen = false; renderAuth(true); showToast("Name saved!");
+  } catch(e){ console.error(e); showToast("Save failed — did you publish the new Firestore rules?"); }
+}
+// ---- owner config (webhook etc), stored in meta/config — owner-only read ----
+let cfg = {webhookUrl: "", template: ""};
+const DEFAULT_TEMPLATE = "⚡ **{champ}** ({role}) moved **{from} → {to}** — ▲{up} ▼{down} ✓{agree} · pressure {score}";
+async function loadCfg(){
+  try { const s = await db.collection("meta").doc("config").get(); if (s.exists) cfg = Object.assign(cfg, s.data()); }
+  catch(e){ console.error("cfg:", e); }
+  renderAuth(true);
+}
+async function saveCfg(){
+  cfg.webhookUrl = $("cfgHook").value.trim();
+  cfg.template = $("cfgTpl").value.trim();
+  try { await db.collection("meta").doc("config").set(cfg); showToast("Settings saved"); cfgOpen = false; renderAuth(true); }
+  catch(e){ console.error(e); showToast("Save failed — did you publish the new Firestore rules?"); }
+}
+async function sendWebhook(msg){
+  if (!cfg.webhookUrl){ showToast("No Discord webhook set — open ⚙ Settings"); return false; }
+  try {
+    const r = await fetch(cfg.webhookUrl, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({content: msg})});
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return true;
+  } catch(e){ console.error(e); showToast("Discord ping failed — check the webhook URL"); return false; }
+}
 auth.onAuthStateChanged(u => {
   user = u;
   isOwner = !!(u && u.email && u.email.toLowerCase() === OWNER_EMAIL.toLowerCase());
   $("editBtn").style.display = isOwner ? "" : "none";
-  if (!isOwner) editMode = false;
-  renderAuth(); render();
+  if (!isOwner){ editMode = false; buildsMode = false; }
+  myName = (u && usernames[u.uid]) || null;
+  authMode = null; nameEditOpen = false; cfgOpen = false;
+  if (isOwner) loadCfg();
+  renderAuth(true); render();
 });
-function renderAuth(){
+let authSig = "";
+function renderAuth(force){
   const el = $("authRow");
+  const sig = [user ? user.uid : "out", isOwner, authMode, myName || "", nameEditOpen, cfgOpen].join("|");
+  if (!force && sig === authSig) return;
+  authSig = sig;
   if (user){
-    el.innerHTML = `<span class="who">${esc(user.displayName || user.email)}${isOwner ? " · owner" : ""}</span>` +
+    const shown = myName || user.displayName || user.email || (user.phoneNumber ? "Summoner " + user.phoneNumber.slice(-4) : "Summoner");
+    let h = `<span class="who">${esc(shown)}${isOwner ? " · owner" : ""}</span>` +
+      `<button class="authBtn" id="nameBtn">✎ Name</button>` +
       `<button class="authBtn gold" id="agreeAllBtn">✓ Agree to all unvoted</button>` +
-      `<button class="authBtn" id="outBtn">Sign out</button>`;
+      `<button class="authBtn" id="outBtn">Sign out</button>` +
+      (isOwner ? `<button class="authBtn" id="cfgBtn">⚙</button>` : "");
+    if (nameEditOpen || !myName){
+      h += `<div class="authPanel">` +
+        (!myName ? `<span class="authNote">Pick a display name — it's what shows on your comments instead of your account name.</span>` : "") +
+        `<div class="row"><input id="unInput" maxlength="20" placeholder="Display name (2–20 chars)" value="${esc(myName || "")}"><button class="authBtn gold" id="unSave">Save</button></div></div>`;
+    }
+    if (cfgOpen && isOwner){
+      h += `<div class="authPanel">` +
+        `<span class="authNote">Discord webhook URL (kept owner-only in Firestore):</span>` +
+        `<input id="cfgHook" placeholder="https://discord.com/api/webhooks/…" value="${esc(cfg.webhookUrl || "")}">` +
+        `<span class="authNote">Auto-move message. Placeholders: {champ} {role} {from} {to} {up} {down} {agree} {score}</span>` +
+        `<textarea id="cfgTpl" placeholder="${esc(DEFAULT_TEMPLATE)}">${esc(cfg.template || "")}</textarea>` +
+        `<div class="row"><button class="authBtn gold" id="cfgSave">Save</button><button class="authBtn" id="cfgTest">Send test ping</button></div></div>`;
+    }
+    el.innerHTML = h;
     $("outBtn").onclick = () => auth.signOut();
     $("agreeAllBtn").onclick = agreeAllUnvoted;
+    $("nameBtn").onclick = () => { nameEditOpen = !nameEditOpen; renderAuth(true); };
+    if ($("unSave")) $("unSave").onclick = saveUsername;
+    if ($("cfgBtn")) $("cfgBtn").onclick = () => { cfgOpen = !cfgOpen; renderAuth(true); };
+    if ($("cfgSave")) $("cfgSave").onclick = saveCfg;
+    if ($("cfgTest")) $("cfgTest").onclick = async () => {
+      cfg.webhookUrl = $("cfgHook").value.trim(); cfg.template = $("cfgTpl").value.trim();
+      if (await sendWebhook("🔧 Test ping from Wild Rift Meta — webhook works!")) showToast("Test sent — check Discord!");
+    };
   } else {
-    el.innerHTML = `<button class="authBtn" id="inBtn">Sign in with Google to vote</button>`;
+    let h = `<button class="authBtn gold" id="inBtn">Sign in with Google</button>` +
+      `<button class="authBtn" id="emBtn">Email</button>`;
+    if (authMode === "email"){
+      h += `<div class="authPanel"><input id="emEmail" type="email" placeholder="Email" autocomplete="email">` +
+        `<input id="emPw" type="password" placeholder="Password (6+ chars)" autocomplete="current-password">` +
+        `<div class="row"><button class="authBtn gold" id="emIn">Sign in</button><button class="authBtn" id="emUp">Create account</button><button class="authBtn" id="emForgot">Forgot?</button></div></div>`;
+    }
+    el.innerHTML = h;
     $("inBtn").onclick = signIn;
+    $("emBtn").onclick = () => { authMode = authMode === "email" ? null : "email"; renderAuth(true); };
+    if ($("emIn")) $("emIn").onclick = () => emailAuth(false);
+    if ($("emUp")) $("emUp").onclick = () => emailAuth(true);
+    if ($("emForgot")) $("emForgot").onclick = forgotPw;
   }
 }
 
@@ -510,9 +654,12 @@ function renderAuth(){
 const AGREE_WEIGHT = 0.5; // an agree-vs-directional clash counts half of an up-vs-down clash
 const CONTEST_K = 6;      // saturation: raw of 6 → 50; higher raw creeps toward (never hits) 100
 function contestRaw(u, d, a){
-  // pairwise disagreement: every ▲ clashes with every ▼ at full weight,
-  // every ✓ clashes with every ▲/▼ at half weight. Unanimous anything = 0.
-  return u * d + AGREE_WEIGHT * a * (u + d);
+  // pairwise disagreement: every ▲ clashes with every ▼ at full weight.
+  // ✓-clashes are weighted by how big the move camp actually is (t/n):
+  // 1▲ vs 8✓ is a rounding error, 6▼ vs 6✓ is a real fight.
+  const t = u + d, n = t + a;
+  if (!t || !n) return 0;
+  return u * d + AGREE_WEIGHT * (t / n) * a * t;
 }
 function renderContested(){
   const items = [];
@@ -533,7 +680,7 @@ function renderContested(){
   const el = $("contested");
   if (!items.length){ el.innerHTML = ""; return; }
   const keepScroll = el.scrollLeft;
-  el.innerHTML = `<span class="cLabel">CONTEST RATING<br> {vote split}</span>` + items.map(it => {
+  el.innerHTML = `<span class="cLabel">CONTESTED RATING<br> {How split are we?}</span>` + items.map(it => {
     const n = it.u - it.d;
     const hc = heatColor(n, scalesC[it.r]) || "#2A4166";
     return `<button class="cchip" data-hc="${encodeURIComponent(it.c)}" data-hr="${it.r}">` +
@@ -553,6 +700,11 @@ function renderContested(){
 
 // ============ MOVE PRESSURE STRIP ============
 const PRESSURE_K = 4; // saturation: raw of 4 → 50; more one-sided pushes creep toward (never hit) 100
+function pressureScore(u, d, a){
+  // agrees actively cancel pressure: each ✓ erases half a net vote
+  const raw = Math.max(0, Math.abs(u - d) - AGREE_WEIGHT * a);
+  return raw <= 0 ? 0 : Math.round(100 * raw / (raw + PRESSURE_K));
+}
 function renderPressure(){
   const items = [];
   const scalesC = {};
@@ -564,17 +716,16 @@ function renderPressure(){
     for (const c of Object.keys(A)){
       const u = A[c].up, d = A[c].down, a = A[c].agree;
       const net = u - d;
-      // agrees actively cancel pressure: each ✓ erases half a net vote
-      const raw = Math.max(0, Math.abs(net) - AGREE_WEIGHT * a);
-      if (raw <= 0) continue;
-      items.push({c, r, u, d, a, net, score: Math.round(100 * raw / (raw + PRESSURE_K))});
+      const score = pressureScore(u, d, a);
+      if (score <= 0 || net === 0) continue;
+      items.push({c, r, u, d, a, net, score});
     }
   }
   const el = $("pressure");
   if (!items.length){ el.innerHTML = ""; return; }
   items.sort((x, y) => y.score - x.score || (y.u + y.d + y.a) - (x.u + x.d + x.a));
   const keepScroll = el.scrollLeft;
-  el.innerHTML = `<span class="cLabel">MOVE PRESSURE<br> {vote push}</span>` + items.map(it => {
+  el.innerHTML = `<span class="cLabel">MOVE PRESSURE<br> {How hard's the push?}</span>` + items.map(it => {
     const hc = heatColor(it.net, scalesC[it.r]) || "#2A4166";
     const dirCol = it.net > 0 ? "#4FA8E8" : "#E85D5D";
     return `<button class="cchip" data-hc="${encodeURIComponent(it.c)}" data-hr="${it.r}">` +
@@ -592,7 +743,240 @@ function renderPressure(){
   });
 }
 
+// ============ AUTO TIER MOVES ============
+const AUTO_MOVE_THRESHOLD = 60; // pressure score needed before a champ auto-moves a tier
+const AUTO_MOVE_MIN_VOTES = 8;  // total votes required so early noise can't move champs
+let confirmAuto = false, autoBusy = false, autoMovesList = [];
+db.collection("autoMoves").orderBy("ts", "desc").limit(20).onSnapshot(snap => {
+  autoMovesList = [];
+  snap.forEach(d => autoMovesList.push(d.data()));
+  render();
+}, err => console.error("autoMoves listener:", err));
+function computePendingMoves(){
+  const out = [];
+  for (const r of ROLE_KEYS){
+    if (!tiersByRole[r] || isPastEra(r)) continue; // only the live era can trigger moves
+    const A = aggFor(r);
+    for (const c of Object.keys(A)){
+      const u = A[c].up, d = A[c].down, a = A[c].agree;
+      if (u + d + a < AUTO_MOVE_MIN_VOTES) continue;
+      const net = u - d;
+      if (net === 0) continue;
+      const score = pressureScore(u, d, a);
+      if (score < AUTO_MOVE_THRESHOLD) continue;
+      const from = tierOfChamp(r, c);
+      if (!from) continue;
+      const i = TIERS.indexOf(from) + (net > 0 ? -1 : 1);
+      if (i < 0 || i >= TIERS.length) continue;
+      out.push({r, c, from, to: TIERS[i], u, d, a, net, score});
+    }
+  }
+  return out;
+}
+async function wipeChampVotesIn(r, champ){ // silent version of wipeChampVotes for auto-moves
+  const docs = voteDocsByRole[r] || {};
+  const targets = Object.keys(docs).filter(uid => docs[uid] && docs[uid][champ]);
+  await Promise.all(targets.map(uid =>
+    db.collection("votes").doc(eraId(r)).collection("users").doc(uid)
+      .update(new firebase.firestore.FieldPath(champ), firebase.firestore.FieldValue.delete())
+  ));
+}
+async function applyAutoMoves(){
+  if (autoBusy || !isOwner) return;
+  const moves = computePendingMoves();
+  confirmAuto = false;
+  if (!moves.length){ renderAutoBanner(); return; }
+  autoBusy = true; renderAutoBanner();
+  try {
+    const byRole = {};
+    for (const m of moves){ (byRole[m.r] = byRole[m.r] || []).push(m); }
+    for (const r of Object.keys(byRole)){ // one tiers write per lane, however many moves
+      const t = normalizeTiers(JSON.parse(JSON.stringify(tiersByRole[r])));
+      for (const m of byRole[r]){
+        t[m.from] = t[m.from].filter(x => x !== m.c);
+        if (!t[m.to].includes(m.c)) t[m.to].push(m.c);
+      }
+      await db.collection("tiers").doc(r).set(t);
+    }
+    for (const m of moves){
+      await db.collection("autoMoves").add({role: m.r, champ: m.c, from: m.from, to: m.to,
+        up: m.u, down: m.d, agree: m.a, score: m.score, era: eraOf(m.r).cur,
+        ts: firebase.firestore.FieldValue.serverTimestamp()});
+      await wipeChampVotesIn(m.r, m.c); // fresh votes on the new placement (also stops re-triggering)
+      if (cfg.webhookUrl){
+        const tpl = cfg.template || DEFAULT_TEMPLATE;
+        await sendWebhook(tpl.replace(/{champ}/g, m.c).replace(/{role}/g, ROLE_LABELS[m.r] || m.r)
+          .replace(/{from}/g, m.from).replace(/{to}/g, m.to).replace(/{up}/g, m.u)
+          .replace(/{down}/g, m.d).replace(/{agree}/g, m.a).replace(/{score}/g, m.score));
+      }
+    }
+    showToast(`${moves.length} champion${moves.length === 1 ? "" : "s"} auto-moved`);
+  } catch(e){ console.error(e); showToast("Auto-move failed partway — check Firestore rules"); }
+  autoBusy = false; render();
+}
+function renderAutoBanner(){
+  const el = $("autoBanner");
+  if (!isOwner){ el.innerHTML = ""; return; }
+  const moves = computePendingMoves();
+  if (!moves.length){ el.innerHTML = ""; return; }
+  const list = moves.map(m => `<b>${esc(m.c)}</b> ${m.from}→${m.to}`).join(", ");
+  el.innerHTML = `<div class="autoBanner">⚡ ${moves.length} auto-move${moves.length === 1 ? "" : "s"} ready: ${list} ` +
+    `<button class="authBtn gold" id="autoGo" ${autoBusy ? "disabled" : ""}>${autoBusy ? "Working…" : confirmAuto ? "Tap again: apply & ping Discord" : "Apply"}</button></div>`;
+  $("autoGo").onclick = () => { if (confirmAuto) applyAutoMoves(); else { confirmAuto = true; renderAutoBanner(); } };
+}
+function renderAutoStrip(){
+  const el = $("autoMoves");
+  if (!autoMovesList.length){ el.innerHTML = ""; return; }
+  const keepScroll = el.scrollLeft;
+  el.innerHTML = `<span class="cLabel">TIER CHANGES<br> {Auto-moves only}</span>` + autoMovesList.map(m => {
+    const upMove = TIERS.indexOf(m.to) < TIERS.indexOf(m.from);
+    const col = upMove ? "#4FA8E8" : "#E85D5D";
+    const rt = ROLE_TAG[m.role] || {ch: "?", col: "#888"};
+    return `<button class="cchip" data-hc="${encodeURIComponent(m.champ)}" data-hr="${m.role}">` +
+      `<span class="ci" style="border-color:${col};background-image:url('${iconUrl(m.champ)}'),url('${iconUrl2(m.champ)}')"></span>` +
+      `<span><span class="cn">${esc(m.champ)}<span class="rtag" style="background:${rt.col}">${rt.ch}</span></span>` +
+      `<span class="cv">▲${m.up} ▼${m.down} ✓${m.agree}</span></span>` +
+      `<span class="cmove"><span style="color:${TIER_COLORS[m.from] || "#888"}">${esc(m.from)}</span>→<span style="color:${TIER_COLORS[m.to] || "#888"}">${esc(m.to)}</span></span>` +
+      `<span class="cscore" style="color:${col}">${m.score}</span></button>`;
+  }).join("");
+  el.scrollLeft = keepScroll;
+  el.querySelectorAll(".cchip").forEach(b => b.onclick = () => {
+    switchRole(b.dataset.hr);
+    selected = {c: decodeURIComponent(b.dataset.hc), r: b.dataset.hr};
+    render();
+  });
+}
+
+// ============ BUILDS (OWNER-ONLY PREVIEW) ============
+const HAS_WR = typeof WR_ITEMS !== "undefined" && typeof WR_RUNES !== "undefined";
+let buildsMode = false, bChamp = null, bDocs = [], unsubBuilds = null, bSubKey = null;
+let eb = null, ebSlot = null, ebCat = null; // eb = build being edited
+const wrItem = n => HAS_WR ? WR_ITEMS.find(i => i.name === n) : null;
+const wrCats = () => HAS_WR ? [...new Set(WR_ITEMS.map(i => i.cat))] : [];
+const wrTrees = () => HAS_WR ? [...new Set(WR_RUNES.filter(r => !r.keystone).map(r => r.tree))] : [];
+function allChampNames(){
+  const s = new Set();
+  for (const r of ROLE_KEYS){
+    const t = tiersByRole[r] || SEED[r] || {};
+    for (const x of TIERS) for (const c of (t[x] || [])) s.add(c);
+  }
+  return [...s].sort();
+}
+function subscribeBuilds(champ){
+  if (bSubKey === champ) return;
+  if (unsubBuilds){ unsubBuilds(); unsubBuilds = null; }
+  bSubKey = champ; bDocs = [];
+  if (!champ) return;
+  unsubBuilds = db.collection("builds").where("champ", "==", champ).onSnapshot(snap => {
+    bDocs = [];
+    snap.forEach(d => bDocs.push({id: d.id, data: d.data()}));
+    bDocs.sort((a, b) => ((b.data.ts && b.data.ts.seconds) || 0) - ((a.data.ts && a.data.ts.seconds) || 0));
+    render();
+  }, err => console.error("builds listener:", err));
+}
+function newBuild(){
+  eb = {title: "", items: [null,null,null,null,null,null], keystone: null, tree: null, minors: [], secTree: null, secRune: null};
+  ebSlot = null; ebCat = wrCats()[0] || null;
+  render();
+}
+async function saveBuild(){
+  const items = eb.items.filter(Boolean);
+  if (eb.title.trim().length < 2){ showToast("Give the build a name (2+ chars)"); return; }
+  if (!items.length){ showToast("Pick at least one item"); return; }
+  if (!eb.keystone){ showToast("Pick a keystone rune"); return; }
+  if (eb.minors.length !== 3){ showToast("Pick exactly 3 primary runes from one tree"); return; }
+  if (!eb.secRune){ showToast("Pick 1 secondary rune from a different tree"); return; }
+  try {
+    await db.collection("builds").add({
+      champ: bChamp, title: eb.title.trim().slice(0, 40), items,
+      keystone: eb.keystone, tree: eb.tree, minors: eb.minors, secTree: eb.secTree, secRune: eb.secRune,
+      uid: user.uid, name: myName || user.displayName || "Owner",
+      ts: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    eb = null; showToast("Build saved!"); render();
+  } catch(e){ console.error(e); showToast("Save failed — did you publish the new Firestore rules?"); }
+}
+function renderBuilds(content){
+  $("hint").textContent = "Builds preview — only your account can see this";
+  if (!HAS_WR){
+    content.innerHTML = `<div class="panel"><div class="bNote">Builds needs the item &amp; rune data file. Run the Colab, download <b>wr_data.js</b>, and upload it to the repo next to index.html — then reload.</div></div>`;
+    return;
+  }
+  const champs = allChampNames();
+  if (!bChamp) bChamp = champs[0] || null;
+  subscribeBuilds(bChamp);
+  let h = `<div class="bWrap"><div class="bBar">` +
+    `<select id="bChampSel">${champs.map(c => `<option ${c === bChamp ? "selected" : ""}>${esc(c)}</option>`).join("")}</select>` +
+    (eb ? `<button class="editBtn on" id="bCancel">Cancel</button><button class="editBtn" id="bSave">Save build</button>`
+        : `<button class="editBtn" id="bNew">+ New build</button>`) + `</div>`;
+  if (eb){
+    h += `<input type="text" id="bTitle" placeholder="Build name (e.g. Crit ADC)" maxlength="40" value="${esc(eb.title)}" style="width:100%;box-sizing:border-box">`;
+    h += `<div class="bSec">ITEMS</div><div class="bSlotRow">` + eb.items.map((it, i) => {
+      const d = it && wrItem(it);
+      return `<button class="bSlot ${it ? "filled" : ""} ${ebSlot === i ? "sel" : ""}" data-slot="${i}" style="${d && d.img ? `background-image:url('${d.img}')` : ""}">${it ? "" : "+"}</button>`;
+    }).join("") + `</div>`;
+    if (ebSlot !== null){
+      h += `<div class="bPick"><div class="bCats">` +
+        wrCats().map(c => `<button class="bCat ${c === ebCat ? "on" : ""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("") +
+        `<button class="bCat" data-clear="1">✕ Clear slot</button></div><div class="bGrid">` +
+        WR_ITEMS.filter(i => i.cat === ebCat).map(i =>
+          `<button class="bItem" data-pi="${encodeURIComponent(i.name)}"><span class="ic" style="${i.img ? `background-image:url('${i.img}')` : ""}"></span><span class="lb">${esc(i.name)}</span></button>`).join("") +
+        `</div></div>`;
+    }
+    const ks = WR_RUNES.filter(r => r.keystone);
+    h += `<div class="bSec">KEYSTONE</div><div class="bGrid">` + ks.map(r =>
+      `<button class="bItem ${eb.keystone === r.name ? "on" : ""}" data-ks="${encodeURIComponent(r.name)}"><span class="ic" style="${r.img ? `background-image:url('${r.img}')` : ""}"></span><span class="lb">${esc(r.name)}</span></button>`).join("") + `</div>`;
+    h += `<div class="bSec">PRIMARY TREE — pick 3</div><div class="bCats">` +
+      wrTrees().map(t => `<button class="bCat ${eb.tree === t ? "on" : ""}" data-tree="${esc(t)}">${esc(t)}</button>`).join("") + `</div>`;
+    if (eb.tree){
+      h += `<div class="bGrid">` + WR_RUNES.filter(r => !r.keystone && r.tree === eb.tree).map(r =>
+        `<button class="bItem ${eb.minors.includes(r.name) ? "on" : ""}" data-mn="${encodeURIComponent(r.name)}"><span class="ic" style="${r.img ? `background-image:url('${r.img}')` : ""}"></span><span class="lb">${esc(r.name)}</span></button>`).join("") + `</div>`;
+    }
+    h += `<div class="bSec">SECONDARY — 1 rune from a different tree</div><div class="bCats">` +
+      wrTrees().filter(t => t !== eb.tree).map(t => `<button class="bCat ${eb.secTree === t ? "on" : ""}" data-stree="${esc(t)}">${esc(t)}</button>`).join("") + `</div>`;
+    if (eb.secTree){
+      h += `<div class="bGrid">` + WR_RUNES.filter(r => !r.keystone && r.tree === eb.secTree).map(r =>
+        `<button class="bItem ${eb.secRune === r.name ? "on" : ""}" data-sr="${encodeURIComponent(r.name)}"><span class="ic" style="${r.img ? `background-image:url('${r.img}')` : ""}"></span><span class="lb">${esc(r.name)}</span></button>`).join("") + `</div>`;
+    }
+  } else {
+    if (!bDocs.length) h += `<div class="bNote">No builds for ${esc(bChamp || "this champion")} yet.</div>`;
+    for (const d of bDocs){
+      const b = d.data;
+      h += `<div class="bCard"><div class="t">${esc(b.title)} <span class="bNote" style="display:inline">— by ${esc(nameOf(b.uid, b.name))}</span>` +
+        `<button class="cdel" data-bdel="${d.id}" style="float:right">✕</button></div>` +
+        (b.items || []).map(n => { const it = wrItem(n); return `<span class="bMini" title="${esc(n)}" style="${it && it.img ? `background-image:url('${it.img}')` : ""}"></span>`; }).join("") +
+        `<div class="bNote">Runes: ${esc(b.keystone || "")} · ${esc((b.minors || []).join(", "))} (${esc(b.tree || "")}) + ${esc(b.secRune || "")} (${esc(b.secTree || "")})</div></div>`;
+    }
+  }
+  h += `</div>`;
+  content.innerHTML = h;
+  $("bChampSel").onchange = e => { bChamp = e.target.value; eb = null; render(); };
+  if ($("bNew")) $("bNew").onclick = newBuild;
+  if ($("bCancel")) $("bCancel").onclick = () => { eb = null; render(); };
+  if ($("bSave")) $("bSave").onclick = saveBuild;
+  if ($("bTitle")) $("bTitle").oninput = e => { eb.title = e.target.value; };
+  content.querySelectorAll("[data-slot]").forEach(b => b.onclick = () => { ebSlot = ebSlot === +b.dataset.slot ? null : +b.dataset.slot; render(); });
+  content.querySelectorAll("[data-cat]").forEach(b => b.onclick = () => { ebCat = b.dataset.cat; render(); });
+  content.querySelectorAll("[data-clear]").forEach(b => b.onclick = () => { eb.items[ebSlot] = null; ebSlot = null; render(); });
+  content.querySelectorAll("[data-pi]").forEach(b => b.onclick = () => { eb.items[ebSlot] = decodeURIComponent(b.dataset.pi); ebSlot = null; render(); });
+  content.querySelectorAll("[data-ks]").forEach(b => b.onclick = () => { eb.keystone = decodeURIComponent(b.dataset.ks); render(); });
+  content.querySelectorAll("[data-tree]").forEach(b => b.onclick = () => { if (eb.tree !== b.dataset.tree){ eb.tree = b.dataset.tree; eb.minors = []; if (eb.secTree === eb.tree){ eb.secTree = null; eb.secRune = null; } } render(); });
+  content.querySelectorAll("[data-mn]").forEach(b => b.onclick = () => {
+    const n = decodeURIComponent(b.dataset.mn);
+    if (eb.minors.includes(n)) eb.minors = eb.minors.filter(x => x !== n);
+    else if (eb.minors.length < 3) eb.minors.push(n);
+    else showToast("Only 3 primary runes — deselect one first");
+    render();
+  });
+  content.querySelectorAll("[data-stree]").forEach(b => b.onclick = () => { if (eb.secTree !== b.dataset.stree){ eb.secTree = b.dataset.stree; eb.secRune = null; } render(); });
+  content.querySelectorAll("[data-sr]").forEach(b => b.onclick = () => { eb.secRune = decodeURIComponent(b.dataset.sr); render(); });
+  content.querySelectorAll("[data-bdel]").forEach(b => b.onclick = () => {
+    db.collection("builds").doc(b.dataset.bdel).delete().catch(e => { console.error(e); showToast("Delete failed"); });
+  });
+}
+
 // ============ RENDER ============
+
 function champIconHtml(name, borderColor, glow){
   const style = `border-color:${borderColor};${glow ? `box-shadow:0 0 8px ${glow};` : ""}`;
   let h = 0; for (let i=0;i<name.length;i++) h = (h*31 + name.charCodeAt(i)) % 360;
@@ -602,15 +986,20 @@ function champIconHtml(name, borderColor, glow){
 function render(){
   renderContested();
   renderPressure();
-  $("stripZone").style.display = ($("contested").innerHTML || $("pressure").innerHTML) ? "" : "none";
+  renderAutoStrip();
+  renderAutoBanner();
+  $("stripZone").style.display = ($("contested").innerHTML || $("pressure").innerHTML || $("autoMoves").innerHTML) ? "" : "none";
   $("tabs").innerHTML = TABS.map(([k,l]) => `<button class="tab ${k===role?"active":""}" data-r="${k}">${l}</button>`).join("");
   document.querySelectorAll(".tab").forEach(b => b.onclick = () => switchRole(b.dataset.r));
   $("hint").textContent = editMode ? "Tap a champion to move or remove them" : "Tap a champion to vote on their placement";
   $("editBtn").textContent = editMode ? "Done" : "Edit";
   $("editBtn").className = "editBtn" + (editMode ? " on" : "");
-  $("editBtn").style.display = (isOwner && role !== "all") ? "" : "none";
+  $("editBtn").style.display = (isOwner && role !== "all" && !buildsMode) ? "" : "none";
+  $("buildsBtn").style.display = isOwner ? "" : "none";
+  $("buildsBtn").className = "editBtn" + (buildsMode ? " on" : "");
 
   const content = $("content");
+  if (buildsMode && isOwner){ renderBuilds(content); return; }
   const vr = viewRoles();
   if (vr.some(r => !tiersByRole[r])){ content.innerHTML = `<div class="loading">Summoning the tierlist…</div>`; return; }
   const aggs = {}, scales = {};
@@ -643,7 +1032,7 @@ function render(){
       html += `<div class="panel"><div class="pname">${esc(selC)} · ${t} tier${role==="all" ? " · " + ROLE_LABELS[selR] : ""}</div>`;
       if (!editMode){
         if (!user){
-          html += `<div class="signinNote">Sign in with Google to vote<button class="authBtn" id="inBtn2">Sign in</button></div>`;
+          html += `<div class="signinNote">Sign in to vote<button class="authBtn" id="inBtn2">Sign in</button></div>`;
         } else {
           const a = aggs[selR][selC] || {agree:0,up:0,down:0};
           const m = myVotesFor(selR)[selC] || {};
@@ -722,6 +1111,7 @@ function render(){
   for (const id of Object.keys(w)){ const el = $(id); if (el) el.onclick = w[id]; }
 }
 $("editBtn").onclick = () => { editMode = !editMode; selected = null; confirmChampWipe = false; render(); };
+$("buildsBtn").onclick = () => { buildsMode = !buildsMode; editMode = false; selected = null; eb = null; render(); };
 
 // ============ MUSIC ============
 const bgm = $("bgm");
@@ -840,31 +1230,38 @@ $("imgVotesBtn").onclick = () => exportImage("votes");
 
 // ============ COMMENTS ============
 const cmtList = $("cmtList");
+let cmtDocs = null;
 db.collection("comments").orderBy("ts", "desc").limit(50).onSnapshot(snap => {
-  if (snap.empty){ cmtList.innerHTML = `<span class="cmtEmpty">No comments yet — be the first!</span>`; return; }
+  cmtDocs = [];
+  snap.forEach(d => cmtDocs.push({id: d.id, data: d.data()}));
+  renderComments();
+}, err => { console.error("comments:", err); cmtList.innerHTML = `<span class="cmtEmpty">Comments unavailable — check Firestore rules.</span>`; });
+function renderComments(){
+  if (cmtDocs === null) return;
+  if (!cmtDocs.length){ cmtList.innerHTML = `<span class="cmtEmpty">No comments yet — be the first!</span>`; return; }
   let html = "";
-  snap.forEach(d => {
-    const c = d.data();
+  for (const d of cmtDocs){
+    const c = d.data;
     const when = c.ts && c.ts.toDate ? c.ts.toDate().toLocaleDateString(undefined, {day:"numeric", month:"short"}) : "";
     const canDel = user && (isOwner || c.uid === user.uid);
-    html += `<div class="cmt"><span class="cwho">${esc(c.name || "Anonymous")}</span><span class="cwhen">${esc(when)}</span>` +
+    html += `<div class="cmt"><span class="cwho">${esc(nameOf(c.uid, c.name))}</span><span class="cwhen">${esc(when)}</span>` +
       (canDel ? `<button class="cdel" data-del="${d.id}">✕</button>` : "") +
       `<div class="ctext">${esc(c.text || "")}</div></div>`;
-  });
+  }
   cmtList.innerHTML = html;
   cmtList.querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
     db.collection("comments").doc(b.dataset.del).delete().catch(e => { console.error(e); showToast("Delete failed"); });
   });
-}, err => { console.error("comments:", err); cmtList.innerHTML = `<span class="cmtEmpty">Comments unavailable — check Firestore rules.</span>`; });
+}
 async function postComment(){
-  if (!user){ showToast("Sign in with Google to comment"); return; }
+  if (!user){ showToast("Sign in to comment"); return; }
   const text = $("cmtText").value.trim();
   if (!text) return;
   if (text.length > 300){ showToast("Keep it under 300 characters"); return; }
   try {
     await db.collection("comments").add({
       uid: user.uid,
-      name: user.displayName || user.email || "Anonymous",
+      name: myName || user.displayName || user.email || "Anonymous",
       text,
       ts: firebase.firestore.FieldValue.serverTimestamp()
     });
