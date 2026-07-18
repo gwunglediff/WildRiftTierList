@@ -828,7 +828,7 @@ function renderAutoStrip(){
   const el = $("autoMoves");
   if (!autoMovesList.length){ el.innerHTML = ""; return; }
   const keepScroll = el.scrollLeft;
-  el.innerHTML = `<span class="cLabel">TIER CHANGES<br> {Auto-moves only}</span>` + autoMovesList.map(m => {
+  el.innerHTML = `<span class="cLabel">TIER CHANGES<br> {recent auto changes}</span>` + autoMovesList.map(m => {
     const upMove = TIERS.indexOf(m.to) < TIERS.indexOf(m.from);
     const col = upMove ? "#4FA8E8" : "#E85D5D";
     const rt = ROLE_TAG[m.role] || {ch: "?", col: "#888"};
