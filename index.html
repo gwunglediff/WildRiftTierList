@@ -549,7 +549,7 @@ let musicOn = false;
 $("musicBtn").onclick = () => {
   if (musicOn){ bgm.pause(); musicOn = false; $("musicBtn").textContent = "🎵"; return; }
   bgm.play().then(() => { musicOn = true; $("musicBtn").textContent = "🔇"; })
-    .catch(() => showToast("No music yet — upload a music.mp3 file to the GitHub repo"));
+    .catch(() => showToast("Aww dang it :( couldn't find the music!"));
 };
 
 // ============ IMAGE EXPORT ============
