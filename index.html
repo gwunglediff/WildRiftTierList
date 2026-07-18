@@ -81,6 +81,14 @@
   .cmtInput input { flex: 1; min-width: 0; background: #0F1F35; border: 1px solid #2A4166; color: #E8EDF4; border-radius: 8px; padding: 10px; font-size: 13px; }
   .cmtInput button { background: #C8AA6E; border: none; color: #0A1428; font-weight: 600; border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 13px; }
   .cmtEmpty { color: #4A5A72; font-size: 12px; }
+  /* contested strip */
+  .contested { display: flex; gap: 8px; padding: 10px 12px 0; overflow-x: auto; align-items: stretch; }
+  .cLabel { font-size: 11px; color: #C8AA6E; font-family: 'Cinzel', serif; letter-spacing: 1px; align-self: center; flex: 0 0 auto; font-weight: 800; }
+  .cchip { flex: 0 0 auto; display: flex; gap: 8px; align-items: center; background: rgba(19,35,63,0.95); border: 1px solid #2A4166; border-radius: 10px; padding: 6px 10px; cursor: pointer; font-family: inherit; color: #E8EDF4; text-align: left; }
+  .cchip .ci { width: 34px; height: 34px; border-radius: 8px; background-size: cover; background-position: center; border: 2px solid #2A4166; flex-shrink: 0; }
+  .cchip .cn { font-size: 11px; font-weight: 600; display: block; }
+  .cchip .cv { font-size: 10px; color: #AEBBCC; display: block; }
+  .cchip .rtag { display: inline-flex; width: 13px; height: 13px; border-radius: 4px; font-size: 8px; font-weight: 700; align-items: center; justify-content: center; color: #0A1428; vertical-align: 1px; margin-left: 3px; }
 </style>
 </head>
 <body>
@@ -91,6 +99,7 @@
   <div class="sub"> (Patch 7.2a) Wild Rift Meta Tierlist brought to you by GwenDiffYT. <br> Champions are placed within a tier with no particular order. <br> Sign in to google to vote.<br>Please do vote if you want to help shape the tierlist; every vote matters!! <br><br>When you disagree with a placement please vote up or down. <br> If you agree with a placement, please vote "Agree", this is as valuable as up/down votes. <br> When champions have enough up/down votes after a period the tiers will be changed. <br><br>Note: A and A+, along with B and B+ tiers, are similar tiers (little difference). The "+" tiers are only an extension of the tier to subdivide and allow more nuance. <br>Do not treat B+ tier as a completely different tier to B etc.<br><br>I hope this is useful for you, and thank you for visiting :)</div>
   <div class="authRow" id="authRow"></div>
 </div>
+<div class="contested" id="contested"></div>
 <div class="tabs" id="tabs"></div>
 <div class="toolbar">
   <span class="hint" id="hint">Tap a champion to vote on their placement</span>
@@ -174,7 +183,7 @@ let tiersByRole = {};        // role -> normalized tiers (live or archived)
 let epochs = {};             // {role:{cur,max}}
 let voteDocsByRole = {};     // role -> uid -> {champ:{agree,up,down}}
 let selected = null;         // {c, r} or null
-let editMode = false, confirmWipe = null, confirmChampWipe = false;
+let editMode = false, confirmWipe = null, confirmChampWipe = false, confirmEraDel = false, confirmCopy = false;
 let undoStack = [];
 let unsubTiersByRole = {}, tiersSubKey = {};
 let unsubVotesByRole = {}, votesSubKey = {};
@@ -185,7 +194,13 @@ const $ = id => document.getElementById(id);
 const toastEl = $("toast");
 let toastTimer = null;
 function showToast(msg){ toastEl.textContent = msg; toastEl.style.display = "block"; clearTimeout(toastTimer); toastTimer = setTimeout(()=>toastEl.style.display="none", 2600); }
-const eraOf = r => { const e = (epochs && epochs[r]) || {cur:0, max:0}; return {cur: e.cur||0, max: Math.max(e.cur||0, e.max||0)}; };
+const eraOf = r => {
+  const e = (epochs && epochs[r]) || {};
+  const cur = e.cur || 0, max = Math.max(cur, e.max || 0);
+  const del = Array.isArray(e.del) ? e.del : [];
+  return {cur, max, del};
+};
+const aliveEras = r => { const e = eraOf(r); const out = []; for (let i = 0; i <= e.max; i++) if (!e.del.includes(i)) out.push(i); return out; };
 const eraId = r => `${r}_e${eraOf(r).cur}`;
 const viewRoles = () => role === "all" ? ROLE_KEYS : [role];
 const isPastEra = r => eraOf(r).cur < eraOf(r).max;
@@ -261,8 +276,8 @@ function subscribeVotes(r){
 function refreshSubs(){
   const needed = viewRoles();
   for (const r of Object.keys(unsubTiersByRole)) if (!needed.includes(r)){ unsubTiersByRole[r](); delete unsubTiersByRole[r]; delete tiersSubKey[r]; }
-  for (const r of Object.keys(unsubVotesByRole)) if (!needed.includes(r)){ unsubVotesByRole[r](); delete unsubVotesByRole[r]; delete votesSubKey[r]; }
-  for (const r of needed){ subscribeTiers(r); subscribeVotes(r); }
+  for (const r of needed) subscribeTiers(r);
+  for (const r of ROLE_KEYS) subscribeVotes(r); // all lanes: powers the contested strip
 }
 function listenMeta(){
   if (unsubMeta) unsubMeta();
@@ -272,7 +287,7 @@ function listenMeta(){
   }, err => console.error("meta listener:", err));
 }
 function switchRole(r){
-  role = r; selected = null; confirmWipe = null; confirmChampWipe = false;
+  role = r; selected = null; confirmWipe = null; confirmChampWipe = false; confirmEraDel = false; confirmCopy = false;
   if (role === "all") editMode = false;
   refreshSubs(); render();
 }
@@ -290,20 +305,24 @@ async function castVote(champ, r, type){
 }
 async function agreeAllUnvoted(){
   if (!user){ showToast("Sign in first"); return; }
-  if (role === "all"){ showToast("Open a specific lane tab first"); return; }
-  const t = tiersByRole[role]; if (!t) return;
-  const mine = myVotesFor(role);
-  const payload = {};
-  for (const x of TIERS) for (const c of t[x]){
-    const m = mine[c] || {};
-    if (!m.agree && !m.up && !m.down) payload[c] = {agree:true, up:false, down:false};
+  const targets = viewRoles();
+  if (targets.some(r => !tiersByRole[r])){ showToast("Still loading — try again in a second"); return; }
+  let total = 0;
+  const writes = [];
+  for (const r of targets){
+    const t = tiersByRole[r];
+    const mine = myVotesFor(r);
+    const payload = {};
+    for (const x of TIERS) for (const c of t[x]){
+      const m = mine[c] || {};
+      if (!m.agree && !m.up && !m.down) payload[c] = {agree:true, up:false, down:false};
+    }
+    const n = Object.keys(payload).length;
+    if (n){ total += n; writes.push(db.collection("votes").doc(eraId(r)).collection("users").doc(user.uid).set(payload, {merge:true})); }
   }
-  const n = Object.keys(payload).length;
-  if (!n){ showToast("Nothing left unvoted in this lane"); return; }
-  try {
-    await db.collection("votes").doc(eraId(role)).collection("users").doc(user.uid).set(payload, {merge:true});
-    showToast(`Agreed to ${n} placements`);
-  } catch(e){ console.error(e); showToast("Failed — try again"); }
+  if (!total){ showToast("Nothing left unvoted here"); return; }
+  try { await Promise.all(writes); showToast(`Agreed to ${total} placements`); }
+  catch(e){ console.error(e); showToast("Failed — try again"); }
 }
 function pushUndo(){ undoStack.push({ role, snapshot: JSON.parse(JSON.stringify(tiersByRole[role])) }); if (undoStack.length > 10) undoStack.shift(); }
 async function saveTiers(r, t){ try { await db.collection("tiers").doc(r).set(t); return true; } catch(e){ console.error(e); showToast("Save failed"); return false; } }
@@ -352,7 +371,7 @@ async function wipeVotes(scope){
         await db.collection("tiersArchive").doc(`${r}_e${e.cur}`).set(data);
       }
       const nm = e.max + 1;
-      eps[r] = {cur: nm, max: nm};
+      eps[r] = {cur: nm, max: nm, del: e.del};
     }
   } catch(e){ console.error(e); showToast("Archiving failed — era not changed"); return; }
   confirmWipe = null;
@@ -361,7 +380,10 @@ async function wipeVotes(scope){
 async function shiftEra(delta){
   const eps = JSON.parse(JSON.stringify(epochs));
   const e = eraOf(role);
-  const next = Math.min(e.max, Math.max(0, e.cur + delta));
+  const alive = aliveEras(role);
+  const i = alive.indexOf(e.cur);
+  const ni = Math.min(alive.length - 1, Math.max(0, (i < 0 ? alive.length - 1 : i) + delta));
+  const next = alive[ni];
   if (next === e.cur) return;
   // moving away from the live era: snapshot current placements so we can come back to them
   try {
@@ -371,8 +393,43 @@ async function shiftEra(delta){
       await db.collection("tiersArchive").doc(`${role}_e${e.cur}`).set(data);
     }
   } catch(err){ console.error(err); }
-  eps[role] = {cur: next, max: e.max};
-  if (await saveEpochs(eps)) showToast(`Era ${next+1} is now live for ${ROLE_LABELS[role]}`);
+  eps[role] = {cur: next, max: e.max, del: e.del};
+  if (await saveEpochs(eps)) showToast(`Era switched for ${ROLE_LABELS[role]}`);
+}
+async function copyPrevVotes(){
+  const e = eraOf(role);
+  const alive = aliveEras(role);
+  const i = alive.indexOf(e.cur);
+  if (i <= 0){ confirmCopy = false; showToast("No earlier era to copy from"); render(); return; }
+  const src = alive[i-1];
+  try {
+    const snap = await db.collection("votes").doc(`${role}_e${src}`).collection("users").get();
+    if (snap.empty){ confirmCopy = false; showToast("Previous era has no votes"); render(); return; }
+    await Promise.all(snap.docs.map(d =>
+      db.collection("votes").doc(eraId(role)).collection("users").doc(d.id).set(d.data(), {merge:true})
+    ));
+    showToast(`Copied votes from ${snap.size} voter${snap.size===1?"":"s"}`);
+  } catch(err){ console.error(err); showToast("Copy failed — check Firestore rules"); }
+  confirmCopy = false; render();
+}
+async function deleteEra(){
+  const e = eraOf(role);
+  if (!isPastEra(role)){ confirmEraDel = false; showToast("Can't delete the live era"); render(); return; }
+  const p = e.cur;
+  try {
+    const snap = await db.collection("votes").doc(`${role}_e${p}`).collection("users").get();
+    await Promise.all(snap.docs.map(d => d.ref.delete()));
+    await db.collection("tiersArchive").doc(`${role}_e${p}`).delete().catch(()=>{});
+    const eps = JSON.parse(JSON.stringify(epochs));
+    const del = [...e.del, p];
+    const alive = [];
+    for (let k = 0; k <= e.max; k++) if (!del.includes(k)) alive.push(k);
+    const next = alive.find(k => k > p);
+    const landing = next !== undefined ? next : (alive.filter(k => k < p).pop() ?? e.max);
+    eps[role] = {cur: landing, max: e.max, del};
+    if (await saveEpochs(eps)) showToast(`Era deleted (${snap.size} vote doc${snap.size===1?"":"s"} purged)`);
+  } catch(err){ console.error(err); showToast("Delete failed — check Firestore rules"); }
+  confirmEraDel = false; render();
 }
 async function wipeChampVotes(champ){
   const docs = voteDocsByRole[role] || {};
@@ -420,6 +477,33 @@ function renderAuth(){
   }
 }
 
+// ============ CONTESTED STRIP ============
+function renderContested(){
+  const items = [];
+  for (const r of ROLE_KEYS){
+    const A = aggFor(r);
+    for (const c of Object.keys(A)){
+      const sc = A[c].up + A[c].down;
+      if (sc > 0) items.push({c, r, u: A[c].up, d: A[c].down, sc});
+    }
+  }
+  items.sort((a,b) => b.sc - a.sc || (b.u + b.d) - (a.u + a.d));
+  const top = items.slice(0, 5);
+  const el = $("contested");
+  if (!top.length){ el.innerHTML = ""; return; }
+  el.innerHTML = `<span class="cLabel">🔥 CONTESTED</span>` + top.map(it =>
+    `<button class="cchip" data-hc="${encodeURIComponent(it.c)}" data-hr="${it.r}">` +
+    `<span class="ci" style="background-image:url('${iconUrl(it.c)}'),url('${iconUrl2(it.c)}')"></span>` +
+    `<span><span class="cn">${esc(it.c)}<span class="rtag" style="background:${ROLE_TAG[it.r].col}">${ROLE_TAG[it.r].ch}</span></span>` +
+    `<span class="cv">▲${it.u} ▼${it.d}</span></span></button>`
+  ).join("");
+  el.querySelectorAll(".cchip").forEach(b => b.onclick = () => {
+    switchRole(b.dataset.hr);
+    selected = {c: decodeURIComponent(b.dataset.hc), r: b.dataset.hr};
+    render();
+  });
+}
+
 // ============ RENDER ============
 function champIconHtml(name, borderColor, glow){
   const style = `border-color:${borderColor};${glow ? `box-shadow:0 0 8px ${glow};` : ""}`;
@@ -428,6 +512,7 @@ function champIconHtml(name, borderColor, glow){
   return `<div class="champIcon" style="${style}background-image:url('${iconUrl(name)}'),url('${iconUrl2(name)}'),${grad}"><span class="ini" data-n="${esc(name)}"></span></div>`;
 }
 function render(){
+  renderContested();
   $("tabs").innerHTML = TABS.map(([k,l]) => `<button class="tab ${k===role?"active":""}" data-r="${k}">${l}</button>`).join("");
   document.querySelectorAll(".tab").forEach(b => b.onclick = () => switchRole(b.dataset.r));
   $("hint").textContent = editMode ? "Tap a champion to move or remove them" : "Tap a champion to vote on their placement";
@@ -500,11 +585,15 @@ function render(){
     }
     html += `<div class="panel"><div class="pname">Owner tools · ${ROLE_LABELS[role]}</div>
       <div class="statsLine">${nn} champions voted on · ✓ ${a} agrees · ▲ ${u} up · ▼ ${d} down</div>
-      <div class="statsLine">Vote era ${e.cur+1} of ${e.max+1}${isPastEra(role) ? " · viewing a past era — new votes land here!" : ""}</div>
+      <div class="statsLine">Vote era ${aliveEras(role).indexOf(e.cur)+1} of ${aliveEras(role).length}${isPastEra(role) ? " · viewing a past era — new votes land here!" : ""}</div>
       <div class="voteRow" style="margin-bottom:8px">
-        <button class="vbtn" id="prevEra" ${e.cur<=0?"disabled":""}>◀ Prev era</button>
-        <button class="vbtn" id="nextEra" ${e.cur>=e.max?"disabled":""}>Next era ▶</button>
+        <button class="vbtn" id="prevEra" ${aliveEras(role).indexOf(e.cur)<=0?"disabled":""}>◀ Prev era</button>
+        <button class="vbtn" id="nextEra" ${aliveEras(role).indexOf(e.cur)>=aliveEras(role).length-1?"disabled":""}>Next era ▶</button>
         <button class="vbtn" id="undoBtn" ${(!undoStack.length || isPastEra(role))?"disabled":""}>↩ Undo tier edit</button>
+      </div>
+      <div class="voteRow" style="margin-bottom:8px">
+        <button class="vbtn" id="copyPrev" ${aliveEras(role).indexOf(e.cur)<=0?"disabled":""}>${confirmCopy ? "Tap again: copy votes" : "⬇ Copy votes from prev era"}</button>
+        <button class="vbtn wipe" id="delEra" ${!isPastEra(role)?"disabled":""}>${confirmEraDel ? "Tap again: DELETE era" : "🗑 Delete this era"}</button>
       </div>
       <div class="voteRow">
         <button class="vbtn wipe" id="wipeRole">${confirmWipe==="role"?"Tap again to confirm":"New era: this role"}</button>
@@ -534,6 +623,8 @@ function render(){
   });
   const w = {"addBtn":addChamp, "resetBtn":resetRole, "undoBtn":undoTierEdit,
     "prevEra":()=>shiftEra(-1), "nextEra":()=>shiftEra(1),
+    "copyPrev":()=>{ confirmCopy ? copyPrevVotes() : (confirmCopy=true, render()); },
+    "delEra":()=>{ confirmEraDel ? deleteEra() : (confirmEraDel=true, render()); },
     "wipeRole":()=>{ confirmWipe==="role" ? wipeVotes("role") : (confirmWipe="role", render()); },
     "wipeAll":()=>{ confirmWipe==="all" ? wipeVotes("all") : (confirmWipe="all", render()); },
     "wipeCancel":()=>{ confirmWipe=null; render(); },
@@ -545,12 +636,27 @@ $("editBtn").onclick = () => { editMode = !editMode; selected = null; confirmCha
 // ============ MUSIC ============
 const bgm = $("bgm");
 bgm.volume = 0.35;
-let musicOn = true;
+let musicOn = false;
+let userTouchedMusic = false;
+function setMusicIcon(){ $("musicBtn").textContent = musicOn ? "🎵" : "🔇"; }
+function tryAutoStart(){
+  if (userTouchedMusic || musicOn) return;
+  bgm.play().then(() => { musicOn = true; setMusicIcon(); }).catch(() => {}); // silent: browsers often block autoplay until a tap
+}
+tryAutoStart();
+const musicGesture = ev => {
+  if (ev.target && ev.target.closest && ev.target.closest("#musicBtn")) return;
+  tryAutoStart();
+  document.removeEventListener("pointerdown", musicGesture);
+};
+document.addEventListener("pointerdown", musicGesture);
 $("musicBtn").onclick = () => {
-  if (musicOn){ bgm.pause(); musicOn = false; $("musicBtn").textContent = "🔇"; return; }
-  bgm.play().then(() => { musicOn = true; $("musicBtn").textContent = "🎵"; })
+  userTouchedMusic = true;
+  if (musicOn){ bgm.pause(); musicOn = false; setMusicIcon(); return; }
+  bgm.play().then(() => { musicOn = true; setMusicIcon(); })
     .catch(() => showToast("Aww dang it :( couldn't find the music!"));
 };
+setMusicIcon();
 
 // ============ IMAGE EXPORT ============
 function loadImgCors(src){
