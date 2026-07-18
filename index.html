@@ -533,7 +533,7 @@ function renderContested(){
   const el = $("contested");
   if (!items.length){ el.innerHTML = ""; return; }
   const keepScroll = el.scrollLeft;
-  el.innerHTML = `<span class="cLabel">CONTESTED RATING<br> {how split people's votes are}</span>` + items.map(it => {
+  el.innerHTML = `<span class="cLabel">CONTESTED RATING<br> {vote split}</span>` + items.map(it => {
     const n = it.u - it.d;
     const hc = heatColor(n, scalesC[it.r]) || "#2A4166";
     return `<button class="cchip" data-hc="${encodeURIComponent(it.c)}" data-hr="${it.r}">` +
@@ -574,7 +574,7 @@ function renderPressure(){
   if (!items.length){ el.innerHTML = ""; return; }
   items.sort((x, y) => y.score - x.score || (y.u + y.d + y.a) - (x.u + x.d + x.a));
   const keepScroll = el.scrollLeft;
-  el.innerHTML = `<span class="cLabel">MOVE PRESSURE<br> {how much the vote push is?}</span>` + items.map(it => {
+  el.innerHTML = `<span class="cLabel">MOVE PRESSURE<br> {vote push}</span>` + items.map(it => {
     const hc = heatColor(it.net, scalesC[it.r]) || "#2A4166";
     const dirCol = it.net > 0 ? "#4FA8E8" : "#E85D5D";
     return `<button class="cchip" data-hc="${encodeURIComponent(it.c)}" data-hr="${it.r}">` +
