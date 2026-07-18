@@ -8,21 +8,31 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; }
-  body { min-height: 100vh; background: #0A1428; color: #E8EDF4; font-family: 'Inter', system-ui, sans-serif; padding-bottom: 60px; }
-  .header { padding: 22px 16px 14px; text-align: center; background: linear-gradient(180deg, #0E1B33 0%, #0A1428 100%); border-bottom: 1px solid #1E3252; }
+  body { min-height: 100vh; background: #0A1428; color: #E8EDF4; font-family: 'Inter', system-ui, sans-serif; padding-bottom: 40px; }
+  /* ---- hextech background ---- */
+  .bgfx { position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97' viewBox='0 0 56 97'%3E%3Cg fill='none' stroke='%23152A4A' stroke-width='1' opacity='0.55'%3E%3Cpath d='M28 1 52 15 52 43 28 57 4 43 4 15z'/%3E%3Cpath d='M28 49 52 63 52 91 28 105 4 91 4 63z'/%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5; }
+  .bgfx2 { position: fixed; inset: -50% 0; z-index: -1; pointer-events: none; opacity: 0.5;
+    background: linear-gradient(115deg, transparent 42%, rgba(10,200,185,0.05) 46%, rgba(200,170,110,0.07) 50%, rgba(10,200,185,0.05) 54%, transparent 58%);
+    animation: sheen 26s linear infinite; }
+  @keyframes sheen { 0% { transform: translateY(-22%); } 100% { transform: translateY(22%); } }
+  @media (prefers-reduced-motion: reduce) { .bgfx2 { animation: none; } }
+  .header { padding: 22px 16px 14px; text-align: center; background: linear-gradient(180deg, #0E1B33 0%, rgba(10,20,40,0.6) 100%); border-bottom: 1px solid #1E3252; }
   .header h1 { font-family: 'Cinzel', serif; font-weight: 800; font-size: 22px; letter-spacing: 2px; color: #C8AA6E; text-transform: uppercase; }
   .header .sub { font-size: 12px; color: #7B8BA3; margin-top: 4px; }
-  .authRow { margin-top: 10px; }
+  .authRow { margin-top: 10px; display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; }
   .authBtn { background: #13233F; border: 1px solid #2A4166; color: #E8EDF4; padding: 7px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
-  .authRow .who { font-size: 11px; color: #7B8BA3; margin-right: 8px; }
-  .tabs { display: flex; gap: 6px; padding: 12px 12px 0; overflow-x: auto; position: sticky; top: 0; background: #0A1428; z-index: 10; border-bottom: 1px solid #1E3252; }
-  .tab { flex: 1; min-width: 70px; padding: 10px 6px; background: none; border: none; border-bottom: 3px solid transparent; color: #7B8BA3; font-family: 'Cinzel', serif; font-weight: 600; font-size: 13px; letter-spacing: 1px; cursor: pointer; }
+  .authBtn.gold { color: #C8AA6E; }
+  .authRow .who { font-size: 11px; color: #7B8BA3; }
+  .tabs { display: flex; gap: 6px; padding: 12px 12px 0; overflow-x: auto; position: sticky; top: 0; background: rgba(10,20,40,0.96); z-index: 10; border-bottom: 1px solid #1E3252; }
+  .tab { flex: 1; min-width: 58px; padding: 10px 4px; background: none; border: none; border-bottom: 3px solid transparent; color: #7B8BA3; font-family: 'Cinzel', serif; font-weight: 600; font-size: 13px; letter-spacing: 1px; cursor: pointer; }
   .tab.active { color: #C8AA6E; border-bottom-color: #C8AA6E; }
-  .toolbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px 0; gap: 8px; }
+  .toolbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px 0; gap: 8px; flex-wrap: wrap; }
   .toolbar .hint { font-size: 11px; color: #7B8BA3; }
   .editBtn { background: #13233F; border: 1px solid #2A4166; color: #C8AA6E; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; }
   .editBtn.on { background: #C8AA6E; color: #0A1428; border-color: #C8AA6E; }
-  .tierRow { display: flex; margin: 12px 12px 0; border-radius: 10px; overflow: hidden; background: #0F1F35; }
+  .tierRow { display: flex; margin: 12px 12px 0; border-radius: 10px; overflow: hidden; background: rgba(15,31,53,0.92); }
   .tierLabel { width: 52px; min-height: 76px; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-weight: 800; font-size: 20px; flex-shrink: 0; }
   .champGrid { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px; flex: 1; align-content: flex-start; }
   .empty { color: #4A5A72; font-size: 12px; align-self: center; padding: 4px; }
@@ -31,10 +41,11 @@
   .champIcon { width: 48px; height: 48px; border-radius: 10px; border: 2px solid #2A4166; display: flex; align-items: center; justify-content: center; margin: 0 auto; background-size: cover; background-position: center; color: #EBD9AE; font-family: 'Cinzel', serif; font-weight: 800; font-size: 16px; text-shadow: 0 1px 3px rgba(0,0,0,0.55); }
   .chip.sel .champIcon { border-color: #C8AA6E !important; }
   .badge { position: absolute; top: -5px; right: 0; min-width: 17px; height: 17px; border-radius: 9px; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; padding: 0 3px; color: #0A1428; }
-  .badge.pos { background: #35D0A0; }
+  .badge.pos { background: #4FA8E8; color: #06121f; }
   .badge.neg { background: #E85D5D; color: #fff; }
   .badge.ag { left: 0; right: auto; background: #17614B; color: #7FEBC8; border: 1px solid #35D0A0; }
-  .panel { margin: 10px 12px 0; background: #13233F; border: 1px solid #2A4166; border-radius: 12px; padding: 14px; }
+  .roleTag { position: absolute; top: 33px; right: 1px; width: 15px; height: 15px; border-radius: 5px; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; color: #0A1428; border: 1px solid rgba(10,20,40,0.6); }
+  .panel { margin: 10px 12px 0; background: rgba(19,35,63,0.95); border: 1px solid #2A4166; border-radius: 12px; padding: 14px; }
   .panel .pname { font-family: 'Cinzel', serif; font-weight: 600; color: #C8AA6E; font-size: 15px; margin-bottom: 10px; }
   .voteRow { display: flex; gap: 8px; flex-wrap: wrap; }
   .vbtn { flex: 1; min-width: 90px; padding: 10px 8px; border-radius: 10px; border: 1px solid #2A4166; background: #0F1F35; color: #E8EDF4; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
@@ -42,7 +53,7 @@
   .vbtn:disabled { opacity: 0.35; cursor: default; }
   .vbtn .cnt { display: block; font-size: 16px; margin-top: 2px; }
   .vbtn.agree .cnt { color: #35D0A0; }
-  .vbtn.up .cnt { color: #0AC8B9; }
+  .vbtn.up .cnt { color: #4FA8E8; }
   .vbtn.down .cnt { color: #E85D5D; }
   .vbtn.wipe { border-color: #7A3B3B; color: #E88; }
   .tierPick { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
@@ -58,9 +69,23 @@
   .loading { text-align: center; padding: 50px 0; color: #7B8BA3; font-size: 13px; }
   .signinNote { font-size: 12px; color: #AEBBCC; }
   .signinNote button { margin-left: 8px; }
+  /* comments */
+  .cmtSec { margin: 22px 12px 0; background: rgba(19,35,63,0.95); border: 1px solid #2A4166; border-radius: 12px; padding: 14px; }
+  .cmtList { max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; }
+  .cmt { background: #0F1F35; border: 1px solid #22375A; border-radius: 10px; padding: 9px 12px; position: relative; }
+  .cmt .cwho { font-size: 11px; color: #C8AA6E; font-weight: 600; }
+  .cmt .cwhen { font-size: 10px; color: #5A6B85; margin-left: 6px; font-weight: 400; }
+  .cmt .ctext { font-size: 13px; color: #D7DFEA; margin-top: 3px; word-break: break-word; white-space: pre-wrap; }
+  .cmt .cdel { position: absolute; top: 6px; right: 8px; background: none; border: none; color: #7B8BA3; cursor: pointer; font-size: 13px; }
+  .cmtInput { display: flex; gap: 8px; }
+  .cmtInput input { flex: 1; min-width: 0; background: #0F1F35; border: 1px solid #2A4166; color: #E8EDF4; border-radius: 8px; padding: 10px; font-size: 13px; }
+  .cmtInput button { background: #C8AA6E; border: none; color: #0A1428; font-weight: 600; border-radius: 8px; padding: 10px 16px; cursor: pointer; font-size: 13px; }
+  .cmtEmpty { color: #4A5A72; font-size: 12px; }
 </style>
 </head>
 <body>
+<div class="bgfx"></div>
+<div class="bgfx2"></div>
 <div class="header">
   <h1>Wild Rift Meta</h1>
   <div class="sub"> (Patch 7.2a) Wild Rift Meta Tierlist brought to you by GwenDiffYT. <br> Champions are placed within a tier with no particular order. <br> Sign in to google to vote.<br>Please do vote if you want to help shape the tierlist; every vote matters!! <br><br>When you disagree with a placement please vote up or down. <br> If you agree with a placement, please vote "Agree", this is as valuable as up/down votes. <br> When champions have enough up/down votes after a period the tiers will be changed. <br><br>Note: A and A+, along with B and B+ tiers, are similar tiers (little difference). The "+" tiers are only an extension of the tier to subdivide and allow more nuance. <br>Do not treat B+ tier as a completely different tier to B etc.<br><br>I hope this is useful for you, and thank you for visiting :)</div>
@@ -69,13 +94,24 @@
 <div class="tabs" id="tabs"></div>
 <div class="toolbar">
   <span class="hint" id="hint">Tap a champion to vote on their placement</span>
-  <div style="display:flex;gap:8px;flex-shrink:0">
-    <button class="editBtn" id="imgBtn">&#128248; Image</button>
+  <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap">
+    <button class="editBtn" id="musicBtn">&#127925;</button>
+    <button class="editBtn" id="imgCleanBtn">&#128248; Clean</button>
+    <button class="editBtn" id="imgVotesBtn">&#128202; Votes</button>
     <button class="editBtn" id="editBtn" style="display:none">Edit</button>
   </div>
 </div>
 <div id="content"><div class="loading">Summoning the tierlist…</div></div>
+<div class="cmtSec">
+  <div class="pname" style="font-family:'Cinzel',serif;font-weight:600;color:#C8AA6E;font-size:15px;margin-bottom:10px">Comments</div>
+  <div class="cmtList" id="cmtList"><span class="cmtEmpty">Loading comments…</span></div>
+  <div class="cmtInput">
+    <input id="cmtText" maxlength="300" placeholder="Leave a note… (sign in to post)">
+    <button id="cmtPost">Post</button>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
+<audio id="bgm" loop preload="none" src="music.mp3"></audio>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -108,10 +144,19 @@ const ICON_ID = {
 const ddId = n => ICON_ID[n] || n.replace(/[^A-Za-z]/g, "");
 const iconUrl = n => `https://ddragon.leagueoflegends.com/cdn/${DD_VER}/img/champion/${ddId(n)}.png`;
 const iconUrl2 = n => `https://cdn.communitydragon.org/latest/champion/${ddId(n)}/square`;
-const ROLES = [["baron","Baron"],["jungle","Jungle"],["mid","Mid"],["duo","Dragon"],["support","Support"]];
+const ROLE_KEYS = ["baron","jungle","mid","duo","support"];
+const ROLE_LABELS = {baron:"Baron", jungle:"Jungle", mid:"Mid", duo:"Dragon", support:"Support"};
+const ROLE_TAG = {baron:{ch:"B", col:"#D9A441"}, jungle:{ch:"J", col:"#4CC08A"}, mid:{ch:"M", col:"#5A9BD8"}, duo:{ch:"D", col:"#E8895D"}, support:{ch:"S", col:"#C77DD8"}};
+const TABS = [["all","All"],["baron","Baron"],["jungle","Jungle"],["mid","Mid"],["duo","Dragon"],["support","Support"]];
 const TIERS = ["S+","S","A+","A","B+","B","C","D"];
 const TIER_COLORS = {"S+":"#FFB93B","S":"#0AC8B9","A+":"#4FB3E8","A":"#3C9BD8","B+":"#9BB0C6","B":"#8AA0B8","C":"#6B7D93","D":"#566578"};
-const heatColor = n => { if (!n) return null; const t = Math.min(Math.abs(n),6)/6; const h = n>0 ? 210-70*t : 210*(1-t); return `hsl(${h}, 75%, 55%)`; };
+// vote heat: blue = upvoted, red = downvoted, purple middle; scales with the lane's hottest champion
+const heatColor = (n, scale) => {
+  if (!n) return null;
+  const t = Math.max(-1, Math.min(1, n / scale)); // +1 full blue, -1 full red
+  const hue = 290 - 70 * t; // 220 blue .. 290 purple .. 360 red
+  return `hsl(${hue}, 78%, 58%)`;
+};
 const SEED = {
   baron: {"S+":["K'Sante","Ambessa"],"S":["Wukong","Poppy","Malphite","Ornn","Sion","Aatrox","Renekton","Gwen","Fiora","Rumble","Mordekaiser","Garen"],"A":["Jax","Camille","Irelia","Darius","Nasus","Teemo","Warwick","Singed","Jayce","Shen","Volibear","Ryze","Sett","Riven","Olaf","Gnar"],"B":["Dr. Mundo","Kayle","Urgot","Yasuo","Yone","Akali","Kennen","Tryndamere"]},
   jungle: {"S+":["Nidalee","Viego","Taliyah"],"S":["Lee Sin","Rammus","Amumu","Shyvana","Vi","Xin Zhao","Warwick","Hecarim","Evelynn","Aatrox","Lillia","Ambessa","Kha'Zix","Nunu & Willump"],"A":["Riven","Wukong","Talon","Fiddlesticks","Pantheon","Kayn","Zed","Nocturne","Olaf","Kindred","Gragas","Master Yi","Jarvan IV"],"B":["Yone","Nilah","Tryndamere","Volibear","Graves","Fizz","Ekko","Rengar","Diana","Skarner"]},
@@ -120,31 +165,37 @@ const SEED = {
   support: {"S+":["Nami","Braum","Zilean"],"S":["Thresh","Sona","Nautilus","Galio","Ornn","Milio","Lulu","Senna","Leona","Maokai","Rell"],"A":["Pyke","Seraphine","Soraka","Blitzcrank","Alistar","Rakan","Janna","Bard","Karma","Zyra"],"B":["Morgana","Lux","Brand"],"C":["Swain","Yuumi"]}
 };
 const normalizeTiers = t => { const o = {}; for (const x of TIERS) o[x] = Array.isArray(t && t[x]) ? t[x] : []; return o; };
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 
 // ============ STATE ============
 let user = null, isOwner = false;
-let role = "baron";
-let tiers = null;            // normalized
+let role = "all";
+let tiersByRole = {};        // role -> normalized tiers (live or archived)
 let epochs = {};             // {role:{cur,max}}
-let voteDocs = {};           // uid -> {champ:{agree,up,down}} for current role+era
-let myVotes = {};            // my own doc content
-let selected = null, editMode = false, confirmWipe = null;
+let voteDocsByRole = {};     // role -> uid -> {champ:{agree,up,down}}
+let selected = null;         // {c, r} or null
+let editMode = false, confirmWipe = null, confirmChampWipe = false;
 let undoStack = [];
-let unsubTiers = null, unsubVotes = null, unsubMeta = null;
+let unsubTiersByRole = {}, tiersSubKey = {};
+let unsubVotesByRole = {}, votesSubKey = {};
+let unsubMeta = null;
+let archMissing = {};        // role -> true when a past era has no placement archive
 
 const $ = id => document.getElementById(id);
 const toastEl = $("toast");
 let toastTimer = null;
 function showToast(msg){ toastEl.textContent = msg; toastEl.style.display = "block"; clearTimeout(toastTimer); toastTimer = setTimeout(()=>toastEl.style.display="none", 2600); }
-const eraOf = r => (epochs && epochs[r]) ? epochs[r] : {cur:0, max:0};
+const eraOf = r => { const e = (epochs && epochs[r]) || {cur:0, max:0}; return {cur: e.cur||0, max: Math.max(e.cur||0, e.max||0)}; };
 const eraId = r => `${r}_e${eraOf(r).cur}`;
-const roleLabel = () => ROLES.find(x=>x[0]===role)[1];
+const viewRoles = () => role === "all" ? ROLE_KEYS : [role];
+const isPastEra = r => eraOf(r).cur < eraOf(r).max;
 
 // ============ AGGREGATION ============
-function aggVotes(){
+function aggFor(r){
   const agg = {};
-  for (const uid of Object.keys(voteDocs)){
-    const doc = voteDocs[uid] || {};
+  const docs = voteDocsByRole[r] || {};
+  for (const uid of Object.keys(docs)){
+    const doc = docs[uid] || {};
     for (const champ of Object.keys(doc)){
       const v = doc[champ] || {};
       if (!agg[champ]) agg[champ] = {agree:0, up:0, down:0};
@@ -155,103 +206,186 @@ function aggVotes(){
   }
   return agg;
 }
-const net = (agg, c) => agg[c] ? (agg[c].up - agg[c].down) : 0;
+const netOf = (agg, c) => agg[c] ? (agg[c].up - agg[c].down) : 0;
+function heatScale(agg, t){ // scale = the lane's hottest |net|, floor of 3 so early votes stay purple-ish
+  let m = 0;
+  for (const x of TIERS) for (const c of (t[x]||[])) m = Math.max(m, Math.abs(netOf(agg, c)));
+  return Math.max(3, m);
+}
+const myVotesFor = r => (user && voteDocsByRole[r] && voteDocsByRole[r][user.uid]) || {};
 
-// ============ FIRESTORE LISTENERS ============
-function listenMeta(){
-  if (unsubMeta) unsubMeta();
-  unsubMeta = db.collection("meta").doc("epochs").onSnapshot(snap => {
-    const newEpochs = (snap.exists && snap.data().epochs) || {};
-    const changed = JSON.stringify(newEpochs) !== JSON.stringify(epochs);
-    epochs = newEpochs;
-    if (changed) listenVotes();
-    render();
-  }, err => console.error("meta listener:", err));
+// ============ FIRESTORE SUBSCRIPTIONS ============
+function subscribeTiers(r){
+  const e = eraOf(r);
+  const key = isPastEra(r) ? `arch_${r}_e${e.cur}` : `live_${r}`;
+  if (tiersSubKey[r] === key) return;
+  if (unsubTiersByRole[r]){ unsubTiersByRole[r](); delete unsubTiersByRole[r]; }
+  tiersSubKey[r] = key;
+  tiersByRole[r] = null; archMissing[r] = false; render();
+  if (isPastEra(r)){
+    db.collection("tiersArchive").doc(`${r}_e${e.cur}`).get().then(snap => {
+      if (tiersSubKey[r] !== key) return; // era moved on while loading
+      if (snap.exists){ tiersByRole[r] = normalizeTiers(snap.data()); render(); }
+      else {
+        archMissing[r] = true;
+        db.collection("tiers").doc(r).get().then(s2 => {
+          if (tiersSubKey[r] !== key) return;
+          tiersByRole[r] = normalizeTiers(s2.exists ? s2.data() : SEED[r]); render();
+        });
+      }
+    }).catch(err => { console.error("archive load:", err); tiersByRole[r] = normalizeTiers(SEED[r]); render(); });
+  } else {
+    unsubTiersByRole[r] = db.collection("tiers").doc(r).onSnapshot(snap => {
+      if (snap.exists) tiersByRole[r] = normalizeTiers(snap.data());
+      else {
+        tiersByRole[r] = normalizeTiers(SEED[r]);
+        if (isOwner) db.collection("tiers").doc(r).set(tiersByRole[r]).catch(e2 => console.error(e2));
+      }
+      render();
+    }, err => { console.error("tiers listener:", err); tiersByRole[r] = normalizeTiers(SEED[r]); render(); });
+  }
 }
-function listenTiers(){
-  if (unsubTiers) unsubTiers();
-  tiers = null; render();
-  unsubTiers = db.collection("tiers").doc(role).onSnapshot(snap => {
-    if (snap.exists) tiers = normalizeTiers(snap.data());
-    else {
-      tiers = normalizeTiers(SEED[role]);
-      if (isOwner) db.collection("tiers").doc(role).set(tiers).catch(e => console.error(e));
-    }
-    render();
-  }, err => { console.error("tiers listener:", err); tiers = normalizeTiers(SEED[role]); render(); });
-}
-function listenVotes(){
-  if (unsubVotes) unsubVotes();
-  voteDocs = {}; myVotes = {};
-  unsubVotes = db.collection("votes").doc(eraId(role)).collection("users").onSnapshot(snap => {
-    voteDocs = {};
-    snap.forEach(d => { voteDocs[d.id] = d.data(); });
-    myVotes = (user && voteDocs[user.uid]) || {};
+function subscribeVotes(r){
+  const key = eraId(r);
+  if (votesSubKey[r] === key) return;
+  if (unsubVotesByRole[r]){ unsubVotesByRole[r](); delete unsubVotesByRole[r]; }
+  votesSubKey[r] = key;
+  voteDocsByRole[r] = {};
+  unsubVotesByRole[r] = db.collection("votes").doc(key).collection("users").onSnapshot(snap => {
+    const docs = {};
+    snap.forEach(d => { docs[d.id] = d.data(); });
+    voteDocsByRole[r] = docs;
     render();
   }, err => console.error("votes listener:", err));
 }
-function switchRole(r){ role = r; selected = null; confirmWipe = null; listenTiers(); listenVotes(); render(); }
+function refreshSubs(){
+  const needed = viewRoles();
+  for (const r of Object.keys(unsubTiersByRole)) if (!needed.includes(r)){ unsubTiersByRole[r](); delete unsubTiersByRole[r]; delete tiersSubKey[r]; }
+  for (const r of Object.keys(unsubVotesByRole)) if (!needed.includes(r)){ unsubVotesByRole[r](); delete unsubVotesByRole[r]; delete votesSubKey[r]; }
+  for (const r of needed){ subscribeTiers(r); subscribeVotes(r); }
+}
+function listenMeta(){
+  if (unsubMeta) unsubMeta();
+  unsubMeta = db.collection("meta").doc("epochs").onSnapshot(snap => {
+    epochs = (snap.exists && snap.data().epochs) || {};
+    refreshSubs(); render();
+  }, err => console.error("meta listener:", err));
+}
+function switchRole(r){
+  role = r; selected = null; confirmWipe = null; confirmChampWipe = false;
+  if (role === "all") editMode = false;
+  refreshSubs(); render();
+}
 
 // ============ ACTIONS ============
-async function castVote(champ, type){
+async function castVote(champ, r, type){
   if (!user){ showToast("Sign in with Google to vote"); return; }
-  const mine = myVotes[champ] || {};
-  // exclusive: picking one clears the others; tapping your current vote removes it
+  const mine = myVotesFor(r)[champ] || {};
   const next = { agree: false, up: false, down: false };
   next[type] = !mine[type];
   try {
-    await db.collection("votes").doc(eraId(role)).collection("users").doc(user.uid)
+    await db.collection("votes").doc(eraId(r)).collection("users").doc(user.uid)
       .set({ [champ]: next }, { merge: true });
   } catch(e){ console.error(e); showToast("Vote failed — try again"); }
 }
-function pushUndo(){ undoStack.push({ role, snapshot: JSON.parse(JSON.stringify(tiers)) }); if (undoStack.length > 10) undoStack.shift(); }
+async function agreeAllUnvoted(){
+  if (!user){ showToast("Sign in first"); return; }
+  if (role === "all"){ showToast("Open a specific lane tab first"); return; }
+  const t = tiersByRole[role]; if (!t) return;
+  const mine = myVotesFor(role);
+  const payload = {};
+  for (const x of TIERS) for (const c of t[x]){
+    const m = mine[c] || {};
+    if (!m.agree && !m.up && !m.down) payload[c] = {agree:true, up:false, down:false};
+  }
+  const n = Object.keys(payload).length;
+  if (!n){ showToast("Nothing left unvoted in this lane"); return; }
+  try {
+    await db.collection("votes").doc(eraId(role)).collection("users").doc(user.uid).set(payload, {merge:true});
+    showToast(`Agreed to ${n} placements`);
+  } catch(e){ console.error(e); showToast("Failed — try again"); }
+}
+function pushUndo(){ undoStack.push({ role, snapshot: JSON.parse(JSON.stringify(tiersByRole[role])) }); if (undoStack.length > 10) undoStack.shift(); }
 async function saveTiers(r, t){ try { await db.collection("tiers").doc(r).set(t); return true; } catch(e){ console.error(e); showToast("Save failed"); return false; } }
 async function moveChamp(champ, from, to){
-  if (from === to) return; pushUndo();
-  const t = JSON.parse(JSON.stringify(tiers));
+  if (from === to || isPastEra(role)) return; pushUndo();
+  const t = JSON.parse(JSON.stringify(tiersByRole[role]));
   t[from] = t[from].filter(c => c !== champ); t[to].push(champ);
   selected = null;
   if (await saveTiers(role, t)) showToast(`${champ} moved to ${to}`);
 }
 async function removeChamp(champ, from){
-  pushUndo();
-  const t = JSON.parse(JSON.stringify(tiers));
+  if (isPastEra(role)) return; pushUndo();
+  const t = JSON.parse(JSON.stringify(tiersByRole[role]));
   t[from] = t[from].filter(c => c !== champ);
   selected = null;
   if (await saveTiers(role, t)) showToast(`${champ} removed`);
 }
 async function addChamp(){
+  if (isPastEra(role)) return;
   const name = $("addName").value.trim(); const tier = $("addTier").value;
   if (!name) return;
-  if (TIERS.some(x => tiers[x].some(c => c.toLowerCase() === name.toLowerCase()))){ showToast(`${name} is already on this list`); return; }
+  const t0 = tiersByRole[role];
+  if (TIERS.some(x => t0[x].some(c => c.toLowerCase() === name.toLowerCase()))){ showToast(`${name} is already on this list`); return; }
   pushUndo();
-  const t = JSON.parse(JSON.stringify(tiers)); t[tier].push(name);
+  const t = JSON.parse(JSON.stringify(t0)); t[tier].push(name);
   if (await saveTiers(role, t)) showToast(`${name} added to ${tier}`);
 }
 async function resetRole(){
-  pushUndo();
+  if (isPastEra(role)) return; pushUndo();
   if (await saveTiers(role, normalizeTiers(SEED[role]))) showToast("Reset to Patch 7.2a seed (votes kept)");
 }
 async function undoTierEdit(){
-  const last = undoStack.pop(); if (!last) return;
+  const last = undoStack.pop(); if (!last || !last.snapshot) return;
   if (await saveTiers(last.role, last.snapshot)) showToast("Tier edit undone");
 }
 async function saveEpochs(eps){ try { await db.collection("meta").doc("epochs").set({ epochs: eps }); return true; } catch(e){ console.error(e); showToast("Save failed"); return false; } }
 async function wipeVotes(scope){
   const eps = JSON.parse(JSON.stringify(epochs));
-  const targets = scope === "all" ? ROLES.map(x=>x[0]) : [role];
-  for (const r of targets){ const e = eps[r] || {cur:0,max:0}; const nm = Math.max(e.cur, e.max) + 1; eps[r] = {cur:nm, max:nm}; }
+  const targets = scope === "all" ? ROLE_KEYS : [role];
+  try {
+    for (const r of targets){
+      const e = eraOf(r);
+      if (e.cur === e.max){ // closing the live era: archive its placements for time travel
+        const snap = await db.collection("tiers").doc(r).get();
+        const data = normalizeTiers(snap.exists ? snap.data() : SEED[r]);
+        await db.collection("tiersArchive").doc(`${r}_e${e.cur}`).set(data);
+      }
+      const nm = e.max + 1;
+      eps[r] = {cur: nm, max: nm};
+    }
+  } catch(e){ console.error(e); showToast("Archiving failed — era not changed"); return; }
   confirmWipe = null;
-  if (await saveEpochs(eps)) showToast(scope === "all" ? "New era started for all roles" : "New era started (old votes archived)");
+  if (await saveEpochs(eps)) showToast(scope === "all" ? "New era started for all roles" : "New era started (old votes & placements archived)");
 }
 async function shiftEra(delta){
   const eps = JSON.parse(JSON.stringify(epochs));
-  const e = eps[role] || {cur:0,max:0};
-  const trueMax = Math.max(e.cur, e.max);
-  const next = Math.min(trueMax, Math.max(0, e.cur + delta));
+  const e = eraOf(role);
+  const next = Math.min(e.max, Math.max(0, e.cur + delta));
   if (next === e.cur) return;
-  eps[role] = {cur: next, max: trueMax};
-  if (await saveEpochs(eps)) showToast(`Era ${next+1} is now live for ${roleLabel()}`);
+  // moving away from the live era: snapshot current placements so we can come back to them
+  try {
+    if (e.cur === e.max && next < e.cur){
+      const snap = await db.collection("tiers").doc(role).get();
+      const data = normalizeTiers(snap.exists ? snap.data() : SEED[role]);
+      await db.collection("tiersArchive").doc(`${role}_e${e.cur}`).set(data);
+    }
+  } catch(err){ console.error(err); }
+  eps[role] = {cur: next, max: e.max};
+  if (await saveEpochs(eps)) showToast(`Era ${next+1} is now live for ${ROLE_LABELS[role]}`);
+}
+async function wipeChampVotes(champ){
+  const docs = voteDocsByRole[role] || {};
+  const targets = Object.keys(docs).filter(uid => docs[uid] && docs[uid][champ]);
+  if (!targets.length){ confirmChampWipe = false; showToast("No votes to wipe for " + champ); render(); return; }
+  try {
+    await Promise.all(targets.map(uid =>
+      db.collection("votes").doc(eraId(role)).collection("users").doc(uid)
+        .update(new firebase.firestore.FieldPath(champ), firebase.firestore.FieldValue.delete())
+    ));
+    showToast(`Votes wiped for ${champ}`);
+  } catch(e){ console.error(e); showToast("Wipe failed — did you publish the new Firestore rules?"); }
+  confirmChampWipe = false; render();
 }
 
 // ============ AUTH ============
@@ -259,15 +393,10 @@ function signIn(){
   const provider = new firebase.auth.GoogleAuthProvider();
   auth.signInWithPopup(provider).catch(e => {
     console.error(e);
-    if (e.code === "auth/unauthorized-domain"){
-      showToast("This domain isn't authorized in Firebase yet");
-    } else if (e.code === "auth/popup-blocked"){
-      showToast("Popup blocked — allow popups for this site and try again");
-    } else if (e.code === "auth/popup-closed-by-user" || e.code === "auth/cancelled-popup-request"){
-      // user closed it, no message needed
-    } else {
-      showToast("Sign-in failed: " + (e.code || e.message));
-    }
+    if (e.code === "auth/unauthorized-domain") showToast("This domain isn't authorized in Firebase yet");
+    else if (e.code === "auth/popup-blocked") showToast("Popup blocked — allow popups for this site and try again");
+    else if (e.code === "auth/popup-closed-by-user" || e.code === "auth/cancelled-popup-request"){}
+    else showToast("Sign-in failed: " + (e.code || e.message));
   });
 }
 auth.onAuthStateChanged(u => {
@@ -275,14 +404,16 @@ auth.onAuthStateChanged(u => {
   isOwner = !!(u && u.email && u.email.toLowerCase() === OWNER_EMAIL.toLowerCase());
   $("editBtn").style.display = isOwner ? "" : "none";
   if (!isOwner) editMode = false;
-  listenVotes();
   renderAuth(); render();
 });
 function renderAuth(){
   const el = $("authRow");
   if (user){
-    el.innerHTML = `<span class="who">${user.displayName || user.email}${isOwner ? " · owner" : ""}</span><button class="authBtn" id="outBtn">Sign out</button>`;
+    el.innerHTML = `<span class="who">${esc(user.displayName || user.email)}${isOwner ? " · owner" : ""}</span>` +
+      `<button class="authBtn gold" id="agreeAllBtn">✓ Agree to all unvoted</button>` +
+      `<button class="authBtn" id="outBtn">Sign out</button>`;
     $("outBtn").onclick = () => auth.signOut();
+    $("agreeAllBtn").onclick = agreeAllUnvoted;
   } else {
     el.innerHTML = `<button class="authBtn" id="inBtn">Sign in with Google to vote</button>`;
     $("inBtn").onclick = signIn;
@@ -293,91 +424,114 @@ function renderAuth(){
 function champIconHtml(name, borderColor, glow){
   const style = `border-color:${borderColor};${glow ? `box-shadow:0 0 8px ${glow};` : ""}`;
   let h = 0; for (let i=0;i<name.length;i++) h = (h*31 + name.charCodeAt(i)) % 360;
-  const initials = name.split(/[\s'&]+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
   const grad = `linear-gradient(135deg, hsl(${h},45%,26%) 0%, hsl(${(h+40)%360},40%,14%) 100%)`;
-  return `<div class="champIcon" style="${style}background-image:url('${iconUrl(name)}'),url('${iconUrl2(name)}'),${grad}"><span class="ini" data-n="${name}"></span></div>`;
-  // background-image stack: ddragon, then communitydragon, then gradient — browser uses first that loads
+  return `<div class="champIcon" style="${style}background-image:url('${iconUrl(name)}'),url('${iconUrl2(name)}'),${grad}"><span class="ini" data-n="${esc(name)}"></span></div>`;
 }
 function render(){
-  // tabs
-  $("tabs").innerHTML = ROLES.map(([k,l]) => `<button class="tab ${k===role?"active":""}" data-r="${k}">${l}</button>`).join("");
+  $("tabs").innerHTML = TABS.map(([k,l]) => `<button class="tab ${k===role?"active":""}" data-r="${k}">${l}</button>`).join("");
   document.querySelectorAll(".tab").forEach(b => b.onclick = () => switchRole(b.dataset.r));
   $("hint").textContent = editMode ? "Tap a champion to move or remove them" : "Tap a champion to vote on their placement";
   $("editBtn").textContent = editMode ? "Done" : "Edit";
   $("editBtn").className = "editBtn" + (editMode ? " on" : "");
+  $("editBtn").style.display = (isOwner && role !== "all") ? "" : "none";
 
   const content = $("content");
-  if (!tiers){ content.innerHTML = `<div class="loading">Summoning the tierlist…</div>`; return; }
-  const agg = aggVotes();
+  const vr = viewRoles();
+  if (vr.some(r => !tiersByRole[r])){ content.innerHTML = `<div class="loading">Summoning the tierlist…</div>`; return; }
+  const aggs = {}, scales = {};
+  for (const r of vr){ aggs[r] = aggFor(r); scales[r] = heatScale(aggs[r], tiersByRole[r]); }
+
   let html = "";
+  if (vr.some(r => isPastEra(r))){
+    const notes = vr.filter(r => isPastEra(r)).map(r => `${ROLE_LABELS[r]}: era ${eraOf(r).cur+1} of ${eraOf(r).max+1}${archMissing[r] ? " (placements not archived for this era — showing current)" : ""}`);
+    html += `<div class="panel"><div class="statsLine">⏳ Viewing archived era — ${esc(notes.join(" · "))}. New votes land in this era. Editing is disabled until you return to the latest era.</div></div>`;
+  }
   for (const t of TIERS){
+    const entries = [];
+    for (const r of vr) for (const c of tiersByRole[r][t]) entries.push({c, r});
     html += `<div class="tierRow"><div class="tierLabel" style="background:${TIER_COLORS[t]}22;color:${TIER_COLORS[t]}">${t}</div><div class="champGrid">`;
-    if (!tiers[t].length) html += `<span class="empty">No champions yet</span>`;
-    for (const c of tiers[t]){
-      const n = net(agg, c);
-      const border = heatColor(n) || "#2A4166";
-      const glow = Math.abs(n) >= 3 ? heatColor(n) : null;
+    if (!entries.length) html += `<span class="empty">No champions yet</span>`;
+    for (const {c, r} of entries){
+      const n = netOf(aggs[r], c);
+      const border = heatColor(n, scales[r]) || "#2A4166";
+      const glow = Math.abs(n / scales[r]) >= 0.66 ? heatColor(n, scales[r]) : null;
       const badge = n !== 0 ? `<span class="badge ${n>0?"pos":"neg"}">${n>0?"▲"+n:"▼"+(-n)}</span>` : "";
-      const agrees = agg[c] ? agg[c].agree : 0;
+      const agrees = aggs[r][c] ? aggs[r][c].agree : 0;
       const agBadge = agrees > 0 ? `<span class="badge ag">✓${agrees}</span>` : "";
-      html += `<button class="chip ${selected===c?"sel":""}" data-c="${encodeURIComponent(c)}">${champIconHtml(c, border, glow)}${badge}${agBadge}<span class="nm">${c}</span></button>`;
+      const tag = role === "all" ? `<span class="roleTag" style="background:${ROLE_TAG[r].col}">${ROLE_TAG[r].ch}</span>` : "";
+      const isSel = selected && selected.c === c && selected.r === r;
+      html += `<button class="chip ${isSel?"sel":""}" data-c="${encodeURIComponent(c)}" data-cr="${r}">${champIconHtml(c, border, glow)}${badge}${agBadge}${tag}<span class="nm">${esc(c)}</span></button>`;
     }
     html += `</div></div>`;
-    if (selected && tiers[t].includes(selected)){
-      html += `<div class="panel"><div class="pname">${selected} · ${t} tier</div>`;
+    if (selected && vr.includes(selected.r) && tiersByRole[selected.r][t].includes(selected.c)){
+      const selR = selected.r, selC = selected.c;
+      html += `<div class="panel"><div class="pname">${esc(selC)} · ${t} tier${role==="all" ? " · " + ROLE_LABELS[selR] : ""}</div>`;
       if (!editMode){
         if (!user){
           html += `<div class="signinNote">Sign in with Google to vote<button class="authBtn" id="inBtn2">Sign in</button></div>`;
         } else {
-          const a = agg[selected] || {agree:0,up:0,down:0};
-          const m = myVotes[selected] || {};
+          const a = aggs[selR][selC] || {agree:0,up:0,down:0};
+          const m = myVotesFor(selR)[selC] || {};
           html += `<div class="voteRow">
             <button class="vbtn agree ${m.agree?"mine":""}" data-v="agree">✓ Agree<span class="cnt">${a.agree}</span></button>
             <button class="vbtn up ${m.up?"mine":""}" data-v="up">▲ Should be higher<span class="cnt">${a.up}</span></button>
             <button class="vbtn down ${m.down?"mine":""}" data-v="down">▼ Should be lower<span class="cnt">${a.down}</span></button>
           </div>`;
         }
+      } else if (isPastEra(role)){
+        html += `<div class="statsLine">Archived era — return to the latest era to edit placements.</div>`;
       } else {
         html += `<div class="tierPick">` + TIERS.filter(x=>x!==t).map(x =>
           `<button class="tpick" style="color:${TIER_COLORS[x]}" data-mv="${x}">→ ${x}</button>`).join("") +
-          `<button class="tpick rm" data-rm="${t}">Remove</button></div>`;
+          `<button class="tpick rm" data-rm="${t}">Remove</button>` +
+          `<button class="tpick rm" data-wcv="1">${confirmChampWipe ? "Tap again: wipe votes" : "Wipe this champ's votes"}</button>` +
+          `</div>`;
       }
       html += `</div>`;
     }
   }
-  if (editMode && isOwner){
+  if (editMode && isOwner && role !== "all"){
     const e = eraOf(role);
+    const agg = aggs[role];
     let a=0,u=0,d=0,nn=0;
     for (const c of Object.keys(agg)){ a+=agg[c].agree; u+=agg[c].up; d+=agg[c].down; if (agg[c].agree+agg[c].up+agg[c].down>0) nn++; }
-    html += `<div class="addRow"><input id="addName" placeholder="Add a champion (e.g. Yunara)"><select id="addTier">${TIERS.map(x=>`<option>${x}</option>`).join("")}</select><button id="addBtn">Add</button></div>`;
-    html += `<div class="panel"><div class="pname">Owner tools · ${roleLabel()}</div>
+    if (!isPastEra(role)){
+      html += `<div class="addRow"><input id="addName" placeholder="Add a champion (e.g. Yunara)"><select id="addTier">${TIERS.map(x=>`<option>${x}</option>`).join("")}</select><button id="addBtn">Add</button></div>`;
+    }
+    html += `<div class="panel"><div class="pname">Owner tools · ${ROLE_LABELS[role]}</div>
       <div class="statsLine">${nn} champions voted on · ✓ ${a} agrees · ▲ ${u} up · ▼ ${d} down</div>
-      <div class="statsLine">Vote era ${e.cur+1} of ${Math.max(e.cur,e.max)+1}${e.cur<e.max ? " · viewing a past era — new votes land here!" : ""}</div>
+      <div class="statsLine">Vote era ${e.cur+1} of ${e.max+1}${isPastEra(role) ? " · viewing a past era — new votes land here!" : ""}</div>
       <div class="voteRow" style="margin-bottom:8px">
         <button class="vbtn" id="prevEra" ${e.cur<=0?"disabled":""}>◀ Prev era</button>
         <button class="vbtn" id="nextEra" ${e.cur>=e.max?"disabled":""}>Next era ▶</button>
-        <button class="vbtn" id="undoBtn" ${!undoStack.length?"disabled":""}>↩ Undo tier edit</button>
+        <button class="vbtn" id="undoBtn" ${(!undoStack.length || isPastEra(role))?"disabled":""}>↩ Undo tier edit</button>
       </div>
       <div class="voteRow">
-        <button class="vbtn wipe" id="wipeRole">${confirmWipe==="role"?"Tap again to confirm":"Wipe votes: this role"}</button>
-        <button class="vbtn wipe" id="wipeAll">${confirmWipe==="all"?"Tap again to confirm":"Wipe votes: ALL roles"}</button>
+        <button class="vbtn wipe" id="wipeRole">${confirmWipe==="role"?"Tap again to confirm":"New era: this role"}</button>
+        <button class="vbtn wipe" id="wipeAll">${confirmWipe==="all"?"Tap again to confirm":"New era: ALL roles"}</button>
         ${confirmWipe ? `<button class="vbtn" id="wipeCancel">Cancel</button>` : ""}
-      </div></div>
-      <button class="resetBtn" id="resetBtn">Reset this role to the Patch 7.2a seed</button>`;
+      </div></div>`;
+    if (!isPastEra(role)) html += `<button class="resetBtn" id="resetBtn">Reset this role to the Patch 7.2a seed</button>`;
   }
   content.innerHTML = html;
 
   // wire events
   document.querySelectorAll(".chip").forEach(b => b.onclick = () => {
-    const c = decodeURIComponent(b.dataset.c);
-    selected = (selected === c) ? null : c; render();
+    const c = decodeURIComponent(b.dataset.c), r = b.dataset.cr;
+    selected = (selected && selected.c === c && selected.r === r) ? null : {c, r};
+    confirmChampWipe = false;
+    render();
   });
-  document.querySelectorAll("[data-v]").forEach(b => b.onclick = () => castVote(selected, b.dataset.v));
+  document.querySelectorAll("[data-v]").forEach(b => b.onclick = () => castVote(selected.c, selected.r, b.dataset.v));
   document.querySelectorAll("[data-mv]").forEach(b => b.onclick = () => {
-    const from = TIERS.find(x => tiers[x].includes(selected));
-    moveChamp(selected, from, b.dataset.mv);
+    const from = TIERS.find(x => tiersByRole[role][x].includes(selected.c));
+    moveChamp(selected.c, from, b.dataset.mv);
   });
-  document.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => removeChamp(selected, b.dataset.rm));
+  document.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => removeChamp(selected.c, b.dataset.rm));
+  document.querySelectorAll("[data-wcv]").forEach(b => b.onclick = () => {
+    if (confirmChampWipe) wipeChampVotes(selected.c);
+    else { confirmChampWipe = true; render(); }
+  });
   const w = {"addBtn":addChamp, "resetBtn":resetRole, "undoBtn":undoTierEdit,
     "prevEra":()=>shiftEra(-1), "nextEra":()=>shiftEra(1),
     "wipeRole":()=>{ confirmWipe==="role" ? wipeVotes("role") : (confirmWipe="role", render()); },
@@ -386,7 +540,17 @@ function render(){
     "inBtn2":signIn};
   for (const id of Object.keys(w)){ const el = $(id); if (el) el.onclick = w[id]; }
 }
-$("editBtn").onclick = () => { editMode = !editMode; selected = null; render(); };
+$("editBtn").onclick = () => { editMode = !editMode; selected = null; confirmChampWipe = false; render(); };
+
+// ============ MUSIC ============
+const bgm = $("bgm");
+bgm.volume = 0.35;
+let musicOn = false;
+$("musicBtn").onclick = () => {
+  if (musicOn){ bgm.pause(); musicOn = false; $("musicBtn").textContent = "🎵"; return; }
+  bgm.play().then(() => { musicOn = true; $("musicBtn").textContent = "🔇"; })
+    .catch(() => showToast("No music yet — upload a music.mp3 file to the GitHub repo"));
+};
 
 // ============ IMAGE EXPORT ============
 function loadImgCors(src){
@@ -394,37 +558,50 @@ function loadImgCors(src){
 }
 const rr = (ctx,x,y,w,h,r) => { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x,y,w,h,r); else ctx.rect(x,y,w,h); };
 const hexToRgba = (hex,a) => { const n = parseInt(hex.slice(1),16); return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`; };
-$("imgBtn").onclick = async () => {
-  if (!tiers) return;
+function pill(ctx, x, y, w, h, bg, text, fg){
+  ctx.fillStyle = bg; rr(ctx, x, y, w, h, h/2); ctx.fill();
+  ctx.fillStyle = fg; ctx.font = "700 13px Inter, system-ui, sans-serif"; ctx.textAlign = "center";
+  ctx.fillText(text, x + w/2, y + h - 5);
+}
+async function exportImage(mode){ // mode: "clean" | "votes"
+  const vr = viewRoles();
+  if (vr.some(r => !tiersByRole[r])) return;
   showToast("Rendering image…");
-  const agg = aggVotes();
-  const W=1080, pad=28, labelW=96, cellW=88, cellH=98, iconS=64, rowGap=14, headH=96;
+  const aggs = {}, scales = {};
+  for (const r of vr){ aggs[r] = aggFor(r); scales[r] = heatScale(aggs[r], tiersByRole[r]); }
+  const W=1080, pad=28, labelW=96, cellW=88, cellH=104, iconS=64, rowGap=14, headH=96;
   const perRow = Math.floor((W - pad*2 - labelW - 12) / cellW);
-  const rows = TIERS.map(t => ({t, champs: tiers[t]})).filter(r => r.champs.length);
-  const rowHeights = rows.map(r => Math.ceil(r.champs.length/perRow)*cellH + 16);
+  const rows = TIERS.map(t => {
+    const entries = [];
+    for (const r of vr) for (const c of tiersByRole[r][t]) entries.push({c, r});
+    return {t, entries};
+  }).filter(r => r.entries.length);
+  const rowHeights = rows.map(r => Math.ceil(r.entries.length/perRow)*cellH + 16);
   const H = headH + rowHeights.reduce((a,b)=>a+b+rowGap, 0) + pad;
   const canvas = document.createElement("canvas"); canvas.width=W; canvas.height=H;
   const ctx = canvas.getContext("2d");
   ctx.fillStyle = "#0A1428"; ctx.fillRect(0,0,W,H);
+  const label = role === "all" ? "All" : ROLE_LABELS[role];
   ctx.fillStyle = "#C8AA6E"; ctx.font = "800 34px Cinzel, Georgia, serif"; ctx.textAlign = "center";
-  ctx.fillText(`WILD RIFT META · ${roleLabel().toUpperCase()}`, W/2, 58);
+  ctx.fillText(`WILD RIFT META · ${label.toUpperCase()}`, W/2, 58);
+  const allNames = [...new Set(rows.flatMap(r => r.entries.map(e => e.c)))];
   const imgs = {};
-  await Promise.all(rows.flatMap(r=>r.champs).map(async c => {
+  await Promise.all(allNames.map(async c => {
     imgs[c] = await loadImgCors(iconUrl(c)) || await loadImgCors(iconUrl2(c));
   }));
   let y = headH;
-  rows.forEach(({t, champs}, i) => {
+  rows.forEach(({t, entries}, i) => {
     const rh = rowHeights[i];
     ctx.fillStyle = "#0F1F35"; rr(ctx, pad, y, W-pad*2, rh, 10); ctx.fill();
     ctx.fillStyle = hexToRgba(TIER_COLORS[t], 0.15); rr(ctx, pad, y, labelW, rh, 10); ctx.fill();
     ctx.fillStyle = TIER_COLORS[t]; ctx.font = "800 30px Cinzel, Georgia, serif"; ctx.textAlign = "center";
     ctx.fillText(t, pad + labelW/2, y + rh/2 + 11);
-    champs.forEach((c, idx) => {
+    entries.forEach(({c, r}, idx) => {
       const col = idx % perRow, rowIdx = Math.floor(idx/perRow);
       const x = pad + labelW + 12 + col*cellW + (cellW-iconS)/2;
-      const cy = y + 10 + rowIdx*cellH;
-      const n = net(agg, c);
-      ctx.fillStyle = heatColor(n) || "#2A4166";
+      const cy = y + 16 + rowIdx*cellH;
+      const n = netOf(aggs[r], c);
+      ctx.fillStyle = (mode === "votes" && heatColor(n, scales[r])) || "#2A4166";
       rr(ctx, x-3, cy-3, iconS+6, iconS+6, 12); ctx.fill();
       ctx.save(); rr(ctx, x, cy, iconS, iconS, 9); ctx.clip();
       if (imgs[c]) ctx.drawImage(imgs[c], x, cy, iconS, iconS);
@@ -433,33 +610,75 @@ $("imgBtn").onclick = async () => {
         const g = ctx.createLinearGradient(x,cy,x+iconS,cy+iconS);
         g.addColorStop(0, `hsl(${h},45%,26%)`); g.addColorStop(1, `hsl(${(h+40)%360},40%,14%)`);
         ctx.fillStyle = g; ctx.fillRect(x,cy,iconS,iconS);
-        ctx.fillStyle = "#EBD9AE"; ctx.font = "800 22px Cinzel, Georgia, serif";
+        ctx.fillStyle = "#EBD9AE"; ctx.font = "800 22px Cinzel, Georgia, serif"; ctx.textAlign = "center";
         ctx.fillText(c.split(/[\s'&]+/).map(w=>w[0]).join("").slice(0,2).toUpperCase(), x+iconS/2, cy+iconS/2+8);
       }
       ctx.restore();
-      ctx.fillStyle = "#AEBBCC"; ctx.font = "11px system-ui, sans-serif";
+      if (mode === "votes"){
+        const a = aggs[r][c] ? aggs[r][c].agree : 0;
+        if (a > 0) pill(ctx, x-8, cy-11, 34, 18, "#17614B", "✓"+a, "#7FEBC8");
+        if (n !== 0) pill(ctx, x+iconS-24, cy-11, 34, 18, n>0 ? "#4FA8E8" : "#E85D5D", (n>0?"▲":"▼")+Math.abs(n), n>0 ? "#06121f" : "#fff");
+      }
+      if (role === "all"){
+        const tg = ROLE_TAG[r];
+        pill(ctx, x+iconS-16, cy+iconS-16, 18, 18, tg.col, tg.ch, "#0A1428");
+      }
+      ctx.fillStyle = "#AEBBCC"; ctx.font = "11px system-ui, sans-serif"; ctx.textAlign = "center";
       let nm = c; if (nm.length > 12) nm = nm.slice(0,11) + "…";
       ctx.fillText(nm, x+iconS/2, cy+iconS+16);
     });
     ctx.textAlign = "left"; y += rh + rowGap;
   });
+  canvas.toBlob(blob => {
+    if (!blob){ showToast("Image failed — try again"); return; }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `wild-rift-${label.toLowerCase()}-${mode === "votes" ? "votes" : "tierlist"}.png`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url), 5000);
+    showToast("Image saved!");
+  }, "image/png");
+}
+$("imgCleanBtn").onclick = () => exportImage("clean");
+$("imgVotesBtn").onclick = () => exportImage("votes");
+
+// ============ COMMENTS ============
+const cmtList = $("cmtList");
+db.collection("comments").orderBy("ts", "desc").limit(50).onSnapshot(snap => {
+  if (snap.empty){ cmtList.innerHTML = `<span class="cmtEmpty">No comments yet — be the first!</span>`; return; }
+  let html = "";
+  snap.forEach(d => {
+    const c = d.data();
+    const when = c.ts && c.ts.toDate ? c.ts.toDate().toLocaleDateString(undefined, {day:"numeric", month:"short"}) : "";
+    const canDel = user && (isOwner || c.uid === user.uid);
+    html += `<div class="cmt"><span class="cwho">${esc(c.name || "Anonymous")}</span><span class="cwhen">${esc(when)}</span>` +
+      (canDel ? `<button class="cdel" data-del="${d.id}">✕</button>` : "") +
+      `<div class="ctext">${esc(c.text || "")}</div></div>`;
+  });
+  cmtList.innerHTML = html;
+  cmtList.querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
+    db.collection("comments").doc(b.dataset.del).delete().catch(e => { console.error(e); showToast("Delete failed"); });
+  });
+}, err => { console.error("comments:", err); cmtList.innerHTML = `<span class="cmtEmpty">Comments unavailable — check Firestore rules.</span>`; });
+async function postComment(){
+  if (!user){ showToast("Sign in with Google to comment"); return; }
+  const text = $("cmtText").value.trim();
+  if (!text) return;
+  if (text.length > 300){ showToast("Keep it under 300 characters"); return; }
   try {
-    canvas.toBlob(blob => {
-      if (!blob){ showToast("Image failed — try again"); return; }
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url; a.download = `wild-rift-${role}-tierlist.png`;
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(()=>URL.revokeObjectURL(url), 5000);
-      showToast("Image saved!");
-    }, "image/png");
-  } catch(e){ console.error(e); showToast("Image blocked by icon CDN — screenshot instead"); }
-};
+    await db.collection("comments").add({
+      uid: user.uid,
+      name: user.displayName || user.email || "Anonymous",
+      text,
+      ts: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    $("cmtText").value = "";
+  } catch(e){ console.error(e); showToast("Post failed — did you publish the new Firestore rules?"); }
+}
+$("cmtPost").onclick = postComment;
+$("cmtText").addEventListener("keydown", e => { if (e.key === "Enter") postComment(); });
 
 // ============ FALLBACK INITIALS (only when both CDNs fail) ============
-// Initials are drawn via gradient background; when an icon loads it covers them.
-// We set initials text only if the primary image fails to load.
-document.addEventListener("DOMContentLoaded", () => {});
 new MutationObserver(() => {
   document.querySelectorAll(".ini:not([data-done])").forEach(el => {
     el.dataset.done = "1";
@@ -475,7 +694,7 @@ new MutationObserver(() => {
 }).observe(document.body, {childList: true, subtree: true});
 
 // ============ BOOT ============
-listenMeta(); listenTiers(); listenVotes(); render();
+listenMeta(); refreshSubs(); render();
 </script>
 </body>
 </html>
