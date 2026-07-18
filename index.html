@@ -875,21 +875,27 @@ function subscribeBuilds(champ){
   }, err => console.error("builds listener:", err));
 }
 function newBuild(){
-  eb = {title: "", items: [null,null,null,null,null,null], keystone: null, tree: null, minors: [], secTree: null, secRune: null};
+  eb = {title: "", items: [null,null,null,null,null,null], keystone: null, tree: null, minors: {}, secTree: null, secRune: null};
   ebSlot = null; ebCat = wrCats()[0] || null;
   render();
 }
+const treeRows = t => {
+  const tr = WR_RUNES.filter(r => !r.keystone && r.tree === t);
+  return [...new Set(tr.map(r => r.row || 1))].sort();
+};
 async function saveBuild(){
   const items = eb.items.filter(Boolean);
   if (eb.title.trim().length < 2){ showToast("Give the build a name (2+ chars)"); return; }
   if (!items.length){ showToast("Pick at least one item"); return; }
   if (!eb.keystone){ showToast("Pick a keystone rune"); return; }
-  if (eb.minors.length !== 3){ showToast("Pick exactly 3 primary runes from one tree"); return; }
+  const rows = eb.tree ? treeRows(eb.tree) : [];
+  if (!rows.length || rows.some(rw => !eb.minors[rw])){ showToast("Pick one rune from each row of your primary tree"); return; }
+  const minors = rows.map(rw => eb.minors[rw]);
   if (!eb.secRune){ showToast("Pick 1 secondary rune from a different tree"); return; }
   try {
     await db.collection("builds").add({
       champ: bChamp, title: eb.title.trim().slice(0, 40), items,
-      keystone: eb.keystone, tree: eb.tree, minors: eb.minors, secTree: eb.secTree, secRune: eb.secRune,
+      keystone: eb.keystone, tree: eb.tree, minors, secTree: eb.secTree, secRune: eb.secRune,
       uid: user.uid, name: myName || user.displayName || "Owner",
       ts: firebase.firestore.FieldValue.serverTimestamp()
     });
@@ -926,11 +932,14 @@ function renderBuilds(content){
     const ks = WR_RUNES.filter(r => r.keystone);
     h += `<div class="bSec">KEYSTONE</div><div class="bGrid">` + ks.map(r =>
       `<button class="bItem ${eb.keystone === r.name ? "on" : ""}" data-ks="${encodeURIComponent(r.name)}"><span class="ic" style="${r.img ? `background-image:url('${r.img}')` : ""}"></span><span class="lb">${esc(r.name)}</span></button>`).join("") + `</div>`;
-    h += `<div class="bSec">PRIMARY TREE — pick 3</div><div class="bCats">` +
+    h += `<div class="bSec">PRIMARY TREE — one rune per row</div><div class="bCats">` +
       wrTrees().map(t => `<button class="bCat ${eb.tree === t ? "on" : ""}" data-tree="${esc(t)}">${esc(t)}</button>`).join("") + `</div>`;
     if (eb.tree){
-      h += `<div class="bGrid">` + WR_RUNES.filter(r => !r.keystone && r.tree === eb.tree).map(r =>
-        `<button class="bItem ${eb.minors.includes(r.name) ? "on" : ""}" data-mn="${encodeURIComponent(r.name)}"><span class="ic" style="${r.img ? `background-image:url('${r.img}')` : ""}"></span><span class="lb">${esc(r.name)}</span></button>`).join("") + `</div>`;
+      const tR = WR_RUNES.filter(r => !r.keystone && r.tree === eb.tree);
+      for (const rw of treeRows(eb.tree)){
+        h += `<div class="bNote">Row ${rw} — pick 1</div><div class="bGrid">` + tR.filter(r => (r.row || 1) === rw).map(r =>
+          `<button class="bItem ${eb.minors[rw] === r.name ? "on" : ""}" data-mn="${encodeURIComponent(r.name)}" data-row="${rw}"><span class="ic" style="${r.img ? `background-image:url('${r.img}')` : ""}"></span><span class="lb">${esc(r.name)}</span></button>`).join("") + `</div>`;
+      }
     }
     h += `<div class="bSec">SECONDARY — 1 rune from a different tree</div><div class="bCats">` +
       wrTrees().filter(t => t !== eb.tree).map(t => `<button class="bCat ${eb.secTree === t ? "on" : ""}" data-stree="${esc(t)}">${esc(t)}</button>`).join("") + `</div>`;
@@ -960,12 +969,10 @@ function renderBuilds(content){
   content.querySelectorAll("[data-clear]").forEach(b => b.onclick = () => { eb.items[ebSlot] = null; ebSlot = null; render(); });
   content.querySelectorAll("[data-pi]").forEach(b => b.onclick = () => { eb.items[ebSlot] = decodeURIComponent(b.dataset.pi); ebSlot = null; render(); });
   content.querySelectorAll("[data-ks]").forEach(b => b.onclick = () => { eb.keystone = decodeURIComponent(b.dataset.ks); render(); });
-  content.querySelectorAll("[data-tree]").forEach(b => b.onclick = () => { if (eb.tree !== b.dataset.tree){ eb.tree = b.dataset.tree; eb.minors = []; if (eb.secTree === eb.tree){ eb.secTree = null; eb.secRune = null; } } render(); });
+  content.querySelectorAll("[data-tree]").forEach(b => b.onclick = () => { if (eb.tree !== b.dataset.tree){ eb.tree = b.dataset.tree; eb.minors = {}; if (eb.secTree === eb.tree){ eb.secTree = null; eb.secRune = null; } } render(); });
   content.querySelectorAll("[data-mn]").forEach(b => b.onclick = () => {
-    const n = decodeURIComponent(b.dataset.mn);
-    if (eb.minors.includes(n)) eb.minors = eb.minors.filter(x => x !== n);
-    else if (eb.minors.length < 3) eb.minors.push(n);
-    else showToast("Only 3 primary runes — deselect one first");
+    const n = decodeURIComponent(b.dataset.mn), rw = +b.dataset.row;
+    eb.minors[rw] = eb.minors[rw] === n ? null : n; // tap again to deselect; picking replaces the row's choice
     render();
   });
   content.querySelectorAll("[data-stree]").forEach(b => b.onclick = () => { if (eb.secTree !== b.dataset.stree){ eb.secTree = b.dataset.stree; eb.secRune = null; } render(); });
