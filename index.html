@@ -545,10 +545,10 @@ $("editBtn").onclick = () => { editMode = !editMode; selected = null; confirmCha
 // ============ MUSIC ============
 const bgm = $("bgm");
 bgm.volume = 0.35;
-let musicOn = false;
+let musicOn = true;
 $("musicBtn").onclick = () => {
-  if (musicOn){ bgm.pause(); musicOn = false; $("musicBtn").textContent = "🎵"; return; }
-  bgm.play().then(() => { musicOn = true; $("musicBtn").textContent = "🔇"; })
+  if (musicOn){ bgm.pause(); musicOn = false; $("musicBtn").textContent = "🔇"; return; }
+  bgm.play().then(() => { musicOn = true; $("musicBtn").textContent = "🎵"; })
     .catch(() => showToast("Aww dang it :( couldn't find the music!"));
 };
 
