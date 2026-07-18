@@ -651,7 +651,7 @@ function renderAuth(force){
 }
 
 // ============ CONTESTED STRIP ============
-const AGREE_WEIGHT = 0.5; // an agree-vs-directional clash counts half of an up-vs-down clash
+const AGREE_WEIGHT = 0.65; // an agree-vs-directional clash counts half of an up-vs-down clash
 const CONTEST_K = 6;      // saturation: raw of 6 → 50; higher raw creeps toward (never hits) 100
 function contestRaw(u, d, a){
   // pairwise disagreement: every ▲ clashes with every ▼ at full weight.
@@ -680,7 +680,7 @@ function renderContested(){
   const el = $("contested");
   if (!items.length){ el.innerHTML = ""; return; }
   const keepScroll = el.scrollLeft;
-  el.innerHTML = `<span class="cLabel">CONTESTED RATING<br> {How split are we?}</span>` + items.map(it => {
+  el.innerHTML = `<span class="cLabel">CONTESTED RATING<br> {vote split}</span>` + items.map(it => {
     const n = it.u - it.d;
     const hc = heatColor(n, scalesC[it.r]) || "#2A4166";
     return `<button class="cchip" data-hc="${encodeURIComponent(it.c)}" data-hr="${it.r}">` +
@@ -725,7 +725,7 @@ function renderPressure(){
   if (!items.length){ el.innerHTML = ""; return; }
   items.sort((x, y) => y.score - x.score || (y.u + y.d + y.a) - (x.u + x.d + x.a));
   const keepScroll = el.scrollLeft;
-  el.innerHTML = `<span class="cLabel">MOVE PRESSURE<br> {How hard's the push?}</span>` + items.map(it => {
+  el.innerHTML = `<span class="cLabel">MOVE PRESSURE<br> {vote push}</span>` + items.map(it => {
     const hc = heatColor(it.net, scalesC[it.r]) || "#2A4166";
     const dirCol = it.net > 0 ? "#4FA8E8" : "#E85D5D";
     return `<button class="cchip" data-hc="${encodeURIComponent(it.c)}" data-hr="${it.r}">` +
