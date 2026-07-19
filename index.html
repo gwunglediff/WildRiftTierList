@@ -6,6 +6,14 @@
 <title>Wild Rift Meta</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="description" content="Community-driven Wild Rift tierlist: vote on champion placements, browse builds, and watch the meta move.">
+<meta property="og:title" content="Wild Rift Meta — Community Tierlist &amp; Builds">
+<meta property="og:description" content="Vote on champion placements, browse community builds, and watch the meta move. By GwenDiffYT.">
+<meta property="og:image" content="https://gwunglediff.github.io/WildRiftTierList/preview.png">
+<meta property="og:url" content="https://gwunglediff.github.io/WildRiftTierList/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0A1428">
 <style>
   * { box-sizing: border-box; margin: 0; }
   body { min-height: 100vh; background: #0A1428; color: #E8EDF4; font-family: 'Inter', system-ui, sans-serif; padding-bottom: 40px; }
@@ -166,6 +174,10 @@
   .bRowBtn .cv { font-size: 11px; color: #AEBBCC; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .bRowBtn .cv { margin-bottom: 2px; }
   .bMini2 { width: 22px; height: 22px; border-radius: 5px; border: 1px solid #2A4166; background-size: cover; background-position: center; display: inline-block; margin: 3px 3px 0 0; vertical-align: middle; }
+  .bGrid, .bSlotRow, .bItem, .bSlot, .bPick, .bModal, .bSec { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  .bItem, .bSlot, .bVote, .bRowBtn, .bCat { -webkit-tap-highlight-color: transparent; }
+  .rowVotes { display: flex; flex-direction: column; gap: 4px; align-items: center; margin-left: auto; flex-shrink: 0; }
+  .rowVotes .bVote { padding: 3px 9px; font-size: 11px; }
 </style>
 </head>
 <body>
@@ -618,7 +630,7 @@ auth.onAuthStateChanged(u => {
   if (!isOwner) editMode = false;
   myName = (u && usernames[u.uid]) || null;
   authMode = null; nameEditOpen = false; cfgOpen = false;
-  if (isOwner) loadCfg();
+  if (isOwner){ loadCfg(); ensureBuildSubs(); }
   renderAuth(true); render();
 });
 let authSig = "";
@@ -839,15 +851,44 @@ async function applyAutoMoves(){
   } catch(e){ console.error(e); showToast("Auto-move failed partway — check Firestore rules"); }
   autoBusy = false; render();
 }
+function pendingNewBuilds(){
+  if (!isOwner || !bAll.length) return [];
+  const last = cfg.lastBuildPing || 0;
+  return bAll.filter(b => b.data.ts && b.data.ts.seconds > last && !b.data.def)
+    .sort((a, b) => a.data.ts.seconds - b.data.ts.seconds);
+}
+async function stampBuildPing(nb){
+  cfg.lastBuildPing = Math.max(...nb.map(b => b.data.ts.seconds));
+  try { await db.collection("meta").doc("config").set(cfg); } catch(e){ console.error(e); }
+  render();
+}
+async function announceBuilds(){
+  const nb = pendingNewBuilds(); if (!nb.length) return;
+  const msg = "🛠 **New community builds:**\n" + nb.slice(0, 10).map(b =>
+    `• ${b.data.champ} (${ROLE_LABELS[b.data.role] || "?"}) — “${b.data.def ? "Default Build" : b.data.title}” by ${nameOf(b.data.uid, b.data.name)}`).join("\n") +
+    (nb.length > 10 ? `\n…and ${nb.length - 10} more` : "");
+  if (await sendWebhook(msg)) stampBuildPing(nb);
+}
 function renderAutoBanner(){
   const el = $("autoBanner");
   if (!isOwner){ el.innerHTML = ""; return; }
+  let html = "";
   const moves = computePendingMoves();
-  if (!moves.length){ el.innerHTML = ""; return; }
-  const list = moves.map(m => `<b>${esc(m.c)}</b> ${m.from}→${m.to}`).join(", ");
-  el.innerHTML = `<div class="autoBanner">⚡ ${moves.length} auto-move${moves.length === 1 ? "" : "s"} ready: ${list} ` +
-    `<button class="authBtn gold" id="autoGo" ${autoBusy ? "disabled" : ""}>${autoBusy ? "Working…" : confirmAuto ? "Tap again: apply & ping Discord" : "Apply"}</button></div>`;
-  $("autoGo").onclick = () => { if (confirmAuto) applyAutoMoves(); else { confirmAuto = true; renderAutoBanner(); } };
+  if (moves.length){
+    const list = moves.map(m => `<b>${esc(m.c)}</b> ${m.from}→${m.to}`).join(", ");
+    html += `<div class="autoBanner">⚡ ${moves.length} auto-move${moves.length === 1 ? "" : "s"} ready: ${list} ` +
+      `<button class="authBtn gold" id="autoGo" ${autoBusy ? "disabled" : ""}>${autoBusy ? "Working…" : confirmAuto ? "Tap again: apply & ping Discord" : "Apply"}</button></div>`;
+  }
+  const nb = pendingNewBuilds();
+  if (nb.length){
+    html += `<div class="autoBanner" style="border-color:#2A4166;background:rgba(19,35,63,0.95);color:#AEBBCC">🛠 ${nb.length} new build${nb.length === 1 ? "" : "s"}: ` +
+      nb.slice(0, 5).map(b => `<b>${esc(b.data.champ)}</b> (${ROLE_LABELS[b.data.role] || "?"})`).join(", ") + (nb.length > 5 ? "…" : "") +
+      ` <button class="authBtn gold" id="bpGo">Announce to Discord</button><button class="authBtn" id="bpSkip">Dismiss</button></div>`;
+  }
+  el.innerHTML = html;
+  if ($("autoGo")) $("autoGo").onclick = () => { if (confirmAuto) applyAutoMoves(); else { confirmAuto = true; renderAutoBanner(); } };
+  if ($("bpGo")) $("bpGo").onclick = announceBuilds;
+  if ($("bpSkip")) $("bpSkip").onclick = () => { const n2 = pendingNewBuilds(); if (n2.length) stampBuildPing(n2); };
 }
 function renderAutoStrip(){
   const el = $("autoMoves");
@@ -891,11 +932,11 @@ const WR_SPELLS = [
   {name:"Flash", img:DD_SPELL("Flash")}, {name:"Ignite", img:DD_SPELL("Dot")},
   {name:"Heal", img:DD_SPELL("Heal")}, {name:"Barrier", img:DD_SPELL("Barrier")},
   {name:"Exhaust", img:DD_SPELL("Exhaust")}, {name:"Ghost", img:DD_SPELL("Haste")},
-  {name:"Smite", img:DD_SPELL("Smite")}, {name:"Mark", img:DD_SPELL("Snowball")},
+  {name:"Smite", img:DD_SPELL("Smite")}, {name:"Teleport", img:DD_SPELL("Teleport")},
   {name:"Cleanse", img:DD_SPELL("Boost")}
 ];
 const wrSpell = n => WR_SPELLS.find(s => s.name === n);
-let buildsMode = false, bChamp = null, bRole = "all", bSearch = "";
+let buildsMode = false, bChamp = null, bRole = "all", bSearch = "", bSort = "top";
 let bAll = [], unsubBuilds = null;
 let eb = null, ebSlot = null, ebCat = null;
 let itemInfo = null, runeInfo = null, confirmBDel = null;
@@ -940,8 +981,9 @@ async function voteBuild(id, v){
 }
 const authorOf = b => b.def ? "Default" : nameOf(b.uid, b.name);
 function buildsFor(c, lane){
+  const eff = x => buildCounts(x.id).score + (x.data.def ? 5 : 0); // Default builds carry +5 provisional
   return bAll.filter(x => x.data.champ === c && (lane === "all" || x.data.role === lane))
-    .sort((a, b) => buildCounts(b.id).score - buildCounts(a.id).score ||
+    .sort((a, b) => eff(b) - eff(a) ||
       (b.data.def ? 1 : 0) - (a.data.def ? 1 : 0) ||
       ((b.data.ts && b.data.ts.seconds) || 0) - ((a.data.ts && a.data.ts.seconds) || 0));
 }
@@ -975,7 +1017,8 @@ const treeRows = t => {
 async function saveBuild(){
   if (!user){ showToast("Sign in to post builds"); return; }
   const items = eb.items.filter(Boolean);
-  if (eb.title.trim().length < 2){ showToast("Give the build a name (2+ chars)"); return; }
+  const isDef = !!(eb.def && isOwner);
+  if (!isDef && eb.title.trim().length < 2){ showToast("Give the build a name (2+ chars)"); return; }
   if (!eb.role){ showToast("Pick which lane this build is for"); return; }
   if (!items.length){ showToast("Pick at least one item"); return; }
   if (new Set(items).size !== items.length){ showToast("No duplicate items allowed"); return; }
@@ -988,9 +1031,9 @@ async function saveBuild(){
   const minors = rows.map(rw => eb.minors[rw]);
   if (!eb.secRune){ showToast("Pick 1 secondary rune from a different tree"); return; }
   try {
-    const fields = {role: eb.role, title: eb.title.trim().slice(0, 40), items, spells,
+    const fields = {role: eb.role, title: isDef ? "" : eb.title.trim().slice(0, 40), items, spells,
       keystone: eb.keystone, tree: eb.tree, minors, secTree: eb.secTree, secRune: eb.secRune,
-      def: !!(eb.def && isOwner)};
+      def: isDef};
     if (ebEditId){
       await db.collection("builds").doc(ebEditId).update(fields);
       showToast("Build updated!");
@@ -1005,9 +1048,9 @@ async function saveBuild(){
     eb = null; ebEditId = null; render();
   } catch(e){ console.error(e); showToast("Save failed — try again"); }
 }
-function runeMini(n, key){
+function runeMini(n){
   const r = wrRune(n);
-  return `<span class="bMini" title="${esc(n)}" style="${key ? "border-color:#C8AA6E;" : ""}${r && r.img ? `background-image:url('${r.img}')` : ""}"></span>`;
+  return `<span class="bMini" title="${esc(n)}" style="border-color:#C8AA6E;${r && r.img ? `background-image:url('${r.img}')` : ""}"></span>`;
 }
 function bindHold(b, name, showInfo, act){
   b.oncontextmenu = e => e.preventDefault();
@@ -1028,10 +1071,11 @@ function buildCardHtml(d){
       ? `<span style="float:right;font-size:11px;color:#E85D5D">Delete this build? <button class="bVote" data-bdelyes="${d.id}" style="color:#E85D5D">Yes</button> <button class="bVote" data-bdelno="1">No</button></span>`
       : `<button class="cdel" data-bdel="${d.id}" style="float:right">✕</button><button class="cdel" data-bedit="${d.id}" style="float:right;color:#C8AA6E;margin-right:8px">✎</button>`;
   }
-  return `<div class="bCard"><div class="t">${esc(b.title)}` +
+  const disp = score + (b.def ? 5 : 0);
+  return `<div class="bCard"><div class="t">${b.def ? "Default Build" : esc(b.title)}` +
     (rt ? `<span class="bLane" style="background:${rt.col}">${esc(ROLE_LABELS[b.role])}</span>` : "") +
-    ` <span class="bNote" style="display:inline">— by ${esc(authorOf(b))}</span>${del}</div>` +
-    (b.items || []).map(n => { const it = wrItem(n); return `<span class="bMini" title="${esc(n)}" style="${it && it.img ? `background-image:url('${it.img}')` : ""}"></span>`; }).join("") +
+    (b.def ? "" : ` <span class="bNote" style="display:inline">— by ${esc(authorOf(b))}</span>`) + `${del}</div>` +
+    (b.items || []).map(n => { const it = wrItem(n); return `<span class="bMini" title="${esc(n)}" style="border-color:#0AC8B9;${it && it.img ? `background-image:url('${it.img}')` : ""}"></span>`; }).join("") +
     ((b.spells && b.spells.length) ? `<span style="display:inline-block;width:10px"></span>` +
       b.spells.map(n => { const s = wrSpell(n); return `<span class="bMini" title="${esc(n)}" style="border-color:#5A9BD8;${s ? `background-image:url('${s.img}')` : ""}"></span>`; }).join("") : "") +
     `<div style="margin-top:6px">` + runeMini(b.keystone, true) +
@@ -1039,7 +1083,9 @@ function buildCardHtml(d){
     `<span class="bNote" style="display:inline;margin-left:4px">${esc(b.tree || "")} + ${esc(b.secTree || "")}</span></div>` +
     `<div class="bVoteRow"><button class="bVote ${mv > 0 ? "mine" : ""}" data-bv="1" data-bid="${d.id}" style="color:#4FA8E8">▲ ${up}</button>` +
     `<button class="bVote ${mv < 0 ? "mine" : ""}" data-bv="-1" data-bid="${d.id}" style="color:#E85D5D">▼ ${down}</button>` +
-    `<span class="bScore">${score > 0 ? "+" + score : score}</span></div></div>`;
+    `<span class="bScore" style="${b.def ? "color:#C77DD8" : ""}">${disp > 0 ? "+" + disp : disp}</span>` +
+    (b.def ? `<span class="bNote" style="display:inline;color:#C77DD8">includes +5 provisional</span>` : "") +
+    `</div></div>`;
 }
 function buildRowsHtml(){
   const vr = viewRoles();
@@ -1054,35 +1100,46 @@ function buildRowsHtml(){
     h += `<div class="bTierHead" id="bt-${esc(t)}" style="color:${TIER_COLORS[t]}">${esc(t)} TIER BUILDS</div>`;
     for (const {c, r} of entries){
       const top = buildsFor(c, r)[0];
-      const sub = top
-        ? `“${esc(top.data.title)}” by ${esc(authorOf(top.data))} · net votes ${buildCounts(top.id).score >= 0 ? "+" : ""}${buildCounts(top.id).score}`
-        : "No builds yet — be the first!";
-      const itemsRow = top ? `<span class="mini2row">` + (top.data.items || []).map(n => {
-        const it = wrItem(n);
-        return `<span class="bMini2" title="${esc(n)}" style="${it && it.img ? `background-image:url('${it.img}')` : ""}"></span>`;
-      }).join("") +
-      (() => {
-        const kr = top.data.keystone && wrRune(top.data.keystone);
-        let x = `<span style="display:inline-block;width:8px"></span>`;
-        x += `<span class="bMini2" title="${esc(top.data.keystone || "")}" style="border-color:#C8AA6E;${kr && kr.img ? `background-image:url('${kr.img}')` : ""}"></span>`;
-        x += (top.data.spells || []).map(n => { const s = wrSpell(n);
-          return `<span class="bMini2" title="${esc(n)}" style="border-color:#5A9BD8;${s ? `background-image:url('${s.img}')` : ""}"></span>`; }).join("");
-        return x;
-      })() + `</span>` : "";
-      h += `<button class="bRowBtn" data-bc="${encodeURIComponent(c)}" data-br="${r}">` +
+      let sub = "No builds yet — be the first!", minis = "", votes = "";
+      if (top){
+        const b = top.data;
+        const cnt = buildCounts(top.id);
+        const disp = cnt.score + (b.def ? 5 : 0);
+        sub = b.def ? "Default Build" : `“${esc(b.title)}” by ${esc(authorOf(b))} · net votes ${cnt.score >= 0 ? "+" : ""}${cnt.score}`;
+        const mini = (n, col, get) => { const o = n && get(n);
+          return `<span class="bMini2" title="${esc(n || "")}" style="border-color:${col};${o && o.img ? `background-image:url('${o.img}')` : ""}"></span>`; };
+        minis = `<span class="mini2row">` +
+          (b.items || []).map(n => mini(n, "#0AC8B9", wrItem)).join("") +
+          `<span style="display:inline-block;width:8px"></span>` +
+          mini(b.keystone, "#C8AA6E", wrRune) +
+          (b.minors || []).map(n => mini(n, "#C8AA6E", wrRune)).join("") +
+          (b.secRune ? mini(b.secRune, "#C8AA6E", wrRune) : "") +
+          (b.spells || []).map(n => mini(n, "#5A9BD8", wrSpell)).join("") + `</span>`;
+        const mv = myBuildVote(top.id);
+        votes = `<span class="rowVotes">` +
+          `<button class="bVote ${mv > 0 ? "mine" : ""}" data-rbv="1" data-bid="${top.id}" style="color:#4FA8E8">▲${cnt.up}</button>` +
+          `<button class="bVote ${mv < 0 ? "mine" : ""}" data-rbv="-1" data-bid="${top.id}" style="color:#E85D5D">▼${cnt.down}</button>` +
+          `<span class="bScore" style="${b.def ? "color:#C77DD8" : ""}">${disp > 0 ? "+" + disp : disp}</span></span>`;
+      }
+      h += `<span class="bRowBtn" role="button" data-bc="${encodeURIComponent(c)}" data-br="${r}">` +
         `<span class="ci" style="background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span>` +
         `<span class="txt"><span class="cn">${esc(c)}${role === "all" ? ` <span style="color:${ROLE_TAG[r].col};font-weight:600;font-size:12px">· ${ROLE_LABELS[r]}</span>` : ""}</span>` +
-        `<span class="cv">${sub}</span>${itemsRow}</span></button>`;
+        `<span class="cv">${sub}</span>${minis}</span>${votes}</span>`;
     }
   }
   return h || `<div class="bNote" style="margin-top:10px">No champions match that search.</div>`;
 }
 function wireBuildRows(scope){
-  scope.querySelectorAll("[data-bc]").forEach(b => b.onclick = () => {
+  scope.querySelectorAll("[data-bc]").forEach(b => b.onclick = ev => {
+    if (ev.target.closest && ev.target.closest(".bVote")) return;
     bChamp = decodeURIComponent(b.dataset.bc);
     bRole = b.dataset.br;
     eb = null; confirmBDel = null;
     render();
+  });
+  scope.querySelectorAll("[data-rbv]").forEach(b => b.onclick = ev => {
+    ev.stopPropagation();
+    voteBuild(b.dataset.bid, +b.dataset.rbv);
   });
 }
 function renderBuilds(content){
@@ -1131,9 +1188,11 @@ function renderBuilds(content){
     h += `<div class="bCats">` +
       `<button class="bCat ${bRole === "all" ? "on" : ""}" data-brole="all">All lanes</button>` +
       lanes.map(r => `<button class="bCat ${bRole === r ? "on" : ""}" data-brole="${r}">${ROLE_LABELS[r]}</button>`).join("") + `</div>`;
+    h += `<div class="bCats">` + [["top","Top voted"],["new","Newest"],["mine","My builds"]].map(([k, l]) =>
+      `<button class="bCat ${bSort === k ? "on" : ""}" data-bsort="${k}">${l}</button>`).join("") + `</div>`;
   }
   if (eb){
-    h += `<input type="text" id="bTitle" placeholder="Build name (e.g. Crit ADC)" maxlength="40" value="${esc(eb.title)}" style="width:100%;box-sizing:border-box">`;
+    h += `<input type="text" id="bTitle" placeholder="${eb.def ? "Default Build — no name needed" : "Build name"}" maxlength="40" value="${esc(eb.title)}" style="width:100%;box-sizing:border-box">`;
     h += `<div class="bSec">LANE</div><div class="bCats">` +
       lanes.map(r => `<button class="bCat ${eb.role === r ? "on" : ""}" data-erole="${r}">${ROLE_LABELS[r]}</button>`).join("") +
       (isOwner ? `<button class="bCat ${eb.def ? "on" : ""}" data-edef="1">★ Default build</button>` : "") +
@@ -1172,8 +1231,10 @@ function renderBuilds(content){
     }
     h += `<div class="bNote">Tap an item or rune to add it · hold to read what it does.</div>`;
   } else {
-    const shown = buildsFor(bChamp, bRole);
-    if (!shown.length) h += `<div class="bNote">No builds for ${esc(bChamp)}${bRole !== "all" ? " in " + ROLE_LABELS[bRole] : ""} yet.</div>`;
+    let shown = buildsFor(bChamp, bRole);
+    if (bSort === "new") shown = [...shown].sort((a, b) => ((b.data.ts && b.data.ts.seconds) || 0) - ((a.data.ts && a.data.ts.seconds) || 0));
+    if (bSort === "mine") shown = shown.filter(d => user && d.data.uid === user.uid);
+    if (!shown.length) h += `<div class="bNote">${bSort === "mine" ? "You haven't posted any builds for " + esc(bChamp) + " yet." : "No builds for " + esc(bChamp) + (bRole !== "all" ? " in " + ROLE_LABELS[bRole] : "") + " yet."}</div>`;
     for (const d of shown) h += buildCardHtml(d);
   }
   h += `</div>`;
@@ -1203,6 +1264,7 @@ function renderBuilds(content){
   if ($("bSave")) $("bSave").onclick = saveBuild;
   if ($("bTitle")) $("bTitle").oninput = e => { eb.title = e.target.value; };
   content.querySelectorAll("[data-brole]").forEach(b => b.onclick = () => { bRole = b.dataset.brole; confirmBDel = null; render(); });
+  content.querySelectorAll("[data-bsort]").forEach(b => b.onclick = () => { bSort = b.dataset.bsort; render(); });
   content.querySelectorAll("[data-erole]").forEach(b => b.onclick = () => { eb.role = b.dataset.erole; render(); });
   content.querySelectorAll("[data-edef]").forEach(b => b.onclick = () => { eb.def = !eb.def; render(); });
   content.querySelectorAll("[data-slot]").forEach(b => b.onclick = () => { ebSlot = ebSlot === +b.dataset.slot ? null : +b.dataset.slot; render(); });
@@ -1281,7 +1343,7 @@ function render(){
   $("buildsBtn").className = "editBtn" + (buildsMode ? " on" : "");
 
   const content = $("content");
-  if (buildsMode){ renderBuilds(content); return; }
+  if (buildsMode){ renderBuilds(content); syncHash(); return; }
   const vr = viewRoles();
   if (vr.some(r => !tiersByRole[r])){ content.innerHTML = `<div class="loading">Summoning the tierlist…</div>`; return; }
   const aggs = {}, scales = {};
@@ -1393,6 +1455,19 @@ function render(){
     "openBuilds":()=>{ const s = selected; if (!s) return; buildsMode = true; eb = null; confirmBDel = null; bChamp = s.c; bRole = role === "all" ? "all" : s.r; render(); },
     "inBtn2":signIn};
   for (const id of Object.keys(w)){ const el = $(id); if (el) el.onclick = w[id]; }
+  if (pendingSel && vr.every(x => tiersByRole[x])){
+    const c = pendingSel; pendingSel = null;
+    const r = role !== "all" ? role : (champRoles(c)[0] || null);
+    if (r && tierOfChamp(r, c)){
+      selected = {c, r};
+      setTimeout(() => {
+        const chip = document.querySelector(`.chip[data-c="${encodeURIComponent(c)}"]`);
+        if (chip) chip.scrollIntoView({block: "center", behavior: "smooth"});
+      }, 120);
+      render(); return;
+    }
+  }
+  syncHash();
 }
 $("editBtn").onclick = () => { editMode = !editMode; selected = null; confirmChampWipe = false; render(); };
 $("buildsBtn").onclick = () => { buildsMode = !buildsMode; editMode = false; selected = null; eb = null; ebEditId = null; bChamp = null; confirmBDel = null; render(); };
@@ -1407,13 +1482,7 @@ function tryAutoStart(){
   if (userTouchedMusic || musicOn) return;
   bgm.play().then(() => { musicOn = true; setMusicIcon(); }).catch(() => {}); // silent: browsers often block autoplay until a tap
 }
-tryAutoStart();
-const musicGesture = ev => {
-  if (ev.target && ev.target.closest && ev.target.closest("#musicBtn")) return;
-  tryAutoStart();
-  document.removeEventListener("pointerdown", musicGesture);
-};
-document.addEventListener("pointerdown", musicGesture);
+// music only starts when the person taps the 🎵 button
 $("musicBtn").onclick = () => {
   userTouchedMusic = true;
   if (musicOn){ bgm.pause(); musicOn = false; setMusicIcon(); return; }
@@ -1570,8 +1639,31 @@ new MutationObserver(() => {
   });
 }).observe(document.body, {childList: true, subtree: true});
 
+// ============ DEEP LINKS ============
+let pendingSel = null;
+function applyHash(){
+  const p = location.hash.replace(/^#/, "").split("/").map(decodeURIComponent).filter(Boolean);
+  if (!p.length) return;
+  if (p[0] === "builds"){
+    buildsMode = true; eb = null; ebEditId = null;
+    if (p[1] && (p[1] === "all" || ROLE_KEYS.includes(p[1]))) role = p[1];
+    bChamp = p[2] || null;
+    if (bChamp) bRole = role;
+  } else if (p[0] === "all" || ROLE_KEYS.includes(p[0])){
+    buildsMode = false; role = p[0];
+    if (p[1]) pendingSel = p[1];
+  }
+}
+function syncHash(){
+  const hsh = buildsMode
+    ? "#builds/" + role + (bChamp ? "/" + encodeURIComponent(bChamp) : "")
+    : "#" + role + (selected ? "/" + encodeURIComponent(selected.c) : "");
+  if (location.hash !== hsh){ try { history.replaceState(null, "", hsh); } catch(_){} }
+}
+window.addEventListener("hashchange", () => { applyHash(); refreshSubs(); render(); });
+
 // ============ BOOT ============
-listenMeta(); refreshSubs(); render();
+applyHash(); listenMeta(); refreshSubs(); render();
 </script>
 </body>
 </html>
