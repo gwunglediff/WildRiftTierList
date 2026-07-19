@@ -1060,7 +1060,15 @@ function buildRowsHtml(){
       const itemsRow = top ? `<span class="mini2row">` + (top.data.items || []).map(n => {
         const it = wrItem(n);
         return `<span class="bMini2" title="${esc(n)}" style="${it && it.img ? `background-image:url('${it.img}')` : ""}"></span>`;
-      }).join("") + `</span>` : "";
+      }).join("") +
+      (() => {
+        const kr = top.data.keystone && wrRune(top.data.keystone);
+        let x = `<span style="display:inline-block;width:8px"></span>`;
+        x += `<span class="bMini2" title="${esc(top.data.keystone || "")}" style="border-color:#C8AA6E;${kr && kr.img ? `background-image:url('${kr.img}')` : ""}"></span>`;
+        x += (top.data.spells || []).map(n => { const s = wrSpell(n);
+          return `<span class="bMini2" title="${esc(n)}" style="border-color:#5A9BD8;${s ? `background-image:url('${s.img}')` : ""}"></span>`; }).join("");
+        return x;
+      })() + `</span>` : "";
       h += `<button class="bRowBtn" data-bc="${encodeURIComponent(c)}" data-br="${r}">` +
         `<span class="ci" style="background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span>` +
         `<span class="txt"><span class="cn">${esc(c)}${role === "all" ? ` <span style="color:${ROLE_TAG[r].col};font-weight:600;font-size:12px">· ${ROLE_LABELS[r]}</span>` : ""}</span>` +
