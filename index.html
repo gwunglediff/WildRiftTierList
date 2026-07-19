@@ -134,7 +134,7 @@
   .bCat.on { color: #C8AA6E; border-color: #C8AA6E; }
   .bGrid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 280px; overflow-y: auto; }
   .bItem { width: 64px; background: none; border: none; cursor: pointer; color: #AEBBCC; font-family: inherit; padding: 0; }
-  .bItem .ic { width: 44px; height: 44px; margin: 0 auto; border-radius: 8px; border: 2px solid #2A4166; background-size: cover; background-position: center; background-color: #13233F; }
+  .bItem .ic { display: block; width: 44px; height: 44px; margin: 0 auto; border-radius: 8px; border: 2px solid #2A4166; background-size: cover; background-position: center; background-color: #13233F; }
   .bItem.on .ic { border-color: #35D0A0; }
   .bItem .lb { font-size: 8px; display: block; text-align: center; margin-top: 2px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   .bCard { background: rgba(19,35,63,0.95); border: 1px solid #2A4166; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
@@ -142,6 +142,22 @@
   .bMini { width: 32px; height: 32px; border-radius: 6px; border: 1px solid #2A4166; background-size: cover; background-position: center; display: inline-block; margin-right: 4px; vertical-align: middle; }
   .bNote { font-size: 11px; color: #7B8BA3; margin: 6px 0; line-height: 1.4; }
   .bSec { font-family: 'Cinzel', serif; font-size: 12px; color: #C8AA6E; letter-spacing: 1px; margin: 12px 0 4px; }
+  .bItem { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+  .bRow + .bRow { border-top: 1px solid #1E3252; margin-top: 6px; padding-top: 6px; }
+  .bLane { display: inline-flex; margin-left: 6px; padding: 1px 7px; border-radius: 8px; font-size: 10px; font-weight: 700; color: #0A1428; vertical-align: 2px; }
+  .bCard .cdel { color: #E85D5D; font-weight: 700; }
+  .bVote { background: #0F1F35; border: 1px solid #2A4166; color: #E8EDF4; border-radius: 8px; padding: 5px 12px; cursor: pointer; font-size: 12px; font-family: inherit; }
+  .bVote.mine { border-color: #C8AA6E; background: #1D2F4E; }
+  .bVoteRow { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+  .bScore { font-family: 'Cinzel', serif; font-weight: 800; font-size: 15px; color: #C8AA6E; }
+  .amDel { background: none; border: none; color: #E85D5D; font-size: 12px; cursor: pointer; padding: 0 3px; font-family: inherit; font-weight: 700; }
+  .bModalBg { position: fixed; inset: 0; background: rgba(4,10,22,0.72); z-index: 60; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .bModal { background: #0F1F35; border: 1px solid #C8AA6E; border-radius: 14px; padding: 16px; max-width: 320px; width: 100%; text-align: center; max-height: 72vh; overflow-y: auto; }
+  .bModal .big { width: 96px; height: 96px; border-radius: 12px; border: 2px solid #2A4166; background-size: cover; background-position: center; margin: 0 auto 10px; background-color: #13233F; }
+  .bModal .ttl { font-family: 'Cinzel', serif; color: #C8AA6E; font-weight: 600; margin-bottom: 6px; }
+  .bModal .dsc { font-size: 12px; color: #AEBBCC; line-height: 1.5; text-align: left; white-space: pre-wrap; }
+  .bModal .mrow { display: flex; gap: 8px; margin-top: 12px; }
+  .bModal .mrow > * { flex: 1; }
 </style>
 </head>
 <body>
@@ -746,10 +762,10 @@ function renderPressure(){
 // ============ AUTO TIER MOVES ============
 const AUTO_MOVE_THRESHOLD = 60; // pressure score needed before a champ auto-moves a tier
 const AUTO_MOVE_MIN_VOTES = 8;  // total votes required so early noise can't move champs
-let confirmAuto = false, autoBusy = false, autoMovesList = [];
+let confirmAuto = false, autoBusy = false, autoMovesList = [], confirmAmDel = null;
 db.collection("autoMoves").orderBy("ts", "desc").limit(20).onSnapshot(snap => {
   autoMovesList = [];
-  snap.forEach(d => autoMovesList.push(d.data()));
+  snap.forEach(d => autoMovesList.push(Object.assign({id: d.id}, d.data())));
   render();
 }, err => console.error("autoMoves listener:", err));
 function computePendingMoves(){
@@ -832,28 +848,46 @@ function renderAutoStrip(){
     const upMove = TIERS.indexOf(m.to) < TIERS.indexOf(m.from);
     const col = upMove ? "#4FA8E8" : "#E85D5D";
     const rt = ROLE_TAG[m.role] || {ch: "?", col: "#888"};
-    return `<button class="cchip" data-hc="${encodeURIComponent(m.champ)}" data-hr="${m.role}">` +
+    return `<span class="cchip" role="button" data-hc="${encodeURIComponent(m.champ)}" data-hr="${m.role}">` +
       `<span class="ci" style="border-color:${col};background-image:url('${iconUrl(m.champ)}'),url('${iconUrl2(m.champ)}')"></span>` +
       `<span><span class="cn">${esc(m.champ)}<span class="rtag" style="background:${rt.col}">${rt.ch}</span></span>` +
       `<span class="cv">▲${m.up} ▼${m.down} ✓${m.agree}</span></span>` +
       `<span class="cmove"><span style="color:${TIER_COLORS[m.from] || "#888"}">${esc(m.from)}</span>→<span style="color:${TIER_COLORS[m.to] || "#888"}">${esc(m.to)}</span></span>` +
-      `<span class="cscore" style="color:${col}">${m.score}</span></button>`;
+      `<span class="cscore" style="color:${col}">${m.score}</span>` +
+      (isOwner ? `<button class="amDel" data-amdel="${m.id}">${confirmAmDel === m.id ? "Sure?" : "✕"}</button>` : "") +
+      `</span>`;
   }).join("");
   el.scrollLeft = keepScroll;
-  el.querySelectorAll(".cchip").forEach(b => b.onclick = () => {
+  el.querySelectorAll(".cchip").forEach(b => b.onclick = ev => {
+    if (ev.target.closest && ev.target.closest(".amDel")) return;
     switchRole(b.dataset.hr);
     selected = {c: decodeURIComponent(b.dataset.hc), r: b.dataset.hr};
     render();
+  });
+  el.querySelectorAll("[data-amdel]").forEach(b => b.onclick = ev => {
+    ev.stopPropagation();
+    const id = b.dataset.amdel;
+    if (confirmAmDel !== id){ confirmAmDel = id; renderAutoStrip(); return; }
+    confirmAmDel = null;
+    db.collection("autoMoves").doc(id).delete()
+      .then(() => showToast("Tier change removed from history"))
+      .catch(e => { console.error(e); showToast("Delete failed"); });
   });
 }
 
 // ============ BUILDS (OWNER-ONLY PREVIEW) ============
 const HAS_WR = typeof WR_ITEMS !== "undefined" && typeof WR_RUNES !== "undefined";
-let buildsMode = false, bChamp = null, bDocs = [], unsubBuilds = null, bSubKey = null;
-let eb = null, ebSlot = null, ebCat = null; // eb = build being edited
+let buildsMode = false, bChamp = null, bRole = "all", bDocs = [], unsubBuilds = null, bSubKey = null;
+let eb = null, ebSlot = null, ebCat = null;
+let itemInfo = null, runeInfo = null, confirmBDel = null;
+let bVotes = {}, unsubBVotes = null;
+let holdTimer = null, holdFired = false;
 const wrItem = n => HAS_WR ? WR_ITEMS.find(i => i.name === n) : null;
+const wrRune = n => HAS_WR ? WR_RUNES.find(r => r.name === n) : null;
 const wrCats = () => HAS_WR ? [...new Set(WR_ITEMS.map(i => i.cat))] : [];
 const wrTrees = () => HAS_WR ? [...new Set(WR_RUNES.filter(r => !r.keystone).map(r => r.tree))] : [];
+const isBoots = n => { const it = wrItem(n); return !!(it && /boot/i.test(it.cat + " " + it.name)); };
+const champRoles = c => ROLE_KEYS.filter(r => tierOfChamp(r, c));
 function allChampNames(){
   const s = new Set();
   for (const r of ROLE_KEYS){
@@ -861,6 +895,29 @@ function allChampNames(){
     for (const x of TIERS) for (const c of (t[x] || [])) s.add(c);
   }
   return [...s].sort();
+}
+function ensureBuildVotesSub(){
+  if (unsubBVotes || !isOwner) return;
+  unsubBVotes = db.collection("buildVotes").onSnapshot(snap => {
+    bVotes = {};
+    snap.forEach(d => { bVotes[d.id] = d.data(); });
+    if (buildsMode) render();
+  }, err => console.error("buildVotes listener:", err));
+}
+function buildCounts(id){
+  let up = 0, down = 0;
+  for (const uid of Object.keys(bVotes)){
+    const v = (bVotes[uid] && bVotes[uid][id]) || 0;
+    if (v > 0) up++; else if (v < 0) down++;
+  }
+  return {up, down, score: up - down};
+}
+const myBuildVote = id => (user && bVotes[user.uid] && bVotes[user.uid][id]) || 0;
+async function voteBuild(id, v){
+  if (!user){ showToast("Sign in to vote"); return; }
+  const cur = myBuildVote(id);
+  try { await db.collection("buildVotes").doc(user.uid).set({[id]: cur === v ? 0 : v}, {merge: true}); }
+  catch(e){ console.error(e); showToast("Vote failed — did you publish the new Firestore rules?"); }
 }
 function subscribeBuilds(champ){
   if (bSubKey === champ) return;
@@ -870,13 +927,14 @@ function subscribeBuilds(champ){
   unsubBuilds = db.collection("builds").where("champ", "==", champ).onSnapshot(snap => {
     bDocs = [];
     snap.forEach(d => bDocs.push({id: d.id, data: d.data()}));
-    bDocs.sort((a, b) => ((b.data.ts && b.data.ts.seconds) || 0) - ((a.data.ts && a.data.ts.seconds) || 0));
     render();
   }, err => console.error("builds listener:", err));
 }
 function newBuild(){
-  eb = {title: "", items: [null,null,null,null,null,null], keystone: null, tree: null, minors: {}, secTree: null, secRune: null};
-  ebSlot = null; ebCat = wrCats()[0] || null;
+  const lanes = champRoles(bChamp);
+  eb = {title: "", role: bRole !== "all" && lanes.includes(bRole) ? bRole : (lanes[0] || null),
+        items: [null,null,null,null,null,null], keystone: null, tree: null, minors: {}, secTree: null, secRune: null};
+  ebSlot = null; ebCat = wrCats()[0] || null; itemInfo = null; runeInfo = null;
   render();
 }
 const treeRows = t => {
@@ -886,7 +944,9 @@ const treeRows = t => {
 async function saveBuild(){
   const items = eb.items.filter(Boolean);
   if (eb.title.trim().length < 2){ showToast("Give the build a name (2+ chars)"); return; }
+  if (!eb.role){ showToast("Pick which lane this build is for"); return; }
   if (!items.length){ showToast("Pick at least one item"); return; }
+  if (!items.some(isBoots)){ showToast("One of the items has to be boots!"); return; }
   if (!eb.keystone){ showToast("Pick a keystone rune"); return; }
   const rows = eb.tree ? treeRows(eb.tree) : [];
   if (!rows.length || rows.some(rw => !eb.minors[rw])){ showToast("Pick one rune from each row of your primary tree"); return; }
@@ -894,7 +954,7 @@ async function saveBuild(){
   if (!eb.secRune){ showToast("Pick 1 secondary rune from a different tree"); return; }
   try {
     await db.collection("builds").add({
-      champ: bChamp, title: eb.title.trim().slice(0, 40), items,
+      champ: bChamp, role: eb.role, title: eb.title.trim().slice(0, 40), items,
       keystone: eb.keystone, tree: eb.tree, minors, secTree: eb.secTree, secRune: eb.secRune,
       uid: user.uid, name: myName || user.displayName || "Owner",
       ts: firebase.firestore.FieldValue.serverTimestamp()
@@ -902,22 +962,37 @@ async function saveBuild(){
     eb = null; showToast("Build saved!"); render();
   } catch(e){ console.error(e); showToast("Save failed — did you publish the new Firestore rules?"); }
 }
+function runeBtn(r, extraAttr, on){
+  return `<button class="bItem ${on ? "on" : ""}" data-rn="${encodeURIComponent(r.name)}" ${extraAttr}>` +
+    `<span class="ic" style="${r.img ? `background-image:url('${r.img}')` : ""}"></span><span class="lb">${esc(r.name)}</span></button>`;
+}
 function renderBuilds(content){
   $("hint").textContent = "Builds preview — only your account can see this";
   if (!HAS_WR){
     content.innerHTML = `<div class="panel"><div class="bNote">Builds needs the item &amp; rune data file. Run the Colab, download <b>wr_data.js</b>, and upload it to the repo next to index.html — then reload.</div></div>`;
     return;
   }
+  ensureBuildVotesSub();
   const champs = allChampNames();
   if (!bChamp) bChamp = champs[0] || null;
   subscribeBuilds(bChamp);
+  const lanes = champRoles(bChamp);
+  if (bRole !== "all" && !lanes.includes(bRole)) bRole = "all";
   let h = `<div class="bWrap"><div class="bBar">` +
     `<select id="bChampSel">${champs.map(c => `<option ${c === bChamp ? "selected" : ""}>${esc(c)}</option>`).join("")}</select>` +
     (eb ? `<button class="editBtn on" id="bCancel">Cancel</button><button class="editBtn" id="bSave">Save build</button>`
         : `<button class="editBtn" id="bNew">+ New build</button>`) + `</div>`;
+  if (!eb){
+    h += `<div class="bCats">` +
+      `<button class="bCat ${bRole === "all" ? "on" : ""}" data-brole="all">All lanes</button>` +
+      lanes.map(r => `<button class="bCat ${bRole === r ? "on" : ""}" data-brole="${r}">${ROLE_LABELS[r]}</button>`).join("") + `</div>`;
+  }
   if (eb){
     h += `<input type="text" id="bTitle" placeholder="Build name (e.g. Crit ADC)" maxlength="40" value="${esc(eb.title)}" style="width:100%;box-sizing:border-box">`;
-    h += `<div class="bSec">ITEMS</div><div class="bSlotRow">` + eb.items.map((it, i) => {
+    h += `<div class="bSec">LANE</div><div class="bCats">` +
+      lanes.map(r => `<button class="bCat ${eb.role === r ? "on" : ""}" data-erole="${r}">${ROLE_LABELS[r]}</button>`).join("") +
+      (lanes.length ? "" : `<span class="bNote">This champion isn't on the tierlist in any lane yet.</span>`) + `</div>`;
+    h += `<div class="bSec">ITEMS — one must be boots</div><div class="bSlotRow">` + eb.items.map((it, i) => {
       const d = it && wrItem(it);
       return `<button class="bSlot ${it ? "filled" : ""} ${ebSlot === i ? "sel" : ""}" data-slot="${i}" style="${d && d.img ? `background-image:url('${d.img}')` : ""}">${it ? "" : "+"}</button>`;
     }).join("") + `</div>`;
@@ -929,60 +1004,110 @@ function renderBuilds(content){
           `<button class="bItem" data-pi="${encodeURIComponent(i.name)}"><span class="ic" style="${i.img ? `background-image:url('${i.img}')` : ""}"></span><span class="lb">${esc(i.name)}</span></button>`).join("") +
         `</div></div>`;
     }
-    const ks = WR_RUNES.filter(r => r.keystone);
-    h += `<div class="bSec">KEYSTONE</div><div class="bGrid">` + ks.map(r =>
-      `<button class="bItem ${eb.keystone === r.name ? "on" : ""}" data-ks="${encodeURIComponent(r.name)}"><span class="ic" style="${r.img ? `background-image:url('${r.img}')` : ""}"></span><span class="lb">${esc(r.name)}</span></button>`).join("") + `</div>`;
+    h += `<div class="bSec">KEYSTONE</div><div class="bGrid">` +
+      WR_RUNES.filter(r => r.keystone).map(r => runeBtn(r, `data-ks="1"`, eb.keystone === r.name)).join("") + `</div>`;
     h += `<div class="bSec">PRIMARY TREE — one rune per row</div><div class="bCats">` +
       wrTrees().map(t => `<button class="bCat ${eb.tree === t ? "on" : ""}" data-tree="${esc(t)}">${esc(t)}</button>`).join("") + `</div>`;
     if (eb.tree){
       const tR = WR_RUNES.filter(r => !r.keystone && r.tree === eb.tree);
       for (const rw of treeRows(eb.tree)){
-        h += `<div class="bNote">Row ${rw} — pick 1</div><div class="bGrid">` + tR.filter(r => (r.row || 1) === rw).map(r =>
-          `<button class="bItem ${eb.minors[rw] === r.name ? "on" : ""}" data-mn="${encodeURIComponent(r.name)}" data-row="${rw}"><span class="ic" style="${r.img ? `background-image:url('${r.img}')` : ""}"></span><span class="lb">${esc(r.name)}</span></button>`).join("") + `</div>`;
+        h += `<div class="bRow"><div class="bGrid">` +
+          tR.filter(r => (r.row || 1) === rw).map(r => runeBtn(r, `data-mn="1" data-row="${rw}"`, eb.minors[rw] === r.name)).join("") +
+          `</div></div>`;
       }
     }
     h += `<div class="bSec">SECONDARY — 1 rune from a different tree</div><div class="bCats">` +
       wrTrees().filter(t => t !== eb.tree).map(t => `<button class="bCat ${eb.secTree === t ? "on" : ""}" data-stree="${esc(t)}">${esc(t)}</button>`).join("") + `</div>`;
     if (eb.secTree){
-      h += `<div class="bGrid">` + WR_RUNES.filter(r => !r.keystone && r.tree === eb.secTree).map(r =>
-        `<button class="bItem ${eb.secRune === r.name ? "on" : ""}" data-sr="${encodeURIComponent(r.name)}"><span class="ic" style="${r.img ? `background-image:url('${r.img}')` : ""}"></span><span class="lb">${esc(r.name)}</span></button>`).join("") + `</div>`;
+      h += `<div class="bGrid">` + WR_RUNES.filter(r => !r.keystone && r.tree === eb.secTree)
+        .map(r => runeBtn(r, `data-sr="1"`, eb.secRune === r.name)).join("") + `</div>`;
     }
+    h += `<div class="bNote">Tip: hold a rune to read what it does. Tap an item to see its details before adding.</div>`;
   } else {
-    if (!bDocs.length) h += `<div class="bNote">No builds for ${esc(bChamp || "this champion")} yet.</div>`;
-    for (const d of bDocs){
+    const shown = bDocs.filter(d => bRole === "all" || d.data.role === bRole)
+      .sort((a, b) => buildCounts(b.id).score - buildCounts(a.id).score ||
+        ((b.data.ts && b.data.ts.seconds) || 0) - ((a.data.ts && a.data.ts.seconds) || 0));
+    if (!shown.length) h += `<div class="bNote">No builds for ${esc(bChamp || "this champion")}${bRole !== "all" ? " in " + ROLE_LABELS[bRole] : ""} yet.</div>`;
+    for (const d of shown){
       const b = d.data;
-      h += `<div class="bCard"><div class="t">${esc(b.title)} <span class="bNote" style="display:inline">— by ${esc(nameOf(b.uid, b.name))}</span>` +
-        `<button class="cdel" data-bdel="${d.id}" style="float:right">✕</button></div>` +
+      const rt = ROLE_TAG[b.role];
+      const {up, down, score} = buildCounts(d.id);
+      const mv = myBuildVote(d.id);
+      h += `<div class="bCard"><div class="t">${esc(b.title)}` +
+        (rt ? `<span class="bLane" style="background:${rt.col}">${esc(ROLE_LABELS[b.role])}</span>` : "") +
+        ` <span class="bNote" style="display:inline">— by ${esc(nameOf(b.uid, b.name))}</span>` +
+        `<button class="cdel" data-bdel="${d.id}" style="float:right">${confirmBDel === d.id ? "Delete this build?" : "✕"}</button></div>` +
         (b.items || []).map(n => { const it = wrItem(n); return `<span class="bMini" title="${esc(n)}" style="${it && it.img ? `background-image:url('${it.img}')` : ""}"></span>`; }).join("") +
-        `<div class="bNote">Runes: ${esc(b.keystone || "")} · ${esc((b.minors || []).join(", "))} (${esc(b.tree || "")}) + ${esc(b.secRune || "")} (${esc(b.secTree || "")})</div></div>`;
+        `<div class="bNote">Runes: ${esc(b.keystone || "")} · ${esc((b.minors || []).join(", "))} (${esc(b.tree || "")}) + ${esc(b.secRune || "")} (${esc(b.secTree || "")})</div>` +
+        `<div class="bVoteRow"><button class="bVote ${mv > 0 ? "mine" : ""}" data-bv="1" data-bid="${d.id}" style="color:#4FA8E8">▲ ${up}</button>` +
+        `<button class="bVote ${mv < 0 ? "mine" : ""}" data-bv="-1" data-bid="${d.id}" style="color:#E85D5D">▼ ${down}</button>` +
+        `<span class="bScore">${score > 0 ? "+" + score : score}</span></div></div>`;
     }
   }
   h += `</div>`;
+  // info popups
+  if (itemInfo){
+    const it = wrItem(itemInfo);
+    if (it) h += `<div class="bModalBg" id="mBg"><div class="bModal">` +
+      `<div class="big" style="${it.img ? `background-image:url('${it.img}')` : ""}"></div>` +
+      `<div class="ttl">${esc(it.name)}${it.gold ? ` · ${esc(it.gold)}g` : ""}</div>` +
+      `<div class="dsc">${esc(it.desc || "No description in the data yet.")}</div>` +
+      `<div class="mrow">${ebSlot !== null ? `<button class="authBtn gold" id="mAdd">Add to build</button>` : ""}<button class="authBtn" id="mClose">Close</button></div></div></div>`;
+  }
+  if (runeInfo){
+    const rn = wrRune(runeInfo);
+    if (rn) h += `<div class="bModalBg" id="mBg"><div class="bModal">` +
+      `<div class="big" style="${rn.img ? `background-image:url('${rn.img}')` : ""}"></div>` +
+      `<div class="ttl">${esc(rn.name)}</div>` +
+      `<div class="bNote">${rn.keystone ? "Keystone" : esc(rn.tree) + " · row " + (rn.row || 1)}</div>` +
+      `<div class="dsc">${esc(rn.desc || "No description in the data yet.")}</div>` +
+      `<div class="mrow"><button class="authBtn" id="mClose">Close</button></div></div></div>`;
+  }
   content.innerHTML = h;
-  $("bChampSel").onchange = e => { bChamp = e.target.value; eb = null; render(); };
+  // wiring
+  $("bChampSel").onchange = e => { bChamp = e.target.value; eb = null; confirmBDel = null; render(); };
   if ($("bNew")) $("bNew").onclick = newBuild;
   if ($("bCancel")) $("bCancel").onclick = () => { eb = null; render(); };
   if ($("bSave")) $("bSave").onclick = saveBuild;
   if ($("bTitle")) $("bTitle").oninput = e => { eb.title = e.target.value; };
+  content.querySelectorAll("[data-brole]").forEach(b => b.onclick = () => { bRole = b.dataset.brole; confirmBDel = null; render(); });
+  content.querySelectorAll("[data-erole]").forEach(b => b.onclick = () => { eb.role = b.dataset.erole; render(); });
   content.querySelectorAll("[data-slot]").forEach(b => b.onclick = () => { ebSlot = ebSlot === +b.dataset.slot ? null : +b.dataset.slot; render(); });
   content.querySelectorAll("[data-cat]").forEach(b => b.onclick = () => { ebCat = b.dataset.cat; render(); });
   content.querySelectorAll("[data-clear]").forEach(b => b.onclick = () => { eb.items[ebSlot] = null; ebSlot = null; render(); });
-  content.querySelectorAll("[data-pi]").forEach(b => b.onclick = () => { eb.items[ebSlot] = decodeURIComponent(b.dataset.pi); ebSlot = null; render(); });
-  content.querySelectorAll("[data-ks]").forEach(b => b.onclick = () => { eb.keystone = decodeURIComponent(b.dataset.ks); render(); });
+  content.querySelectorAll("[data-pi]").forEach(b => b.onclick = () => { itemInfo = decodeURIComponent(b.dataset.pi); render(); });
+  // rune buttons: tap = act, hold = show description
+  const bindRune = (b, act) => {
+    const name = decodeURIComponent(b.dataset.rn);
+    b.oncontextmenu = e => e.preventDefault();
+    b.onpointerdown = () => { holdFired = false; clearTimeout(holdTimer);
+      holdTimer = setTimeout(() => { holdFired = true; runeInfo = name; render(); }, 450); };
+    b.onpointerup = b.onpointerleave = b.onpointercancel = () => clearTimeout(holdTimer);
+    b.onclick = () => { if (holdFired){ holdFired = false; return; } act(name); };
+  };
+  content.querySelectorAll("[data-ks]").forEach(b => bindRune(b, n => { eb.keystone = eb.keystone === n ? null : n; render(); }));
+  content.querySelectorAll("[data-mn]").forEach(b => { const rw = +b.dataset.row;
+    bindRune(b, n => { eb.minors[rw] = eb.minors[rw] === n ? null : n; render(); }); });
+  content.querySelectorAll("[data-sr]").forEach(b => bindRune(b, n => { eb.secRune = eb.secRune === n ? null : n; render(); }));
   content.querySelectorAll("[data-tree]").forEach(b => b.onclick = () => { if (eb.tree !== b.dataset.tree){ eb.tree = b.dataset.tree; eb.minors = {}; if (eb.secTree === eb.tree){ eb.secTree = null; eb.secRune = null; } } render(); });
-  content.querySelectorAll("[data-mn]").forEach(b => b.onclick = () => {
-    const n = decodeURIComponent(b.dataset.mn), rw = +b.dataset.row;
-    eb.minors[rw] = eb.minors[rw] === n ? null : n; // tap again to deselect; picking replaces the row's choice
-    render();
-  });
   content.querySelectorAll("[data-stree]").forEach(b => b.onclick = () => { if (eb.secTree !== b.dataset.stree){ eb.secTree = b.dataset.stree; eb.secRune = null; } render(); });
-  content.querySelectorAll("[data-sr]").forEach(b => b.onclick = () => { eb.secRune = decodeURIComponent(b.dataset.sr); render(); });
+  content.querySelectorAll("[data-bv]").forEach(b => b.onclick = () => voteBuild(b.dataset.bid, +b.dataset.bv));
   content.querySelectorAll("[data-bdel]").forEach(b => b.onclick = () => {
-    db.collection("builds").doc(b.dataset.bdel).delete().catch(e => { console.error(e); showToast("Delete failed"); });
+    const id = b.dataset.bdel;
+    if (confirmBDel !== id){ confirmBDel = id; render(); return; }
+    confirmBDel = null;
+    db.collection("builds").doc(id).delete()
+      .then(() => showToast("Build deleted"))
+      .catch(e => { console.error(e); showToast("Delete failed"); });
   });
+  if ($("mBg")) $("mBg").onclick = ev => { if (ev.target.id === "mBg"){ itemInfo = null; runeInfo = null; render(); } };
+  if ($("mClose")) $("mClose").onclick = () => { itemInfo = null; runeInfo = null; render(); };
+  if ($("mAdd")) $("mAdd").onclick = () => { if (ebSlot !== null) eb.items[ebSlot] = itemInfo; ebSlot = null; itemInfo = null; render(); };
 }
 
 // ============ RENDER ============
+
+
 
 function champIconHtml(name, borderColor, glow){
   const style = `border-color:${borderColor};${glow ? `box-shadow:0 0 8px ${glow};` : ""}`;
@@ -1058,6 +1183,7 @@ function render(){
           `<button class="tpick rm" data-wcv="1">${confirmChampWipe ? "Tap again: wipe votes" : "Wipe this champ's votes"}</button>` +
           `</div>`;
       }
+      if (isOwner) html += `<button class="editBtn" id="openBuilds" style="margin-top:10px">Builds for ${esc(selC)} ›</button>`;
       html += `</div>`;
     }
   }
@@ -1114,6 +1240,7 @@ function render(){
     "wipeRole":()=>{ confirmWipe==="role" ? wipeVotes("role") : (confirmWipe="role", render()); },
     "wipeAll":()=>{ confirmWipe==="all" ? wipeVotes("all") : (confirmWipe="all", render()); },
     "wipeCancel":()=>{ confirmWipe=null; render(); },
+    "openBuilds":()=>{ const s = selected; if (!s) return; buildsMode = true; eb = null; confirmBDel = null; bChamp = s.c; bRole = role === "all" ? "all" : s.r; render(); },
     "inBtn2":signIn};
   for (const id of Object.keys(w)){ const el = $(id); if (el) el.onclick = w[id]; }
 }
