@@ -886,6 +886,15 @@ function renderAutoStrip(){
 
 // ============ BUILDS ============
 const HAS_WR = typeof WR_ITEMS !== "undefined" && typeof WR_RUNES !== "undefined";
+const DD_SPELL = n => `https://ddragon.leagueoflegends.com/cdn/${DD_VER}/img/spell/Summoner${n}.png`;
+const WR_SPELLS = [
+  {name:"Flash", img:DD_SPELL("Flash")}, {name:"Ignite", img:DD_SPELL("Dot")},
+  {name:"Heal", img:DD_SPELL("Heal")}, {name:"Barrier", img:DD_SPELL("Barrier")},
+  {name:"Exhaust", img:DD_SPELL("Exhaust")}, {name:"Ghost", img:DD_SPELL("Haste")},
+  {name:"Smite", img:DD_SPELL("Smite")}, {name:"Mark", img:DD_SPELL("Snowball")},
+  {name:"Cleanse", img:DD_SPELL("Boost")}
+];
+const wrSpell = n => WR_SPELLS.find(s => s.name === n);
 let buildsMode = false, bChamp = null, bRole = "all", bSearch = "";
 let bAll = [], unsubBuilds = null;
 let eb = null, ebSlot = null, ebCat = null;
@@ -941,7 +950,7 @@ function newBuild(){
   const lanes = champRoles(bChamp);
   ebEditId = null;
   eb = {title: "", role: bRole !== "all" && lanes.includes(bRole) ? bRole : (lanes[0] || null),
-        items: [null,null,null,null,null,null], keystone: null, tree: null, minors: {}, secTree: null, secRune: null, def: false};
+        items: [null,null,null,null,null,null], spells: [null,null], keystone: null, tree: null, minors: {}, secTree: null, secRune: null, def: false};
   ebSlot = null; ebCat = wrCats()[0] || null; itemInfo = null; runeInfo = null;
   render();
 }
@@ -951,8 +960,10 @@ function editBuild(d){
   for (const n of (b.minors || [])){ const r = wrRune(n); minors[(r && r.row) || 1] = n; }
   const items = (b.items || []).slice(0, 6);
   while (items.length < 6) items.push(null);
+  const spells = (b.spells || []).slice(0, 2);
+  while (spells.length < 2) spells.push(null);
   ebEditId = d.id;
-  eb = {title: b.title || "", role: b.role || null, items, keystone: b.keystone || null,
+  eb = {title: b.title || "", role: b.role || null, items, spells, keystone: b.keystone || null,
         tree: b.tree || null, minors, secTree: b.secTree || null, secRune: b.secRune || null, def: !!b.def};
   ebSlot = null; ebCat = wrCats()[0] || null; itemInfo = null; runeInfo = null; confirmBDel = null;
   render();
@@ -969,13 +980,15 @@ async function saveBuild(){
   if (!items.length){ showToast("Pick at least one item"); return; }
   if (new Set(items).size !== items.length){ showToast("No duplicate items allowed"); return; }
   if (!items.some(isBoots)){ showToast("One of the items has to be boots!"); return; }
+  const spells = eb.spells.filter(Boolean);
+  if (spells.length !== 2){ showToast("Pick 2 summoner spells"); return; }
   if (!eb.keystone){ showToast("Pick a keystone rune"); return; }
   const rows = eb.tree ? treeRows(eb.tree) : [];
   if (!rows.length || rows.some(rw => !eb.minors[rw])){ showToast("Pick one rune from each row of your primary tree"); return; }
   const minors = rows.map(rw => eb.minors[rw]);
   if (!eb.secRune){ showToast("Pick 1 secondary rune from a different tree"); return; }
   try {
-    const fields = {role: eb.role, title: eb.title.trim().slice(0, 40), items,
+    const fields = {role: eb.role, title: eb.title.trim().slice(0, 40), items, spells,
       keystone: eb.keystone, tree: eb.tree, minors, secTree: eb.secTree, secRune: eb.secRune,
       def: !!(eb.def && isOwner)};
     if (ebEditId){
@@ -1019,6 +1032,8 @@ function buildCardHtml(d){
     (rt ? `<span class="bLane" style="background:${rt.col}">${esc(ROLE_LABELS[b.role])}</span>` : "") +
     ` <span class="bNote" style="display:inline">— by ${esc(authorOf(b))}</span>${del}</div>` +
     (b.items || []).map(n => { const it = wrItem(n); return `<span class="bMini" title="${esc(n)}" style="${it && it.img ? `background-image:url('${it.img}')` : ""}"></span>`; }).join("") +
+    ((b.spells && b.spells.length) ? `<span style="display:inline-block;width:10px"></span>` +
+      b.spells.map(n => { const s = wrSpell(n); return `<span class="bMini" title="${esc(n)}" style="border-color:#5A9BD8;${s ? `background-image:url('${s.img}')` : ""}"></span>`; }).join("") : "") +
     `<div style="margin-top:6px">` + runeMini(b.keystone, true) +
     (b.minors || []).map(n => runeMini(n)).join("") + (b.secRune ? runeMini(b.secRune) : "") +
     `<span class="bNote" style="display:inline;margin-left:4px">${esc(b.tree || "")} + ${esc(b.secTree || "")}</span></div>` +
@@ -1127,6 +1142,8 @@ function renderBuilds(content){
           `<button class="bItem" data-pi="${encodeURIComponent(i.name)}" style="${eb.items.includes(i.name) ? "opacity:0.35" : ""}"><span class="ic" style="${i.img ? `background-image:url('${i.img}')` : ""}"></span><span class="lb">${esc(i.name)}</span></button>`).join("") +
         `</div></div>`;
     }
+    h += `<div class="bSec">SUMMONER SPELLS — pick 2</div><div class="bGrid">` + WR_SPELLS.map(s =>
+      `<button class="bItem ${eb.spells.includes(s.name) ? "on" : ""}" data-sp="${encodeURIComponent(s.name)}"><span class="ic" style="background-image:url('${s.img}')"></span><span class="lb">${esc(s.name)}</span></button>`).join("") + `</div>`;
     h += `<div class="bSec">KEYSTONE</div><div class="bGrid">` +
       WR_RUNES.filter(r => r.keystone).map(r => runeBtn(r, `data-ks="1"`, eb.keystone === r.name)).join("") + `</div>`;
     h += `<div class="bSec">PRIMARY TREE — one rune per row</div><div class="bCats">` +
@@ -1197,6 +1214,13 @@ function renderBuilds(content){
       n => { eb.minors[rw] = eb.minors[rw] === n ? null : n; render(); }); });
   content.querySelectorAll("[data-sr]").forEach(b => bindHold(b, decodeURIComponent(b.dataset.rn), showRune,
     n => { eb.secRune = eb.secRune === n ? null : n; render(); }));
+  content.querySelectorAll("[data-sp]").forEach(b => b.onclick = () => {
+    const n = decodeURIComponent(b.dataset.sp);
+    const i = eb.spells.indexOf(n);
+    if (i >= 0) eb.spells[i] = null;
+    else { const e2 = eb.spells.indexOf(null); if (e2 < 0){ showToast("Only 2 spells — deselect one first"); return; } eb.spells[e2] = n; }
+    render();
+  });
   content.querySelectorAll("[data-tree]").forEach(b => b.onclick = () => { if (eb.tree !== b.dataset.tree){ eb.tree = b.dataset.tree; eb.minors = {}; if (eb.secTree === eb.tree){ eb.secTree = null; eb.secRune = null; } } render(); });
   content.querySelectorAll("[data-stree]").forEach(b => b.onclick = () => { if (eb.secTree !== b.dataset.stree){ eb.secTree = b.dataset.stree; eb.secRune = null; } render(); });
   content.querySelectorAll("[data-bv]").forEach(b => b.onclick = () => voteBuild(b.dataset.bid, +b.dataset.bv));
