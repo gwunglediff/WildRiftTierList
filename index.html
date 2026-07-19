@@ -164,6 +164,8 @@
   .bRowBtn .txt { min-width: 0; }
   .bRowBtn .cn { font-size: 13px; font-weight: 600; display: block; }
   .bRowBtn .cv { font-size: 11px; color: #AEBBCC; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bRowBtn .cv { margin-bottom: 2px; }
+  .bMini2 { width: 22px; height: 22px; border-radius: 5px; border: 1px solid #2A4166; background-size: cover; background-position: center; display: inline-block; margin: 3px 3px 0 0; vertical-align: middle; }
 </style>
 </head>
 <body>
@@ -376,7 +378,7 @@ function listenMeta(){
 }
 function switchRole(r){
   role = r; selected = null; confirmWipe = null; confirmChampWipe = false; confirmEraDel = false; confirmCopy = false;
-  if (buildsMode){ bChamp = null; eb = null; confirmBDel = null; }
+  if (buildsMode){ bChamp = null; eb = null; ebEditId = null; confirmBDel = null; }
   if (role === "all") editMode = false;
   refreshSubs(); render();
 }
@@ -934,11 +936,25 @@ function buildsFor(c, lane){
       (b.data.def ? 1 : 0) - (a.data.def ? 1 : 0) ||
       ((b.data.ts && b.data.ts.seconds) || 0) - ((a.data.ts && a.data.ts.seconds) || 0));
 }
+let ebEditId = null;
 function newBuild(){
   const lanes = champRoles(bChamp);
+  ebEditId = null;
   eb = {title: "", role: bRole !== "all" && lanes.includes(bRole) ? bRole : (lanes[0] || null),
         items: [null,null,null,null,null,null], keystone: null, tree: null, minors: {}, secTree: null, secRune: null, def: false};
   ebSlot = null; ebCat = wrCats()[0] || null; itemInfo = null; runeInfo = null;
+  render();
+}
+function editBuild(d){
+  const b = d.data;
+  const minors = {};
+  for (const n of (b.minors || [])){ const r = wrRune(n); minors[(r && r.row) || 1] = n; }
+  const items = (b.items || []).slice(0, 6);
+  while (items.length < 6) items.push(null);
+  ebEditId = d.id;
+  eb = {title: b.title || "", role: b.role || null, items, keystone: b.keystone || null,
+        tree: b.tree || null, minors, secTree: b.secTree || null, secRune: b.secRune || null, def: !!b.def};
+  ebSlot = null; ebCat = wrCats()[0] || null; itemInfo = null; runeInfo = null; confirmBDel = null;
   render();
 }
 const treeRows = t => {
@@ -959,14 +975,21 @@ async function saveBuild(){
   const minors = rows.map(rw => eb.minors[rw]);
   if (!eb.secRune){ showToast("Pick 1 secondary rune from a different tree"); return; }
   try {
-    await db.collection("builds").add({
-      champ: bChamp, role: eb.role, title: eb.title.trim().slice(0, 40), items,
+    const fields = {role: eb.role, title: eb.title.trim().slice(0, 40), items,
       keystone: eb.keystone, tree: eb.tree, minors, secTree: eb.secTree, secRune: eb.secRune,
-      uid: user.uid, name: myName || user.displayName || "Summoner",
-      def: !!(eb.def && isOwner),
-      ts: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    eb = null; showToast("Build saved!"); render();
+      def: !!(eb.def && isOwner)};
+    if (ebEditId){
+      await db.collection("builds").doc(ebEditId).update(fields);
+      showToast("Build updated!");
+    } else {
+      await db.collection("builds").add(Object.assign(fields, {
+        champ: bChamp,
+        uid: user.uid, name: myName || user.displayName || "Summoner",
+        ts: firebase.firestore.FieldValue.serverTimestamp()
+      }));
+      showToast("Build saved!");
+    }
+    eb = null; ebEditId = null; render();
   } catch(e){ console.error(e); showToast("Save failed — try again"); }
 }
 function runeMini(n, key){
@@ -990,7 +1013,7 @@ function buildCardHtml(d){
   if (canDel){
     del = confirmBDel === d.id
       ? `<span style="float:right;font-size:11px;color:#E85D5D">Delete this build? <button class="bVote" data-bdelyes="${d.id}" style="color:#E85D5D">Yes</button> <button class="bVote" data-bdelno="1">No</button></span>`
-      : `<button class="cdel" data-bdel="${d.id}" style="float:right">✕</button>`;
+      : `<button class="cdel" data-bdel="${d.id}" style="float:right">✕</button><button class="cdel" data-bedit="${d.id}" style="float:right;color:#C8AA6E;margin-right:8px">✎</button>`;
   }
   return `<div class="bCard"><div class="t">${esc(b.title)}` +
     (rt ? `<span class="bLane" style="background:${rt.col}">${esc(ROLE_LABELS[b.role])}</span>` : "") +
@@ -1017,12 +1040,16 @@ function buildRowsHtml(){
     for (const {c, r} of entries){
       const top = buildsFor(c, r)[0];
       const sub = top
-        ? `“${esc(top.data.title)}” by ${esc(authorOf(top.data))} · net ${buildCounts(top.id).score >= 0 ? "+" : ""}${buildCounts(top.id).score}`
+        ? `“${esc(top.data.title)}” by ${esc(authorOf(top.data))} · net votes ${buildCounts(top.id).score >= 0 ? "+" : ""}${buildCounts(top.id).score}`
         : "No builds yet — be the first!";
+      const itemsRow = top ? `<span class="mini2row">` + (top.data.items || []).map(n => {
+        const it = wrItem(n);
+        return `<span class="bMini2" title="${esc(n)}" style="${it && it.img ? `background-image:url('${it.img}')` : ""}"></span>`;
+      }).join("") + `</span>` : "";
       h += `<button class="bRowBtn" data-bc="${encodeURIComponent(c)}" data-br="${r}">` +
         `<span class="ci" style="background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span>` +
-        `<span class="txt"><span class="cn">${esc(c)}${role === "all" ? `<span class="rtag" style="background:${ROLE_TAG[r].col}">${ROLE_TAG[r].ch}</span>` : ""}</span>` +
-        `<span class="cv">${sub}</span></span></button>`;
+        `<span class="txt"><span class="cn">${esc(c)}${role === "all" ? ` <span style="color:${ROLE_TAG[r].col};font-weight:600;font-size:12px">· ${ROLE_LABELS[r]}</span>` : ""}</span>` +
+        `<span class="cv">${sub}</span>${itemsRow}</span></button>`;
     }
   }
   return h || `<div class="bNote" style="margin-top:10px">No champions match that search.</div>`;
@@ -1068,10 +1095,14 @@ function renderBuilds(content){
   $("hint").textContent = "Tap ▲/▼ to vote on builds · hold items & runes for details";
   const lanes = champRoles(bChamp);
   if (bRole !== "all" && !lanes.includes(bRole)) bRole = "all";
+  const dTier = bRole !== "all" ? tierOfChamp(bRole, bChamp)
+    : (TIERS.find(t => lanes.some(r => tierOfChamp(r, bChamp) === t)) || null);
+  const dCol = TIER_COLORS[dTier] || "#C8AA6E";
   h += `<div class="bWrap"><div class="bBar">` +
     `<button class="editBtn" id="bBack">‹ Back</button>` +
-    `<span class="pname" style="margin:0">${esc(bChamp)}</span>` +
-    (eb ? `<button class="editBtn on" id="bCancel">Cancel</button><button class="editBtn" id="bSave">Save build</button>`
+    `<span style="width:40px;height:40px;border-radius:9px;border:2px solid ${dCol};background-size:cover;background-position:center;flex-shrink:0;background-image:url('${iconUrl(bChamp)}'),url('${iconUrl2(bChamp)}')"></span>` +
+    `<span class="pname" style="margin:0;color:${dCol}">${esc(bChamp)}${dTier ? ` <span style="font-size:12px;vertical-align:2px">· ${esc(dTier)} tier</span>` : ""}</span>` +
+    (eb ? `<button class="editBtn on" id="bCancel">Cancel</button><button class="editBtn" id="bSave">${ebEditId ? "Save changes" : "Save build"}</button>`
         : (user ? `<button class="editBtn" id="bNew">+ New build</button>` : `<span class="bNote">Sign in to post builds</span>`)) + `</div>`;
   if (!eb){
     h += `<div class="bCats">` +
@@ -1141,9 +1172,9 @@ function renderBuilds(content){
   }
   content.innerHTML = h;
   // wiring
-  $("bBack").onclick = () => { bChamp = null; eb = null; confirmBDel = null; itemInfo = null; runeInfo = null; render(); };
+  $("bBack").onclick = () => { bChamp = null; eb = null; ebEditId = null; confirmBDel = null; itemInfo = null; runeInfo = null; render(); };
   if ($("bNew")) $("bNew").onclick = newBuild;
-  if ($("bCancel")) $("bCancel").onclick = () => { eb = null; render(); };
+  if ($("bCancel")) $("bCancel").onclick = () => { eb = null; ebEditId = null; render(); };
   if ($("bSave")) $("bSave").onclick = saveBuild;
   if ($("bTitle")) $("bTitle").oninput = e => { eb.title = e.target.value; };
   content.querySelectorAll("[data-brole]").forEach(b => b.onclick = () => { bRole = b.dataset.brole; confirmBDel = null; render(); });
@@ -1170,6 +1201,10 @@ function renderBuilds(content){
   content.querySelectorAll("[data-stree]").forEach(b => b.onclick = () => { if (eb.secTree !== b.dataset.stree){ eb.secTree = b.dataset.stree; eb.secRune = null; } render(); });
   content.querySelectorAll("[data-bv]").forEach(b => b.onclick = () => voteBuild(b.dataset.bid, +b.dataset.bv));
   content.querySelectorAll("[data-bdel]").forEach(b => b.onclick = () => { confirmBDel = b.dataset.bdel; render(); });
+  content.querySelectorAll("[data-bedit]").forEach(b => b.onclick = () => {
+    const d = bAll.find(x => x.id === b.dataset.bedit);
+    if (d) editBuild(d);
+  });
   content.querySelectorAll("[data-bdelno]").forEach(b => b.onclick = () => { confirmBDel = null; render(); });
   content.querySelectorAll("[data-bdelyes]").forEach(b => b.onclick = () => {
     const id = b.dataset.bdelyes;
@@ -1328,7 +1363,7 @@ function render(){
   for (const id of Object.keys(w)){ const el = $(id); if (el) el.onclick = w[id]; }
 }
 $("editBtn").onclick = () => { editMode = !editMode; selected = null; confirmChampWipe = false; render(); };
-$("buildsBtn").onclick = () => { buildsMode = !buildsMode; editMode = false; selected = null; eb = null; bChamp = null; confirmBDel = null; render(); };
+$("buildsBtn").onclick = () => { buildsMode = !buildsMode; editMode = false; selected = null; eb = null; ebEditId = null; bChamp = null; confirmBDel = null; render(); };
 
 // ============ MUSIC ============
 const bgm = $("bgm");
