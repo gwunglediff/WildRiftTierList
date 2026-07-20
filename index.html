@@ -221,6 +221,57 @@
   .bModal .goldbadge { display: inline-block; background: #C8AA6E; color: #0A1428; font-weight: 800; font-family: 'Cinzel', serif;
     border-radius: 8px; padding: 2px 10px; font-size: 13px; margin-bottom: 8px; }
   .bModal .meta { font-size: 11px; color: #7B8BA3; margin-bottom: 8px; }
+  /* ===== Champion Hub ===== */
+  .hub { margin: 0 0 40px; }
+  .hubHero { position: relative; height: 260px; border-radius: 0 0 20px 20px; overflow: hidden; background: #0A1428; box-shadow: 0 6px 30px rgba(0,0,0,0.5); }
+  .hubHero .art { position: absolute; inset: 0; background-size: cover; background-position: center 22%; transform: scale(1.05); filter: saturate(1.05); }
+  .hubHero .scrim { position: absolute; inset: 0; background:
+      linear-gradient(180deg, rgba(6,14,30,0.15) 0%, rgba(6,14,30,0.35) 45%, rgba(6,14,30,0.92) 100%),
+      radial-gradient(120% 80% at 12% 100%, rgba(200,170,110,0.18), transparent 60%); }
+  .hubHero .titlewrap { position: absolute; left: 18px; right: 18px; bottom: 14px; z-index: 2; }
+  .hubHero .cname { font-family: 'Cinzel', serif; font-weight: 800; font-size: 34px; color: #F4EFE6; text-shadow: 0 2px 14px rgba(0,0,0,0.8); letter-spacing: 1px; line-height: 1.05; }
+  .hubHero .csub { font-size: 12px; color: #C8AA6E; font-family: 'Cinzel', serif; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+  .hubBack { position: absolute; top: 12px; left: 12px; z-index: 3; background: rgba(10,20,40,0.7); border: 1px solid #2A4166; color: #E8EDF4; border-radius: 10px; padding: 7px 13px; font-size: 13px; font-family: inherit; cursor: pointer; backdrop-filter: blur(4px); }
+  .hubEditBtn { position: absolute; top: 12px; right: 12px; z-index: 3; background: rgba(107,63,160,0.85); border: none; color: #F0E9FF; border-radius: 10px; padding: 7px 13px; font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer; }
+  .tierPills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .tierPill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px 3px 6px; border-radius: 20px; font-size: 11px; font-weight: 700;
+    background: rgba(10,20,40,0.6); border: 1px solid; backdrop-filter: blur(3px); }
+  .tierPill .lane { opacity: 0.85; font-weight: 600; font-size: 10px; letter-spacing: .5px; }
+  .hubBody { margin: 14px 14px 0; }
+  .hubCard { background: rgba(19,35,63,0.9); border: 1px solid #2A4166; border-radius: 14px; padding: 14px; margin-bottom: 14px; }
+  .hubCard h3 { font-family: 'Cinzel', serif; font-size: 13px; color: #C8AA6E; letter-spacing: 1.5px; margin: 0 0 10px; text-transform: uppercase; }
+  .hubPlay { font-size: 14px; color: #DCE4EE; line-height: 1.6; white-space: pre-wrap; }
+  .hubPlay.empty { color: #5A6B85; font-style: italic; }
+  .abilRow { display: flex; gap: 10px; flex-wrap: wrap; }
+  .abil { text-align: center; width: 60px; }
+  .abil .ai { width: 52px; height: 52px; border-radius: 12px; border: 2px solid #C8AA6E; background: #0F1F35; background-size: cover; background-position: center; margin: 0 auto; position: relative;
+    box-shadow: 0 0 9px rgba(200,170,110,0.5); display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-weight: 800; color: #C8AA6E; font-size: 20px; }
+  .abil .key { font-size: 10px; color: #8FA0B8; margin-top: 3px; font-weight: 700; }
+  .abil .ord { position: absolute; top: -7px; right: -7px; background: #C8AA6E; color: #0A1428; font-size: 10px; font-weight: 800; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; }
+  .maxLine { font-size: 13px; color: #DCE4EE; margin-top: 10px; }
+  .maxLine b { color: #C8AA6E; }
+  .cntCols { display: flex; gap: 10px; }
+  .cntCol { flex: 1; min-width: 0; }
+  .cntCol .h { font-size: 11px; font-weight: 800; letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
+  .cntCol.win .h { color: #4FC08A; }
+  .cntCol.lose .h { color: #E85D5D; }
+  .cntItem { display: flex; align-items: center; gap: 8px; background: #0F1F35; border: 1px solid #22375A; border-radius: 10px; padding: 6px 8px; margin-bottom: 6px; cursor: pointer; }
+  .cntItem .ci { width: 34px; height: 34px; border-radius: 8px; background-size: cover; background-position: center; border: 2px solid #2A4166; flex-shrink: 0; }
+  .cntItem.win .ci { border-color: #4FC08A; } .cntItem.lose .ci { border-color: #E85D5D; }
+  .cntItem .n { font-size: 12px; font-weight: 600; color: #E8EDF4; display: block; }
+  .cntItem .nt { font-size: 10px; color: #94A4BC; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cntItem .rmx { margin-left: auto; background: none; border: none; color: #E85D5D; font-size: 14px; cursor: pointer; }
+  .cntEmpty { font-size: 11px; color: #5A6B85; }
+  .finder input, .hubEdit input, .hubEdit textarea, .hubEdit select { background: #0F1F35; border: 1px solid #2A4166; color: #E8EDF4; border-radius: 8px; padding: 9px; font-size: 13px; font-family: inherit; width: 100%; box-sizing: border-box; }
+  .hubEdit textarea { min-height: 90px; resize: vertical; }
+  .hubEdit .lbl { font-size: 11px; color: #8FA0B8; margin: 10px 0 4px; letter-spacing: .5px; }
+  .hubEdit .row2 { display: flex; gap: 6px; }
+  .hubSave { background: #6B3FA0; border: none; color: #F0E9FF; font-weight: 700; border-radius: 8px; padding: 9px 16px; cursor: pointer; font-family: inherit; font-size: 13px; margin-top: 12px; }
+  .finderRes { margin-top: 8px; }
+  .staleBadge { display: inline-block; background: #7a3a2a; color: #ffd9c2; font-size: 9px; font-weight: 700; border-radius: 6px; padding: 1px 6px; margin-left: 6px; vertical-align: 1px; }
+  .patchTag { font-size: 10px; color: #7B8BA3; margin-left: 6px; }
+  .bc2 .note2 { font-size: 12px; color: #B9C6D8; background: #0d1c33; border-left: 3px solid #6B3FA0; border-radius: 0 8px 8px 0; padding: 6px 9px; margin: 6px 0; white-space: pre-wrap; word-break: break-word; }
+  .bShare { background: #13233F; border: 1px solid #2A4166; color: #9FB2CC; border-radius: 8px; padding: 5px 10px; font-size: 12px; cursor: pointer; font-family: inherit; }
 </style>
 </head>
 <body>
@@ -282,6 +333,7 @@ const db = firebase.firestore();
 
 // ============ DATA ============
 const DD_VER = "15.10.1";
+const WR_PATCH = "7.2a";
 const ICON_ID = {
   "Wukong": "MonkeyKing", "Kha'Zix": "Khazix", "Nunu & Willump": "Nunu",
   "Kog'Maw": "KogMaw", "Kai'Sa": "Kaisa", "Vel'Koz": "Velkoz",
@@ -432,7 +484,7 @@ function listenMeta(){
   }, err => console.error("meta listener:", err));
 }
 function switchRole(r){
-  role = r; selected = null; confirmWipe = null; confirmChampWipe = false; confirmEraDel = false; confirmCopy = false;
+  role = r; selected = null; hubChamp = null; confirmWipe = null; confirmChampWipe = false; confirmEraDel = false; confirmCopy = false;
   if (buildsMode){ bChamp = null; eb = null; ebEditId = null; confirmBDel = null; }
   if (role === "all") editMode = false;
   refreshSubs(); render();
@@ -1036,7 +1088,7 @@ function newBuild(){
   const lanes = champRoles(bChamp);
   ebEditId = null;
   eb = {title: "", role: bRole !== "all" && lanes.includes(bRole) ? bRole : (lanes[0] || null),
-        items: [null,null,null,null,null,null], additems: [null,null,null,null,null], spells: [null,null], keystone: null, tree: null, minors: {}, secTree: null, secRune: null, def: false};
+        items: [null,null,null,null,null,null], additems: [null,null,null,null,null], spells: [null,null], keystone: null, tree: null, minors: {}, secTree: null, secRune: null, notes: "", def: false};
   ebSlot = null; ebAddSlot = null; ebCat = wrCats()[0] || null; itemInfo = null; runeInfo = null; spellInfo = null;
   render();
 }
@@ -1052,7 +1104,7 @@ function editBuild(d){
   while (spells.length < 2) spells.push(null);
   ebEditId = d.id;
   eb = {title: b.title || "", role: b.role || null, items, additems, spells, keystone: b.keystone || null,
-        tree: b.tree || null, minors, secTree: b.secTree || null, secRune: b.secRune || null, def: !!b.def};
+        tree: b.tree || null, minors, secTree: b.secTree || null, secRune: b.secRune || null, notes: b.notes || "", def: !!b.def};
   ebSlot = null; ebAddSlot = null; ebCat = wrCats()[0] || null; itemInfo = null; runeInfo = null; spellInfo = null; confirmBDel = null;
   render();
 }
@@ -1080,7 +1132,7 @@ async function saveBuild(){
     const additems = (eb.additems || []).filter(Boolean);
     const fields = {role: eb.role, title: isDef ? "" : eb.title.trim().slice(0, 40), items, additems, spells,
       keystone: eb.keystone, tree: eb.tree, minors, secTree: eb.secTree, secRune: eb.secRune,
-      def: isDef};
+      notes: isDef ? "" : (eb.notes || "").trim().slice(0, 300), def: isDef};
     if (ebEditId){
       await db.collection("builds").doc(ebEditId).update(fields);
       showToast("Build updated!");
@@ -1088,6 +1140,7 @@ async function saveBuild(){
       await db.collection("builds").add(Object.assign(fields, {
         champ: bChamp,
         uid: user.uid, name: myName || user.displayName || "Summoner",
+        patch: isDef ? "" : WR_PATCH,
         ts: firebase.firestore.FieldValue.serverTimestamp()
       }));
       showToast("Build saved!");
@@ -1206,10 +1259,13 @@ function buildCardHtml(d){
   }
   const add = (b.additems || []).filter(Boolean);
   const cn = (buildCmts && openCmtBuild === d.id) ? buildCmts.length : "";
-  let h = `<div class="bc2" style="${outline}">`;
+  const stale = !b.def && b.patch && b.patch !== WR_PATCH;
+  let h = `<div class="bc2" id="bcard-${d.id}" style="${outline}">`;
   h += `<div class="hd"><span class="nm">${b.def ? "Default Build" : esc(b.title || "Build")}</span>` +
     (rt ? `<span class="bLane" style="background:${rt.col}">${esc(ROLE_LABELS[b.role])}</span>` : "") +
     (b.def ? "" : `<span class="by">by ${esc(authorOf(b))}</span>`) +
+    (!b.def && b.patch ? `<span class="patchTag">· ${esc(b.patch)}</span>` : "") +
+    (stale ? `<span class="staleBadge">may be outdated</span>` : "") +
     `<span class="acts">${acts}</span></div>`;
   // items + spells line
   h += `<div class="rowline">` +
@@ -1224,12 +1280,15 @@ function buildCardHtml(d){
     h += `<div class="addlabel">Additional items</div><div class="rowline">` +
       add.map(n => mini(n, "add", "bMini")).join("") + `</div>`;
   }
+  // build note (baked in)
+  if (!b.def && b.notes) h += `<div class="note2">📝 ${esc(b.notes)}</div>`;
   // vote + comments footer
   h += `<div class="foot">` +
     `<button class="bVote ${mv > 0 ? "mine" : ""}" data-bv="1" data-bid="${d.id}" style="color:#4FA8E8">▲ ${up}</button>` +
     `<button class="bVote ${mv < 0 ? "mine" : ""}" data-bv="-1" data-bid="${d.id}" style="color:#E85D5D">▼ ${down}</button>` +
     `<span class="bScore" style="${b.def ? "color:#C77DD8" : ""}">${disp > 0 ? "+" + disp : disp}</span>` +
     (b.def ? `<span class="bNote" style="display:inline;color:#C77DD8;margin:0">+5 prov.</span>` : "") +
+    `<button class="bShare" data-bshare="${d.id}">⤓ Share</button>` +
     `<button class="bcmtBtn ${openCmtBuild === d.id ? "on" : ""}" data-bctoggle="${d.id}">💬 Comments${cn !== "" ? " (" + cn + ")" : ""}</button>` +
     `</div>`;
   if (openCmtBuild === d.id) h += buildCommentsHtml(d.id, b.champ || bChamp, b.role);
@@ -1388,6 +1447,8 @@ function renderBuilds(content){
       eb.additems.map((it, i) => { const d = it && wrItem(it);
         return `<button class="bSlot add ${it ? "filled" : ""} ${ebAddSlot === i ? "sel" : ""}" data-addslot="${i}" ${it ? `data-slotitem="${encodeURIComponent(it)}"` : ""} style="${d && d.img ? `background-image:url('${d.img}')` : ""}">${it ? "" : "+"}</button>`;
       }).join("") + `</div><div class="bNote" style="margin:2px 0">Up to 5 extra picks (swaps, situational buys). They show under the runes in previews.</div>`;
+    h += `<div class="bSec" style="color:#C9B3E8">BUILD NOTE — optional</div>` +
+      `<textarea id="bNotes" maxlength="300" placeholder="Baked into the build: skill order tweaks, when to buy the additional items, matchup tips… (max 300)" style="width:100%;box-sizing:border-box;min-height:70px;resize:vertical;background:#0F1F35;border:1px solid #2A4166;color:#E8EDF4;border-radius:8px;padding:9px;font-size:13px;font-family:inherit">${esc(eb.notes || "")}</textarea>`;
     h += `<div class="bNote">Tap an item or rune to add it · hold to read what it does.</div>`;
   } else {
     let shown = buildsFor(bChamp, bRole);
@@ -1406,6 +1467,7 @@ function renderBuilds(content){
   if ($("bCancel")) $("bCancel").onclick = () => { eb = null; ebEditId = null; render(); };
   if ($("bSave")) $("bSave").onclick = saveBuild;
   if ($("bTitle")) $("bTitle").oninput = e => { eb.title = e.target.value; };
+  if ($("bNotes")) $("bNotes").oninput = e => { eb.notes = e.target.value; };
   content.querySelectorAll("[data-brole]").forEach(b => b.onclick = () => { bRole = b.dataset.brole; confirmBDel = null; render(); });
   content.querySelectorAll("[data-bsort]").forEach(b => b.onclick = () => { bSort = b.dataset.bsort; render(); });
   content.querySelectorAll("[data-erole]").forEach(b => b.onclick = () => { eb.role = b.dataset.erole; render(); });
@@ -1476,6 +1538,7 @@ function renderBuilds(content){
   content.querySelectorAll("[data-bctoggle]").forEach(b => b.onclick = () => toggleBuildComments(b.dataset.bctoggle));
   content.querySelectorAll("[data-bcpost]").forEach(b => b.onclick = () => postBuildComment(b.dataset.bcpost, decodeURIComponent(b.dataset.bcc || ""), b.dataset.bcr || ""));
   content.querySelectorAll("[data-bcdel]").forEach(b => b.onclick = () => db.collection("comments").doc(b.dataset.bcdel).delete().catch(e => { console.error(e); showToast("Delete failed"); }));
+  content.querySelectorAll("[data-bshare]").forEach(b => b.onclick = () => { const d = bAll.find(x => x.id === b.dataset.bshare); if (d) shareBuild(d); });
   if ($("bcmtIn")){ const btn = content.querySelector("[data-bcpost]"); $("bcmtIn").addEventListener("keydown", e => { if (e.key === "Enter" && btn) btn.click(); }); }
   // clickable info taps on cards
   wireInfoTaps(content);
@@ -1485,6 +1548,179 @@ function renderBuilds(content){
 function runeBtn(r, extraAttr, on){
   return `<button class="bItem ${on ? "on" : ""}" data-rn="${encodeURIComponent(r.name)}" ${extraAttr}>` +
     `<span class="ic" style="${r.img ? `background-image:url('${r.img}')` : ""}"></span><span class="lb">${esc(r.name)}</span></button>`;
+}
+
+// ============ CHAMPION HUB ============
+let hubChamp = null, hubEdit = false, hubDocs = {}, matchDocs = {}, abilCache = {}, finderQ = "";
+let unsubHub = null, unsubMatch = null, mAddSel = null;
+function ensureHubSubs(){
+  if (!unsubHub) unsubHub = db.collection("hub").onSnapshot(s => { hubDocs = {}; s.forEach(d => hubDocs[d.id] = d.data()); if (hubChamp) render(); }, e => console.error("hub:", e));
+  if (!unsubMatch) unsubMatch = db.collection("matchups").onSnapshot(s => { matchDocs = {}; s.forEach(d => matchDocs[d.id] = d.data()); if (hubChamp) render(); }, e => console.error("matchups:", e));
+}
+function loadAbilities(champ){
+  if (abilCache[champ] !== undefined) return;
+  abilCache[champ] = null; // pending
+  fetch(`https://ddragon.leagueoflegends.com/cdn/${DD_VER}/data/en_US/champion/${ddId(champ)}.json`)
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(j => { const c = j.data[ddId(champ)];
+      const base = `https://ddragon.leagueoflegends.com/cdn/${DD_VER}/img/`;
+      const out = [{key:"P", img: base+"passive/"+c.passive.image.full}];
+      ["Q","W","E","R"].forEach((k,i) => out.push({key:k, img: base+"spell/"+c.spells[i].image.full}));
+      abilCache[champ] = out; if (hubChamp === champ) render();
+    })
+    .catch(() => { abilCache[champ] = []; if (hubChamp === champ) render(); });
+}
+const openHub = c => { hubChamp = c; hubEdit = false; finderQ = ""; mAddSel = null; ensureHubSubs(); loadAbilities(c); render(); };
+function hubLanes(c){ return ROLE_KEYS.filter(r => tierOfChamp(r, c)); }
+async function saveHub(){
+  if (!isOwner) return;
+  const play = ($("hubPlayIn") ? $("hubPlayIn").value : "").slice(0, 600);
+  const maxOrder = ($("hubMaxIn") ? $("hubMaxIn").value : "").slice(0, 60);
+  try { await db.collection("hub").doc(hubChamp).set({play, maxOrder}, {merge:true}); hubEdit = false; showToast("Hub saved!"); render(); }
+  catch(e){ console.error(e); showToast("Save failed — publish the hub Firestore rule"); }
+}
+async function addMatchup(kind){ // kind: strong | weak
+  if (!isOwner || !mAddSel) return;
+  const cur = matchDocs[hubChamp] || {strong:[], weak:[]};
+  const list = (cur[kind] || []).slice();
+  if (list.some(x => x.c === mAddSel)){ showToast("Already listed"); return; }
+  list.push({c: mAddSel, note: ($("mNote") ? $("mNote").value.slice(0,60) : "")});
+  try { await db.collection("matchups").doc(hubChamp).set({[kind]: list}, {merge:true}); mAddSel = null; showToast("Saved"); render(); }
+  catch(e){ console.error(e); showToast("Save failed — publish the matchups rule"); }
+}
+async function removeMatchup(kind, champ){
+  if (!isOwner) return;
+  const cur = matchDocs[hubChamp] || {}; const list = (cur[kind] || []).filter(x => x.c !== champ);
+  try { await db.collection("matchups").doc(hubChamp).set({[kind]: list}, {merge:true}); render(); }
+  catch(e){ console.error(e); showToast("Save failed"); }
+}
+function counterFinder(){ // champs that are STRONG vs finderQ (owner knowledge)
+  const q = finderQ.trim().toLowerCase(); if (!q) return [];
+  const out = [];
+  for (const champ in matchDocs){
+    for (const m of (matchDocs[champ].strong || [])){
+      if (m.c.toLowerCase().includes(q)) out.push({picker: champ, vs: m.c, note: m.note});
+    }
+  }
+  return out;
+}
+function renderHub(content){
+  ensureHubSubs();
+  const c = hubChamp;
+  const lanes = hubLanes(c);
+  const hd = hubDocs[c] || {};
+  const md = matchDocs[c] || {};
+  const art = `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${ddId(c)}_0.jpg`;
+  const art2 = `https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${ddId(c)}_0.jpg`;
+  const heroTier = lanes.map(r => tierOfChamp(r, c)).find(Boolean);
+  const accent = TIER_COLORS[heroTier] || "#C8AA6E";
+  let h = `<div class="hub">`;
+  // hero
+  h += `<div class="hubHero"><div class="art" style="background-image:url('${art}'),url('${art2}')"></div><div class="scrim"></div>` +
+    `<button class="hubBack" id="hubBack">‹ Back</button>` +
+    (isOwner ? `<button class="hubEditBtn" id="hubEditToggle">${hubEdit ? "Done" : "✎ Edit hub"}</button>` : "") +
+    `<div class="titlewrap"><div class="cname">${esc(c)}</div>` +
+    `<div class="csub">Champion Hub</div>` +
+    `<div class="tierPills">` + (lanes.length ? lanes.map(r => { const tt = tierOfChamp(r, c); const col = TIER_COLORS[tt]||"#8AA0B8";
+        return `<span class="tierPill" style="border-color:${col};color:${col}"><span class="lane">${esc(ROLE_LABELS[r])}</span> ${esc(tt||"?")}</span>`; }).join("")
+      : `<span class="tierPill" style="border-color:#566578;color:#8AA0B8">Not on the tierlist yet</span>`) + `</div></div></div>`;
+  h += `<div class="hubBody">`;
+  if (hubEdit && isOwner){
+    // ---- owner edit panel ----
+    h += `<div class="hubCard hubEdit"><h3>Edit hub</h3>` +
+      `<div class="lbl">HOW TO PLAY / WIN CONDITION</div><textarea id="hubPlayIn" placeholder="Write how to play ${esc(c)}…">${esc(hd.play || "")}</textarea>` +
+      `<div class="lbl">ABILITY MAX ORDER (e.g. R &gt; Q &gt; W &gt; E)</div><input id="hubMaxIn" value="${esc(hd.maxOrder || "")}" placeholder="R > Q > W > E">` +
+      `<button class="hubSave" id="hubSave">Save hub</button></div>`;
+    // matchup editor
+    const opts = ["baron","jungle","mid","duo","support"].flatMap(r => (tiersByRole[r]?TIERS.flatMap(t=>tiersByRole[r][t]):[]));
+    const allChamps = [...new Set(opts)].filter(x => x !== c).sort();
+    h += `<div class="hubCard hubEdit"><h3>Counters — your call, not stats</h3>` +
+      `<div class="lbl">ADD A MATCHUP</div><div class="row2"><select id="mSel"><option value="">Pick a champion…</option>` +
+      allChamps.map(x => `<option ${mAddSel===x?"selected":""}>${esc(x)}</option>`).join("") + `</select></div>` +
+      `<input id="mNote" placeholder="Optional note (e.g. dodge his Q, then all-in)" style="margin-top:6px">` +
+      `<div class="row2" style="margin-top:8px"><button class="hubSave" style="background:#2f6b48" id="mAddWin">＋ ${esc(c)} wins vs this</button>` +
+      `<button class="hubSave" style="background:#8A3A5E" id="mAddLose">＋ ${esc(c)} loses to this</button></div></div>`;
+  } else {
+    // ---- how to play ----
+    h += `<div class="hubCard"><h3>How to play</h3><div class="hubPlay ${hd.play?"":"empty"}">${hd.play ? esc(hd.play) : (isOwner ? "Tap “Edit hub” to add a play guide." : "No guide yet — check back soon.")}</div></div>`;
+  }
+  // ---- abilities ----
+  const ab = abilCache[c];
+  h += `<div class="hubCard"><h3>Abilities${hd.maxOrder ? ` · max <b style="color:#C8AA6E">${esc(hd.maxOrder)}</b>` : ""}</h3><div class="abilRow">`;
+  if (Array.isArray(ab) && ab.length){
+    h += ab.map(a => `<div class="abil"><div class="ai" style="background-image:url('${a.img}')"></div><div class="key">${a.key}</div></div>`).join("");
+  } else if (ab === null){
+    h += `<div class="hubPlay empty">Loading abilities…</div>`;
+  } else {
+    h += ["P","Q","W","E","R"].map(k => `<div class="abil"><div class="ai">${k}</div><div class="key">${k}</div></div>`).join("");
+  }
+  h += `</div>` + (hd.maxOrder ? `<div class="maxLine">Level up in this order: <b>${esc(hd.maxOrder)}</b></div>` : "") + `</div>`;
+  // ---- top build ----
+  const top = buildsFor(c, "all")[0];
+  h += `<div class="hubCard"><h3>Top build</h3>`;
+  if (top){ h += buildCardHtml(top); }
+  else { h += `<div class="hubPlay empty">No builds yet.</div>`; }
+  h += `<button class="editBtn" id="hubAllBuilds" style="margin-top:6px">See all builds for ${esc(c)} ›</button></div>`;
+  // ---- counters ----
+  h += `<div class="hubCard"><h3>Counters</h3><div class="cntCols">`;
+  const col = (kind, cls, label, list) => {
+    let s = `<div class="cntCol ${cls}"><div class="h">${label}</div>`;
+    if (!list || !list.length) s += `<div class="cntEmpty">${isOwner ? "Add some in Edit hub." : "Nothing here yet."}</div>`;
+    else s += list.map(m => `<div class="cntItem ${cls}" data-hub="${encodeURIComponent(m.c)}">` +
+      `<span class="ci" style="background-image:url('${iconUrl(m.c)}'),url('${iconUrl2(m.c)}')"></span>` +
+      `<span style="min-width:0"><span class="n">${esc(m.c)}</span>${m.note?`<span class="nt">${esc(m.note)}</span>`:""}</span>` +
+      (isOwner ? `<button class="rmx" data-mrm="${kind}" data-mc="${encodeURIComponent(m.c)}">✕</button>` : "") + `</div>`).join("");
+    return s + `</div>`;
+  };
+  h += col("strong","win","Wins vs", md.strong) + col("weak","lose","Loses to", md.weak) + `</div></div>`;
+  // ---- counter finder ----
+  h += `<div class="hubCard finder"><h3>Counter finder</h3>` +
+    `<input id="finderIn" placeholder="Type an enemy champion…" value="${esc(finderQ)}">` +
+    `<div class="finderRes" id="finderRes">${finderResHtml()}</div>` +
+    `<div class="bNote" style="margin-top:6px">Shows who counters that champ based on GwenDiffYT's matchup calls — not win-rate stats.</div></div>`;
+  h += `</div></div>`; // hubBody, hub
+  h += infoModalHtml();
+  content.innerHTML = h;
+  // wiring
+  $("hubBack").onclick = () => { hubChamp = null; hubEdit = false; render(); };
+  if ($("hubEditToggle")) $("hubEditToggle").onclick = () => { hubEdit = !hubEdit; render(); };
+  if ($("hubSave")) $("hubSave").onclick = saveHub;
+  if ($("mSel")) $("mSel").onchange = e => { mAddSel = e.target.value || null; };
+  if ($("mAddWin")) $("mAddWin").onclick = () => addMatchup("strong");
+  if ($("mAddLose")) $("mAddLose").onclick = () => addMatchup("weak");
+  content.querySelectorAll("[data-mrm]").forEach(b => b.onclick = () => removeMatchup(b.dataset.mrm, decodeURIComponent(b.dataset.mc)));
+  content.querySelectorAll("[data-hub]").forEach(b => b.onclick = ev => { if (ev.target.closest("[data-mrm]")) return; openHub(decodeURIComponent(b.dataset.hub)); });
+  $("hubAllBuilds").onclick = () => { hubChamp = null; buildsMode = true; eb = null; confirmBDel = null; bChamp = c; bRole = "all"; render(); };
+  const fin = $("finderIn");
+  if (fin) fin.oninput = () => { finderQ = fin.value; $("finderRes").innerHTML = finderResHtml(); wireFinderRes(content); };
+  // build-card interactions inside the hub (votes, comments, share, info taps)
+  wireHubBuildCard(content);
+  wireFinderRes(content);
+  syncHash();
+}
+function finderResHtml(){
+  const res = counterFinder();
+  if (!finderQ.trim()) return "";
+  if (!res.length) return `<div class="cntEmpty">No counter picks noted for “${esc(finderQ)}” yet.</div>`;
+  return res.slice(0, 12).map(r => `<div class="cntItem win" data-fpick="${encodeURIComponent(r.picker)}">` +
+    `<span class="ci" style="background-image:url('${iconUrl(r.picker)}'),url('${iconUrl2(r.picker)}')"></span>` +
+    `<span style="min-width:0"><span class="n">${esc(r.picker)}</span><span class="nt">beats ${esc(r.vs)}${r.note?" — "+esc(r.note):""}</span></span></div>`).join("");
+}
+function wireFinderRes(scope){ scope.querySelectorAll("[data-fpick]").forEach(b => b.onclick = () => openHub(decodeURIComponent(b.dataset.fpick))); }
+function wireHubBuildCard(content){
+  content.querySelectorAll("[data-bv]").forEach(b => b.onclick = () => voteBuild(b.dataset.bid, +b.dataset.bv));
+  content.querySelectorAll("[data-bctoggle]").forEach(b => b.onclick = () => toggleBuildComments(b.dataset.bctoggle));
+  content.querySelectorAll("[data-bcpost]").forEach(b => b.onclick = () => postBuildComment(b.dataset.bcpost, decodeURIComponent(b.dataset.bcc || ""), b.dataset.bcr || ""));
+  content.querySelectorAll("[data-bcdel]").forEach(b => b.onclick = () => db.collection("comments").doc(b.dataset.bcdel).delete().catch(e => console.error(e)));
+  content.querySelectorAll("[data-bshare]").forEach(b => b.onclick = () => { const d = bAll.find(x => x.id === b.dataset.bshare); if (d) shareBuild(d); });
+  content.querySelectorAll("[data-bedit]").forEach(b => b.onclick = () => { const d = bAll.find(x => x.id === b.dataset.bedit); if (d){ hubChamp = null; buildsMode = true; bChamp = d.data.champ; bRole = "all"; editBuild(d); } });
+  content.querySelectorAll("[data-bdel]").forEach(b => b.onclick = () => { confirmBDel = b.dataset.bdel; render(); });
+  content.querySelectorAll("[data-bdelno]").forEach(b => b.onclick = () => { confirmBDel = null; render(); });
+  content.querySelectorAll("[data-bdelyes]").forEach(b => b.onclick = () => { const id = b.dataset.bdelyes; confirmBDel = null; db.collection("builds").doc(id).delete().then(()=>showToast("Build deleted")).catch(e=>{console.error(e);showToast("Delete failed");}); });
+  if (content.querySelector("[data-bcpost]") && $("bcmtIn")){ const btn = content.querySelector("[data-bcpost]"); $("bcmtIn").addEventListener("keydown", e => { if (e.key === "Enter" && btn) btn.click(); }); }
+  wireInfoTaps(content);
+  if ($("mBg")) $("mBg").onclick = ev => { if (ev.target.id === "mBg"){ itemInfo = null; runeInfo = null; spellInfo = null; render(); } };
+  if ($("mClose")) $("mClose").onclick = () => { itemInfo = null; runeInfo = null; spellInfo = null; render(); };
 }
 
 // ============ RENDER ============
@@ -1515,6 +1751,7 @@ function render(){
   $("buildsBtn").className = "editBtn" + (buildsMode ? " on" : "");
 
   const content = $("content");
+  if (hubChamp){ $("editBtn").style.display = "none"; renderHub(content); return; }
   if (buildsMode){ renderBuilds(content); syncHash(); return; }
   const vr = viewRoles();
   if (vr.some(r => !tiersByRole[r])){ content.innerHTML = `<div class="loading">Summoning the tierlist…</div>`; return; }
@@ -1567,7 +1804,8 @@ function render(){
           `<button class="tpick rm" data-wcv="1">${confirmChampWipe ? "Tap again: wipe votes" : "Wipe this champ's votes"}</button>` +
           `</div>`;
       }
-      html += `<button class="editBtn" id="openBuilds" style="display:block;margin-top:12px;font-size:24px;padding:12px 28px;background:#C8AA6E;color:#0A1428;border-color:#C8AA6E;border-radius:14px">Builds for ${esc(selC)} ›</button>`;
+      html += `<button class="editBtn" id="openHub" style="display:block;margin-top:12px;font-size:15px;padding:11px 22px;background:linear-gradient(135deg,#6B3FA0,#4a2c72);color:#F0E9FF;border:none;border-radius:14px">✦ ${esc(selC)} — Champion Hub</button>`;
+      html += `<button class="editBtn" id="openBuilds" style="display:block;margin-top:8px;font-size:24px;padding:12px 28px;background:#C8AA6E;color:#0A1428;border-color:#C8AA6E;border-radius:14px">Builds for ${esc(selC)} ›</button>`;
       html += `</div>`;
     }
   }
@@ -1625,6 +1863,7 @@ function render(){
     "wipeAll":()=>{ confirmWipe==="all" ? wipeVotes("all") : (confirmWipe="all", render()); },
     "wipeCancel":()=>{ confirmWipe=null; render(); },
     "openBuilds":()=>{ const s = selected; if (!s) return; buildsMode = true; eb = null; confirmBDel = null; bChamp = s.c; bRole = role === "all" ? "all" : s.r; render(); },
+    "openHub":()=>{ const s = selected; if (!s) return; openHub(s.c); },
     "inBtn2":signIn};
   for (const id of Object.keys(w)){ const el = $(id); if (el) el.onclick = w[id]; }
   if (pendingSel && vr.every(x => tiersByRole[x])){
@@ -1641,8 +1880,8 @@ function render(){
   }
   syncHash();
 }
-$("editBtn").onclick = () => { editMode = !editMode; selected = null; confirmChampWipe = false; render(); };
-$("buildsBtn").onclick = () => { buildsMode = !buildsMode; editMode = false; selected = null; eb = null; ebEditId = null; bChamp = null; confirmBDel = null; render(); };
+$("editBtn").onclick = () => { editMode = !editMode; selected = null; hubChamp = null; confirmChampWipe = false; render(); };
+$("buildsBtn").onclick = () => { buildsMode = !buildsMode; editMode = false; selected = null; hubChamp = null; eb = null; ebEditId = null; bChamp = null; confirmBDel = null; render(); };
 
 // ============ MUSIC ============
 const bgm = $("bgm");
@@ -1753,6 +1992,67 @@ async function exportImage(mode){ // mode: "clean" | "votes"
 $("imgCleanBtn").onclick = () => exportImage("clean");
 $("imgVotesBtn").onclick = () => exportImage("votes");
 
+// ---- share a single build as a PNG card ----
+async function shareBuild(d){
+  const b = d.data;
+  showToast("Building image…");
+  const S = 2, W = 900, pad = 30, icon = 72, gap = 12;
+  // rows: items(+spells), runes, additional
+  const items = (b.items||[]).filter(Boolean), spells=(b.spells||[]).filter(Boolean);
+  const runes = [b.keystone, ...(b.minors||[]), b.secRune].filter(Boolean);
+  const add = (b.additems||[]).filter(Boolean);
+  let rows = 2 + (add.length?1:0);
+  const noteLines = (!b.def && b.notes) ? Math.min(3, Math.ceil(b.notes.length/64)) : 0;
+  const H = pad + 90 + rows*(icon+28) + (noteLines?noteLines*22+10:0) + 46;
+  const cv = document.createElement("canvas"); cv.width = W*S; cv.height = H*S;
+  const ctx = cv.getContext("2d"); ctx.scale(S,S);
+  // bg
+  const g = ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,"#0e1c34"); g.addColorStop(1,"#070f1e");
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  const tCol = TIER_COLORS[tierOfChamp(b.role, b.champ)] || "#C8AA6E";
+  ctx.strokeStyle=tCol; ctx.lineWidth=3; rr(ctx,4,4,W-8,H-8,18); ctx.stroke();
+  // header: champ icon + name
+  const cimg = await loadImgCors(iconUrl(b.champ)) || await loadImgCors(iconUrl2(b.champ));
+  if (cimg){ ctx.save(); rr(ctx,pad,pad,66,66,12); ctx.clip(); ctx.drawImage(cimg,pad,pad,66,66); ctx.restore();
+    ctx.strokeStyle=tCol; ctx.lineWidth=2; rr(ctx,pad,pad,66,66,12); ctx.stroke(); }
+  ctx.fillStyle="#F4EFE6"; ctx.font="700 30px Georgia, serif"; ctx.textBaseline="top";
+  ctx.fillText(b.champ + (b.def?"":""), pad+82, pad+2);
+  ctx.fillStyle=tCol; ctx.font="600 15px Georgia, serif";
+  ctx.fillText((b.def?"Default Build":(b.title||"Build")) + "  ·  " + (ROLE_LABELS[b.role]||"") + (b.patch&&!b.def?"  ·  "+b.patch:""), pad+82, pad+40);
+  let y = pad + 90;
+  const drawRow = async (names, getter, border, label) => {
+    if (label){ ctx.fillStyle="#8FA0B8"; ctx.font="700 11px system-ui,sans-serif"; ctx.fillText(label.toUpperCase(), pad, y); y += 16; }
+    let x = pad;
+    for (const nm of names){ const o = getter(nm); const im = o && o.img ? await loadImgCors(o.img) : null;
+      ctx.save(); rr(ctx,x,y,icon,icon,12); ctx.clip();
+      ctx.fillStyle="#13233F"; ctx.fillRect(x,y,icon,icon);
+      if (im) ctx.drawImage(im,x,y,icon,icon); ctx.restore();
+      ctx.strokeStyle=border; ctx.lineWidth=2; rr(ctx,x,y,icon,icon,12); ctx.stroke();
+      x += icon+gap; if (x+icon > W-pad){ x=pad; y+=icon+gap; }
+    }
+    y += icon + 20;
+  };
+  // items + spells on one conceptual row
+  await drawRow([...items, ...spells], n => wrItem(n) || wrSpell(n), "#0AC8B9", null);
+  await drawRow(runes, wrRune, "#C8AA6E", null);
+  if (add.length) await drawRow(add, wrItem, "#E85D5D", "Additional");
+  if (noteLines){ ctx.fillStyle="#B9C6D8"; ctx.font="14px system-ui,sans-serif";
+    const words=(b.notes||"").split(" "); let line="",ln=0;
+    for (const w2 of words){ if ((line+w2).length>64){ ctx.fillText("📝 "+line,pad,y); y+=22; line=""; if(++ln>=3)break; } line+=w2+" "; }
+    if (ln<3 && line.trim()){ ctx.fillText((ln?"":"📝 ")+line.trim(),pad,y); y+=22; }
+    y += 6;
+  }
+  ctx.fillStyle="#5A6B85"; ctx.font="13px system-ui,sans-serif";
+  ctx.fillText("gwunglediff.github.io/WildRiftTierList", pad, H-30);
+  ctx.textAlign="right"; ctx.fillStyle=tCol; ctx.fillText("Wild Rift Meta", W-pad, H-30); ctx.textAlign="left";
+  cv.toBlob(blob => {
+    if (!blob){ showToast("Image failed — try again"); return; }
+    const url = URL.createObjectURL(blob); const a = document.createElement("a");
+    a.href=url; a.download=`${b.champ}-build.png`; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),5000); showToast("Build image saved!");
+  }, "image/png");
+}
+
 // ============ COMMENTS ============
 const cmtList = $("cmtList");
 let cmtDocs = null;
@@ -1817,18 +2117,23 @@ let pendingSel = null;
 function applyHash(){
   const p = location.hash.replace(/^#/, "").split("/").map(decodeURIComponent).filter(Boolean);
   if (!p.length) return;
-  if (p[0] === "builds"){
-    buildsMode = true; eb = null; ebEditId = null;
+  if (p[0] === "hub"){
+    hubChamp = p[1] || null;
+    if (hubChamp){ ensureHubSubs(); loadAbilities(hubChamp); }
+  } else if (p[0] === "builds"){
+    hubChamp = null; buildsMode = true; eb = null; ebEditId = null;
     if (p[1] && (p[1] === "all" || ROLE_KEYS.includes(p[1]))) role = p[1];
     bChamp = p[2] || null;
     if (bChamp) bRole = role;
   } else if (p[0] === "all" || ROLE_KEYS.includes(p[0])){
-    buildsMode = false; role = p[0];
+    hubChamp = null; buildsMode = false; role = p[0];
     if (p[1]) pendingSel = p[1];
   }
 }
 function syncHash(){
-  const hsh = buildsMode
+  const hsh = hubChamp
+    ? "#hub/" + encodeURIComponent(hubChamp)
+    : buildsMode
     ? "#builds/" + role + (bChamp ? "/" + encodeURIComponent(bChamp) : "")
     : "#" + role + (selected ? "/" + encodeURIComponent(selected.c) : "");
   if (location.hash !== hsh){ try { history.replaceState(null, "", hsh); } catch(_){} }
