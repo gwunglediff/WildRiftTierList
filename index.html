@@ -137,7 +137,7 @@
   .bSlot.filled { border-style: solid; border-color: #C8AA6E; }
   .bSlot.sel { border-color: #35D0A0; }
   .bPick { background: #0F1F35; border: 1px solid #22375A; border-radius: 12px; padding: 10px; margin: 8px 0; }
-  .bCats { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 8px; }
+  .bCats { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
   .bCat { flex: 0 0 auto; background: #13233F; border: 1px solid #2A4166; color: #8FA0B8; border-radius: 14px; padding: 5px 10px; font-size: 11px; cursor: pointer; font-family: inherit; }
   .bCat.on { color: #C8AA6E; border-color: #C8AA6E; }
   .bGrid { display: flex; flex-wrap: wrap; gap: 8px; max-height: 280px; overflow-y: auto; }
@@ -178,6 +178,49 @@
   .bItem, .bSlot, .bVote, .bRowBtn, .bCat { -webkit-tap-highlight-color: transparent; }
   .rowVotes { display: flex; flex-direction: column; gap: 4px; align-items: center; margin-left: auto; flex-shrink: 0; }
   .rowVotes .bVote { padding: 3px 9px; font-size: 11px; }
+  /* --- glow frames for minis (clickable info) --- */
+  .bMini, .bMini2 { cursor: pointer; transition: transform .08s; }
+  .bMini:active, .bMini2:active { transform: scale(0.9); }
+  .gi { box-shadow: 0 0 7px rgba(10,200,185,0.75); }      /* items - teal */
+  .gr { box-shadow: 0 0 7px rgba(200,170,110,0.8); }      /* runes - gold */
+  .gs { box-shadow: 0 0 7px rgba(90,155,216,0.8); }       /* spells - blue */
+  .gad { box-shadow: 0 0 7px rgba(232,93,93,0.85); }      /* additional - red */
+  /* --- additional item slots (editor) --- */
+  .bSlot.add { border-color: #E85D5D; border-style: dashed; color: #E85D5D; }
+  .bSlot.add.filled { border-style: solid; box-shadow: 0 0 8px rgba(232,93,93,0.6); }
+  /* --- purple Edit / Del buttons --- */
+  .bBtnEdit, .bBtnDel { border: none; border-radius: 8px; padding: 4px 12px; font-size: 12px; font-weight: 700;
+    font-family: inherit; cursor: pointer; color: #F0E9FF; margin-left: 6px; }
+  .bBtnEdit { background: #6B3FA0; } .bBtnEdit:active { background: #7d4cba; }
+  .bBtnDel { background: #8A3A5E; } .bBtnDel:active { background: #a0466f; }
+  /* --- compact build card (champ detail) --- */
+  .bc2 { background: rgba(19,35,63,0.95); border: 1px solid #2A4166; border-radius: 12px; padding: 11px 12px; margin-bottom: 10px; }
+  .bc2 .hd { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .bc2 .nm { font-family: 'Cinzel', serif; color: #C8AA6E; font-weight: 700; font-size: 14px; }
+  .bc2 .by { font-size: 11px; color: #8FA0B8; }
+  .bc2 .acts { margin-left: auto; display: flex; align-items: center; }
+  .bc2 .rowline { display: flex; align-items: center; flex-wrap: wrap; gap: 3px; margin: 4px 0; }
+  .bc2 .sep { display: inline-block; width: 9px; }
+  .bc2 .addlabel { font-size: 9px; color: #E8859B; letter-spacing: .5px; margin: 6px 0 2px; text-transform: uppercase; font-weight: 700; }
+  .bc2 .foot { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .bcmtBtn { margin-left: auto; background: #13233F; border: 1px solid #6B3FA0; color: #C9B3E8; border-radius: 8px;
+    padding: 5px 11px; font-size: 12px; cursor: pointer; font-family: inherit; }
+  .bcmtBtn.on { background: #2a1c46; color: #E7DBFF; }
+  /* --- per-build comments dropdown --- */
+  .bcmts { margin-top: 10px; border-top: 1px solid #223a5e; padding-top: 10px; }
+  .bcmts .compose { display: flex; gap: 6px; margin-bottom: 8px; }
+  .bcmts .compose input { flex: 1; min-width: 0; background: #0F1F35; border: 1px solid #2A4166; color: #E8EDF4; border-radius: 8px; padding: 8px; font-size: 12px; font-family: inherit; }
+  .bcmts .compose button { background: #6B3FA0; border: none; color: #F0E9FF; font-weight: 700; border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 12px; font-family: inherit; }
+  .bcmt { background: #0F1F35; border: 1px solid #22375A; border-radius: 9px; padding: 8px 10px; margin-bottom: 6px; position: relative; }
+  .bcmt .w { font-size: 11px; color: #C8AA6E; font-weight: 600; }
+  .bcmt .t { font-size: 10px; color: #5A6B85; margin-left: 6px; }
+  .bcmt .m { font-size: 12px; color: #D7DFEA; margin-top: 3px; word-break: break-word; white-space: pre-wrap; }
+  .bcmt .x { position: absolute; top: 6px; right: 8px; background: none; border: none; color: #7B8BA3; cursor: pointer; font-size: 12px; }
+  .bcmtEmpty { font-size: 11px; color: #4A5A72; }
+  /* --- info modal gold badge --- */
+  .bModal .goldbadge { display: inline-block; background: #C8AA6E; color: #0A1428; font-weight: 800; font-family: 'Cinzel', serif;
+    border-radius: 8px; padding: 2px 10px; font-size: 13px; margin-bottom: 8px; }
+  .bModal .meta { font-size: 11px; color: #7B8BA3; margin-bottom: 8px; }
 </style>
 </head>
 <body>
@@ -938,8 +981,9 @@ const WR_SPELLS = [
 const wrSpell = n => WR_SPELLS.find(s => s.name === n);
 let buildsMode = false, bChamp = null, bRole = "all", bSearch = "", bSort = "top";
 let bAll = [], unsubBuilds = null;
-let eb = null, ebSlot = null, ebCat = null;
-let itemInfo = null, runeInfo = null, confirmBDel = null;
+let eb = null, ebSlot = null, ebCat = null, ebAddSlot = null;
+let itemInfo = null, runeInfo = null, spellInfo = null, confirmBDel = null;
+let openCmtBuild = null, buildCmts = [], unsubBuildCmts = null;
 let bVotes = {}, unsubBVotes = null;
 let holdTimer = null, holdFired = false;
 const wrItem = n => HAS_WR ? WR_ITEMS.find(i => i.name === n) : null;
@@ -992,8 +1036,8 @@ function newBuild(){
   const lanes = champRoles(bChamp);
   ebEditId = null;
   eb = {title: "", role: bRole !== "all" && lanes.includes(bRole) ? bRole : (lanes[0] || null),
-        items: [null,null,null,null,null,null], spells: [null,null], keystone: null, tree: null, minors: {}, secTree: null, secRune: null, def: false};
-  ebSlot = null; ebCat = wrCats()[0] || null; itemInfo = null; runeInfo = null;
+        items: [null,null,null,null,null,null], additems: [null,null,null,null,null], spells: [null,null], keystone: null, tree: null, minors: {}, secTree: null, secRune: null, def: false};
+  ebSlot = null; ebAddSlot = null; ebCat = wrCats()[0] || null; itemInfo = null; runeInfo = null; spellInfo = null;
   render();
 }
 function editBuild(d){
@@ -1002,12 +1046,14 @@ function editBuild(d){
   for (const n of (b.minors || [])){ const r = wrRune(n); minors[(r && r.row) || 1] = n; }
   const items = (b.items || []).slice(0, 6);
   while (items.length < 6) items.push(null);
+  const additems = (b.additems || []).slice(0, 5);
+  while (additems.length < 5) additems.push(null);
   const spells = (b.spells || []).slice(0, 2);
   while (spells.length < 2) spells.push(null);
   ebEditId = d.id;
-  eb = {title: b.title || "", role: b.role || null, items, spells, keystone: b.keystone || null,
+  eb = {title: b.title || "", role: b.role || null, items, additems, spells, keystone: b.keystone || null,
         tree: b.tree || null, minors, secTree: b.secTree || null, secRune: b.secRune || null, def: !!b.def};
-  ebSlot = null; ebCat = wrCats()[0] || null; itemInfo = null; runeInfo = null; confirmBDel = null;
+  ebSlot = null; ebAddSlot = null; ebCat = wrCats()[0] || null; itemInfo = null; runeInfo = null; spellInfo = null; confirmBDel = null;
   render();
 }
 const treeRows = t => {
@@ -1031,7 +1077,8 @@ async function saveBuild(){
   const minors = rows.map(rw => eb.minors[rw]);
   if (!eb.secRune){ showToast("Pick 1 secondary rune from a different tree"); return; }
   try {
-    const fields = {role: eb.role, title: isDef ? "" : eb.title.trim().slice(0, 40), items, spells,
+    const additems = (eb.additems || []).filter(Boolean);
+    const fields = {role: eb.role, title: isDef ? "" : eb.title.trim().slice(0, 40), items, additems, spells,
       keystone: eb.keystone, tree: eb.tree, minors, secTree: eb.secTree, secRune: eb.secRune,
       def: isDef};
     if (ebEditId){
@@ -1048,9 +1095,89 @@ async function saveBuild(){
     eb = null; ebEditId = null; render();
   } catch(e){ console.error(e); showToast("Save failed — try again"); }
 }
-function runeMini(n){
-  const r = wrRune(n);
-  return `<span class="bMini" title="${esc(n)}" style="border-color:#C8AA6E;${r && r.img ? `background-image:url('${r.img}')` : ""}"></span>`;
+// ---- clickable mini icons (info on tap). kind: item|rune|spell|add ----
+const MINI_BORDER = {item:"#0AC8B9", rune:"#C8AA6E", spell:"#5A9BD8", add:"#E85D5D"};
+const MINI_GLOW   = {item:"gi", rune:"gr", spell:"gs", add:"gad"};
+const MINI_GET    = {item:wrItem, rune:wrRune, spell:wrSpell, add:wrItem};
+function mini(n, kind, cls){
+  if (!n) return "";
+  const o = MINI_GET[kind](n);
+  return `<span class="${cls} ${MINI_GLOW[kind]}" data-info-${kind==="add"?"item":kind}="${encodeURIComponent(n)}" title="${esc(n)}" ` +
+    `style="border-color:${MINI_BORDER[kind]};${o && o.img ? `background-image:url('${o.img}')` : ""}"></span>`;
+}
+function runeMini(n){ return mini(n, "rune", "bMini"); }
+// wire info-taps within a scope (stops row navigation)
+function wireInfoTaps(scope){
+  scope.querySelectorAll("[data-info-item]").forEach(b => b.onclick = ev => { ev.stopPropagation(); itemInfo = decodeURIComponent(b.dataset.infoItem); runeInfo = spellInfo = null; render(); });
+  scope.querySelectorAll("[data-info-rune]").forEach(b => b.onclick = ev => { ev.stopPropagation(); runeInfo = decodeURIComponent(b.dataset.infoRune); itemInfo = spellInfo = null; render(); });
+  scope.querySelectorAll("[data-info-spell]").forEach(b => b.onclick = ev => { ev.stopPropagation(); spellInfo = decodeURIComponent(b.dataset.infoSpell); itemInfo = runeInfo = null; render(); });
+}
+function infoModalHtml(){
+  let inner = "";
+  if (itemInfo){ const it = wrItem(itemInfo); if (it) inner =
+      `<div class="big" style="${it.img ? `background-image:url('${it.img}')` : ""}"></div>` +
+      `<div class="ttl">${esc(it.name)}</div>` +
+      (it.gold ? `<div class="goldbadge">${esc(it.gold)} gold</div>` : "") +
+      `<div class="meta">${esc(it.cat || "")}</div>` +
+      `<div class="dsc">${esc(it.desc || "No description in the data yet.")}</div>`; }
+  else if (runeInfo){ const rn = wrRune(runeInfo); if (rn) inner =
+      `<div class="big" style="${rn.img ? `background-image:url('${rn.img}')` : ""}"></div>` +
+      `<div class="ttl">${esc(rn.name)}</div>` +
+      `<div class="meta">${rn.keystone ? "Keystone" : esc(rn.tree || "") + " tree"}</div>` +
+      `<div class="dsc">${esc(rn.desc || "No description in the data yet.")}</div>`; }
+  else if (spellInfo){ const sp = wrSpell(spellInfo); if (sp) inner =
+      `<div class="big" style="${sp.img ? `background-image:url('${sp.img}')` : ""}"></div>` +
+      `<div class="ttl">${esc(sp.name)}</div><div class="meta">Summoner Spell</div>` +
+      `<div class="dsc">Summoner spell — bring the right pair for your matchup.</div>`; }
+  if (!inner) return "";
+  return `<div class="bModalBg" id="mBg"><div class="bModal">${inner}` +
+    `<div class="mrow"><button class="authBtn" id="mClose">Close</button></div></div></div>`;
+}
+// ---- per-build comments ----
+function toggleBuildComments(id){
+  if (openCmtBuild === id){ closeBuildComments(); return; }
+  if (unsubBuildCmts){ unsubBuildCmts(); unsubBuildCmts = null; }
+  openCmtBuild = id; buildCmts = null;
+  unsubBuildCmts = db.collection("comments").where("buildId", "==", id).onSnapshot(snap => {
+    buildCmts = [];
+    snap.forEach(d => buildCmts.push({id: d.id, data: d.data()}));
+    buildCmts.sort((a, b) => ((b.data.ts && b.data.ts.seconds) || 1e18) - ((a.data.ts && a.data.ts.seconds) || 1e18));
+    if (buildsMode) render();
+  }, err => { console.error("build comments:", err); buildCmts = []; if (buildsMode) render(); });
+  render();
+}
+function closeBuildComments(){ if (unsubBuildCmts){ unsubBuildCmts(); unsubBuildCmts = null; } openCmtBuild = null; buildCmts = []; render(); }
+async function postBuildComment(id, champ, role){
+  if (!user){ showToast("Sign in to comment"); return; }
+  const inp = $("bcmtIn"); if (!inp) return;
+  const text = inp.value.trim();
+  if (!text) return;
+  if (text.length > 300){ showToast("Keep it under 300 characters"); return; }
+  try {
+    await db.collection("comments").add({
+      uid: user.uid, name: myName || user.displayName || user.email || "Anonymous",
+      text, buildId: id, champ: champ || "", role: role || "",
+      ts: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    inp.value = "";
+  } catch(e){ console.error(e); showToast("Post failed — check Firestore rules allow the buildId field"); }
+}
+function buildCommentsHtml(id, champ, role){
+  const n = (buildCmts || []).length;
+  let h = `<div class="bcmts">`;
+  h += `<div class="compose"><input id="bcmtIn" maxlength="300" placeholder="${user ? "Add a comment on this build…" : "Sign in to comment"}" ${user ? "" : "disabled"}>` +
+       `<button data-bcpost="${id}" data-bcc="${encodeURIComponent(champ)}" data-bcr="${esc(role || "")}">Post</button></div>`;
+  if (buildCmts === null){ h += `<div class="bcmtEmpty">Loading…</div>`; }
+  else if (!n){ h += `<div class="bcmtEmpty">No comments yet — start the discussion.</div>`; }
+  else for (const c of buildCmts){
+    const cd = c.data;
+    const when = cd.ts && cd.ts.toDate ? cd.ts.toDate().toLocaleDateString(undefined, {day:"numeric", month:"short"}) : "";
+    const canDel = user && (isOwner || cd.uid === user.uid);
+    h += `<div class="bcmt"><span class="w">${esc(nameOf(cd.uid, cd.name))}</span><span class="t">${esc(when)}</span>` +
+      (canDel ? `<button class="x" data-bcdel="${c.id}">✕</button>` : "") +
+      `<div class="m">${esc(cd.text || "")}</div></div>`;
+  }
+  return h + `</div>`;
 }
 function bindHold(b, name, showInfo, act){
   b.oncontextmenu = e => e.preventDefault();
@@ -1065,27 +1192,48 @@ function buildCardHtml(d){
   const {up, down, score} = buildCounts(d.id);
   const mv = myBuildVote(d.id);
   const canDel = user && (isOwner || b.uid === user.uid);
-  let del = "";
-  if (canDel){
-    del = confirmBDel === d.id
-      ? `<span style="float:right;font-size:11px;color:#E85D5D">Delete this build? <button class="bVote" data-bdelyes="${d.id}" style="color:#E85D5D">Yes</button> <button class="bVote" data-bdelno="1">No</button></span>`
-      : `<button class="cdel" data-bdel="${d.id}" style="float:right">✕</button><button class="cdel" data-bedit="${d.id}" style="float:right;color:#C8AA6E;margin-right:8px">✎</button>`;
-  }
   const disp = score + (b.def ? 5 : 0);
-  return `<div class="bCard"><div class="t">${b.def ? "Default Build" : esc(b.title)}` +
+  // tier-glow outline based on the champ's tier in this build's lane
+  const tTier = tierOfChamp(b.role, b.champ || bChamp);
+  const tCol = TIER_COLORS[tTier] || "#2A4166";
+  const outline = `border-color:${tCol};box-shadow:0 0 12px ${tCol}55, inset 0 0 18px ${tCol}14`;
+  // actions
+  let acts = "";
+  if (canDel){
+    acts = confirmBDel === d.id
+      ? `<span style="font-size:11px;color:#E85D5D">Delete? <button class="bVote" data-bdelyes="${d.id}" style="color:#E85D5D;padding:3px 9px">Yes</button> <button class="bVote" data-bdelno="1" style="padding:3px 9px">No</button></span>`
+      : `<button class="bBtnEdit" data-bedit="${d.id}">Edit</button><button class="bBtnDel" data-bdel="${d.id}">Del</button>`;
+  }
+  const add = (b.additems || []).filter(Boolean);
+  const cn = (buildCmts && openCmtBuild === d.id) ? buildCmts.length : "";
+  let h = `<div class="bc2" style="${outline}">`;
+  h += `<div class="hd"><span class="nm">${b.def ? "Default Build" : esc(b.title || "Build")}</span>` +
     (rt ? `<span class="bLane" style="background:${rt.col}">${esc(ROLE_LABELS[b.role])}</span>` : "") +
-    (b.def ? "" : ` <span class="bNote" style="display:inline">— by ${esc(authorOf(b))}</span>`) + `${del}</div>` +
-    (b.items || []).map(n => { const it = wrItem(n); return `<span class="bMini" title="${esc(n)}" style="border-color:#0AC8B9;${it && it.img ? `background-image:url('${it.img}')` : ""}"></span>`; }).join("") +
-    ((b.spells && b.spells.length) ? `<span style="display:inline-block;width:10px"></span>` +
-      b.spells.map(n => { const s = wrSpell(n); return `<span class="bMini" title="${esc(n)}" style="border-color:#5A9BD8;${s ? `background-image:url('${s.img}')` : ""}"></span>`; }).join("") : "") +
-    `<div style="margin-top:6px">` + runeMini(b.keystone, true) +
-    (b.minors || []).map(n => runeMini(n)).join("") + (b.secRune ? runeMini(b.secRune) : "") +
-    `<span class="bNote" style="display:inline;margin-left:4px">${esc(b.tree || "")} + ${esc(b.secTree || "")}</span></div>` +
-    `<div class="bVoteRow"><button class="bVote ${mv > 0 ? "mine" : ""}" data-bv="1" data-bid="${d.id}" style="color:#4FA8E8">▲ ${up}</button>` +
+    (b.def ? "" : `<span class="by">by ${esc(authorOf(b))}</span>`) +
+    `<span class="acts">${acts}</span></div>`;
+  // items + spells line
+  h += `<div class="rowline">` +
+    (b.items || []).map(n => mini(n, "item", "bMini")).join("") +
+    ((b.spells && b.spells.filter(Boolean).length) ? `<span class="sep"></span>` + b.spells.map(n => mini(n, "spell", "bMini")).join("") : "") +
+    `</div>`;
+  // runes line (no tree text)
+  h += `<div class="rowline">` + mini(b.keystone, "rune", "bMini") +
+    (b.minors || []).map(n => mini(n, "rune", "bMini")).join("") + mini(b.secRune, "rune", "bMini") + `</div>`;
+  // additional items (red)
+  if (add.length){
+    h += `<div class="addlabel">Additional items</div><div class="rowline">` +
+      add.map(n => mini(n, "add", "bMini")).join("") + `</div>`;
+  }
+  // vote + comments footer
+  h += `<div class="foot">` +
+    `<button class="bVote ${mv > 0 ? "mine" : ""}" data-bv="1" data-bid="${d.id}" style="color:#4FA8E8">▲ ${up}</button>` +
     `<button class="bVote ${mv < 0 ? "mine" : ""}" data-bv="-1" data-bid="${d.id}" style="color:#E85D5D">▼ ${down}</button>` +
     `<span class="bScore" style="${b.def ? "color:#C77DD8" : ""}">${disp > 0 ? "+" + disp : disp}</span>` +
-    (b.def ? `<span class="bNote" style="display:inline;color:#C77DD8">includes +5 provisional</span>` : "") +
-    `</div></div>`;
+    (b.def ? `<span class="bNote" style="display:inline;color:#C77DD8;margin:0">+5 prov.</span>` : "") +
+    `<button class="bcmtBtn ${openCmtBuild === d.id ? "on" : ""}" data-bctoggle="${d.id}">💬 Comments${cn !== "" ? " (" + cn + ")" : ""}</button>` +
+    `</div>`;
+  if (openCmtBuild === d.id) h += buildCommentsHtml(d.id, b.champ || bChamp, b.role);
+  return h + `</div>`;
 }
 function buildRowsHtml(){
   const vr = viewRoles();
@@ -1106,15 +1254,16 @@ function buildRowsHtml(){
         const cnt = buildCounts(top.id);
         const disp = cnt.score + (b.def ? 5 : 0);
         sub = b.def ? "Default Build" : `“${esc(b.title)}” by ${esc(authorOf(b))} · net votes ${cnt.score >= 0 ? "+" : ""}${cnt.score}`;
-        const mini = (n, col, get) => { const o = n && get(n);
-          return `<span class="bMini2" title="${esc(n || "")}" style="border-color:${col};${o && o.img ? `background-image:url('${o.img}')` : ""}"></span>`; };
+        const add = (b.additems || []).filter(Boolean);
         minis = `<span class="mini2row">` +
-          (b.items || []).map(n => mini(n, "#0AC8B9", wrItem)).join("") +
+          (b.items || []).map(n => mini(n, "item", "bMini2")).join("") +
           `<span style="display:inline-block;width:8px"></span>` +
-          mini(b.keystone, "#C8AA6E", wrRune) +
-          (b.minors || []).map(n => mini(n, "#C8AA6E", wrRune)).join("") +
-          (b.secRune ? mini(b.secRune, "#C8AA6E", wrRune) : "") +
-          (b.spells || []).map(n => mini(n, "#5A9BD8", wrSpell)).join("") + `</span>`;
+          mini(b.keystone, "rune", "bMini2") +
+          (b.minors || []).map(n => mini(n, "rune", "bMini2")).join("") +
+          mini(b.secRune, "rune", "bMini2") +
+          (b.spells || []).map(n => mini(n, "spell", "bMini2")).join("") +
+          (add.length ? `<span style="display:inline-block;width:8px"></span>` + add.map(n => mini(n, "add", "bMini2")).join("") : "") +
+          `</span>`;
         const mv = myBuildVote(top.id);
         votes = `<span class="rowVotes">` +
           `<button class="bVote ${mv > 0 ? "mine" : ""}" data-rbv="1" data-bid="${top.id}" style="color:#4FA8E8">▲${cnt.up}</button>` +
@@ -1131,7 +1280,7 @@ function buildRowsHtml(){
 }
 function wireBuildRows(scope){
   scope.querySelectorAll("[data-bc]").forEach(b => b.onclick = ev => {
-    if (ev.target.closest && ev.target.closest(".bVote")) return;
+    if (ev.target.closest && (ev.target.closest(".bVote") || ev.target.closest("[data-info-item]") || ev.target.closest("[data-info-rune]") || ev.target.closest("[data-info-spell]"))) return;
     bChamp = decodeURIComponent(b.dataset.bc);
     bRole = b.dataset.br;
     eb = null; confirmBDel = null;
@@ -1141,6 +1290,7 @@ function wireBuildRows(scope){
     ev.stopPropagation();
     voteBuild(b.dataset.bid, +b.dataset.rbv);
   });
+  wireInfoTaps(scope);
 }
 function renderBuilds(content){
   if (!HAS_WR){
@@ -1160,6 +1310,7 @@ function renderBuilds(content){
       `<div class="bCats" style="margin-top:8px">` + TIERS.map(t =>
         `<button class="bCat" data-jump="${esc(t)}" style="color:${TIER_COLORS[t]}">${esc(t)}</button>`).join("") + `</div>` +
       `<div id="bRows">${buildRowsHtml()}</div></div>`;
+    h += infoModalHtml();
     content.innerHTML = h;
     const inp = $("bSearchIn");
     inp.oninput = () => { bSearch = inp.value; $("bRows").innerHTML = buildRowsHtml(); wireBuildRows($("bRows")); };
@@ -1169,10 +1320,12 @@ function renderBuilds(content){
       else showToast("No " + b.dataset.jump + " champions here");
     });
     wireBuildRows(content);
+    if ($("mBg")) $("mBg").onclick = ev => { if (ev.target.id === "mBg"){ itemInfo = null; runeInfo = null; spellInfo = null; render(); } };
+    if ($("mClose")) $("mClose").onclick = () => { itemInfo = null; runeInfo = null; spellInfo = null; render(); };
     return;
   }
   // -------- champ detail --------
-  $("hint").textContent = "Tap ▲/▼ to vote on builds · hold items & runes for details";
+  $("hint").textContent = "Tap ▲/▼ to vote · tap any item, rune or spell to read it";
   const lanes = champRoles(bChamp);
   if (bRole !== "all" && !lanes.includes(bRole)) bRole = "all";
   const dTier = bRole !== "all" ? tierOfChamp(bRole, bChamp)
@@ -1199,14 +1352,16 @@ function renderBuilds(content){
       (lanes.length ? "" : `<span class="bNote">This champion isn't on the tierlist in any lane yet.</span>`) + `</div>`;
     h += `<div class="bSec">ITEMS — one must be boots</div><div class="bSlotRow">` + eb.items.map((it, i) => {
       const d = it && wrItem(it);
-      return `<button class="bSlot ${it ? "filled" : ""} ${ebSlot === i ? "sel" : ""}" data-slot="${i}" style="${d && d.img ? `background-image:url('${d.img}')` : ""}">${it ? "" : "+"}</button>`;
-    }).join("") + `</div>`;
-    if (ebSlot !== null){
-      h += `<div class="bPick"><div class="bCats">` +
+      return `<button class="bSlot ${it ? "filled" : ""} ${ebSlot === i ? "sel" : ""}" data-slot="${i}" ${it ? `data-slotitem="${encodeURIComponent(it)}"` : ""} style="${d && d.img ? `background-image:url('${d.img}')` : ""}">${it ? "" : "+"}</button>`;
+    }).join("") + `</div><div class="bNote" style="margin:2px 0">Tap a slot to fill it · tap a filled item to swap · hold it to read what it does.</div>`;
+    const pickOpen = ebSlot !== null || ebAddSlot !== null;
+    if (pickOpen){
+      const isAdd = ebAddSlot !== null;
+      h += `<div class="bPick"><div class="bNote" style="margin:0 0 6px">${isAdd ? "Additional item slot " + (ebAddSlot + 1) : "Item slot " + (ebSlot + 1)}</div><div class="bCats">` +
         wrCats().map(c => `<button class="bCat ${c === ebCat ? "on" : ""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("") +
         `<button class="bCat" data-clear="1">✕ Clear slot</button></div><div class="bGrid">` +
         WR_ITEMS.filter(i => i.cat === ebCat).map(i =>
-          `<button class="bItem" data-pi="${encodeURIComponent(i.name)}" style="${eb.items.includes(i.name) ? "opacity:0.35" : ""}"><span class="ic" style="${i.img ? `background-image:url('${i.img}')` : ""}"></span><span class="lb">${esc(i.name)}</span></button>`).join("") +
+          `<button class="bItem" data-pi="${encodeURIComponent(i.name)}" style="${(isAdd ? (eb.additems || []).includes(i.name) : eb.items.includes(i.name)) ? "opacity:0.35" : ""}"><span class="ic" style="${i.img ? `background-image:url('${i.img}')` : ""}"></span><span class="lb">${esc(i.name)}</span></button>`).join("") +
         `</div></div>`;
     }
     h += `<div class="bSec">SUMMONER SPELLS — pick 2</div><div class="bGrid">` + WR_SPELLS.map(s =>
@@ -1229,6 +1384,10 @@ function renderBuilds(content){
       h += `<div class="bGrid">` + WR_RUNES.filter(r => !r.keystone && r.tree === eb.secTree)
         .map(r => runeBtn(r, `data-sr="1"`, eb.secRune === r.name)).join("") + `</div>`;
     }
+    h += `<div class="bSec" style="color:#E8859B">ADDITIONAL ITEMS — optional (situational)</div><div class="bSlotRow">` +
+      eb.additems.map((it, i) => { const d = it && wrItem(it);
+        return `<button class="bSlot add ${it ? "filled" : ""} ${ebAddSlot === i ? "sel" : ""}" data-addslot="${i}" ${it ? `data-slotitem="${encodeURIComponent(it)}"` : ""} style="${d && d.img ? `background-image:url('${d.img}')` : ""}">${it ? "" : "+"}</button>`;
+      }).join("") + `</div><div class="bNote" style="margin:2px 0">Up to 5 extra picks (swaps, situational buys). They show under the runes in previews.</div>`;
     h += `<div class="bNote">Tap an item or rune to add it · hold to read what it does.</div>`;
   } else {
     let shown = buildsFor(bChamp, bRole);
@@ -1238,27 +1397,11 @@ function renderBuilds(content){
     for (const d of shown) h += buildCardHtml(d);
   }
   h += `</div>`;
-  // info popups
-  if (itemInfo){
-    const it = wrItem(itemInfo);
-    if (it) h += `<div class="bModalBg" id="mBg"><div class="bModal">` +
-      `<div class="big" style="${it.img ? `background-image:url('${it.img}')` : ""}"></div>` +
-      `<div class="ttl">${esc(it.name)}${it.gold ? ` · ${esc(it.gold)}g` : ""}</div>` +
-      `<div class="dsc">${esc(it.desc || "No description in the data yet.")}</div>` +
-      `<div class="mrow"><button class="authBtn" id="mClose">Close</button></div></div></div>`;
-  }
-  if (runeInfo){
-    const rn = wrRune(runeInfo);
-    if (rn) h += `<div class="bModalBg" id="mBg"><div class="bModal">` +
-      `<div class="big" style="${rn.img ? `background-image:url('${rn.img}')` : ""}"></div>` +
-      `<div class="ttl">${esc(rn.name)}</div>` +
-      `<div class="bNote">${rn.keystone ? "Keystone" : esc(rn.tree) + " · row " + (rn.row || 1)}</div>` +
-      `<div class="dsc">${esc(rn.desc || "No description in the data yet.")}</div>` +
-      `<div class="mrow"><button class="authBtn" id="mClose">Close</button></div></div></div>`;
-  }
+  // info popup (item / rune / spell, with gold)
+  h += infoModalHtml();
   content.innerHTML = h;
   // wiring
-  $("bBack").onclick = () => { bChamp = null; eb = null; ebEditId = null; confirmBDel = null; itemInfo = null; runeInfo = null; render(); };
+  $("bBack").onclick = () => { bChamp = null; eb = null; ebEditId = null; confirmBDel = null; itemInfo = null; runeInfo = null; spellInfo = null; closeBuildComments(); };
   if ($("bNew")) $("bNew").onclick = newBuild;
   if ($("bCancel")) $("bCancel").onclick = () => { eb = null; ebEditId = null; render(); };
   if ($("bSave")) $("bSave").onclick = saveBuild;
@@ -1267,16 +1410,38 @@ function renderBuilds(content){
   content.querySelectorAll("[data-bsort]").forEach(b => b.onclick = () => { bSort = b.dataset.bsort; render(); });
   content.querySelectorAll("[data-erole]").forEach(b => b.onclick = () => { eb.role = b.dataset.erole; render(); });
   content.querySelectorAll("[data-edef]").forEach(b => b.onclick = () => { eb.def = !eb.def; render(); });
-  content.querySelectorAll("[data-slot]").forEach(b => b.onclick = () => { ebSlot = ebSlot === +b.dataset.slot ? null : +b.dataset.slot; render(); });
+  const showItem = n => { itemInfo = n; runeInfo = spellInfo = null; render(); };
+  const showRune = n => { runeInfo = n; itemInfo = spellInfo = null; render(); };
+  // core item slots — filled: hold to preview, tap to swap (opens picker at the item's category)
+  content.querySelectorAll("[data-slot]").forEach(b => {
+    const i = +b.dataset.slot;
+    const it = b.dataset.slotitem ? decodeURIComponent(b.dataset.slotitem) : null;
+    if (it) bindHold(b, it, showItem, () => { ebAddSlot = null; ebCat = (wrItem(it) || {}).cat || ebCat; ebSlot = (ebSlot === i ? null : i); render(); });
+    else b.onclick = () => { ebAddSlot = null; ebSlot = (ebSlot === i ? null : i); render(); };
+  });
+  // additional item slots
+  content.querySelectorAll("[data-addslot]").forEach(b => {
+    const i = +b.dataset.addslot;
+    const it = b.dataset.slotitem ? decodeURIComponent(b.dataset.slotitem) : null;
+    if (it) bindHold(b, it, showItem, () => { ebSlot = null; ebCat = (wrItem(it) || {}).cat || ebCat; ebAddSlot = (ebAddSlot === i ? null : i); render(); });
+    else b.onclick = () => { ebSlot = null; ebAddSlot = (ebAddSlot === i ? null : i); render(); };
+  });
   content.querySelectorAll("[data-cat]").forEach(b => b.onclick = () => { ebCat = b.dataset.cat; render(); });
-  content.querySelectorAll("[data-clear]").forEach(b => b.onclick = () => { eb.items[ebSlot] = null; ebSlot = null; render(); });
-  content.querySelectorAll("[data-pi]").forEach(b => bindHold(b, decodeURIComponent(b.dataset.pi),
-    n => { itemInfo = n; render(); },
+  content.querySelectorAll("[data-clear]").forEach(b => b.onclick = () => {
+    if (ebAddSlot !== null){ eb.additems[ebAddSlot] = null; ebAddSlot = null; }
+    else if (ebSlot !== null){ eb.items[ebSlot] = null; ebSlot = null; }
+    render();
+  });
+  content.querySelectorAll("[data-pi]").forEach(b => bindHold(b, decodeURIComponent(b.dataset.pi), showItem,
     n => {
-      if (eb.items.includes(n)){ showToast("Already in this build"); return; }
-      eb.items[ebSlot] = n; ebSlot = null; render();
+      if (ebAddSlot !== null){
+        if ((eb.additems || []).includes(n)){ showToast("Already an additional item"); return; }
+        eb.additems[ebAddSlot] = n; ebAddSlot = null; render();
+      } else if (ebSlot !== null){
+        if (eb.items.includes(n)){ showToast("Already in this build"); return; }
+        eb.items[ebSlot] = n; ebSlot = null; render();
+      }
     }));
-  const showRune = n => { runeInfo = n; render(); };
   content.querySelectorAll("[data-ks]").forEach(b => bindHold(b, decodeURIComponent(b.dataset.rn), showRune,
     n => { eb.keystone = eb.keystone === n ? null : n; render(); }));
   content.querySelectorAll("[data-mn]").forEach(b => { const rw = +b.dataset.row;
@@ -1307,8 +1472,15 @@ function renderBuilds(content){
       .then(() => showToast("Build deleted"))
       .catch(e => { console.error(e); showToast("Delete failed"); });
   });
-  if ($("mBg")) $("mBg").onclick = ev => { if (ev.target.id === "mBg"){ itemInfo = null; runeInfo = null; render(); } };
-  if ($("mClose")) $("mClose").onclick = () => { itemInfo = null; runeInfo = null; render(); };
+  // per-build comments
+  content.querySelectorAll("[data-bctoggle]").forEach(b => b.onclick = () => toggleBuildComments(b.dataset.bctoggle));
+  content.querySelectorAll("[data-bcpost]").forEach(b => b.onclick = () => postBuildComment(b.dataset.bcpost, decodeURIComponent(b.dataset.bcc || ""), b.dataset.bcr || ""));
+  content.querySelectorAll("[data-bcdel]").forEach(b => b.onclick = () => db.collection("comments").doc(b.dataset.bcdel).delete().catch(e => { console.error(e); showToast("Delete failed"); }));
+  if ($("bcmtIn")){ const btn = content.querySelector("[data-bcpost]"); $("bcmtIn").addEventListener("keydown", e => { if (e.key === "Enter" && btn) btn.click(); }); }
+  // clickable info taps on cards
+  wireInfoTaps(content);
+  if ($("mBg")) $("mBg").onclick = ev => { if (ev.target.id === "mBg"){ itemInfo = null; runeInfo = null; spellInfo = null; render(); } };
+  if ($("mClose")) $("mClose").onclick = () => { itemInfo = null; runeInfo = null; spellInfo = null; render(); };
 }
 function runeBtn(r, extraAttr, on){
   return `<button class="bItem ${on ? "on" : ""}" data-rn="${encodeURIComponent(r.name)}" ${extraAttr}>` +
@@ -1591,9 +1763,10 @@ db.collection("comments").orderBy("ts", "desc").limit(50).onSnapshot(snap => {
 }, err => { console.error("comments:", err); cmtList.innerHTML = `<span class="cmtEmpty">Comments unavailable — check Firestore rules.</span>`; });
 function renderComments(){
   if (cmtDocs === null) return;
-  if (!cmtDocs.length){ cmtList.innerHTML = `<span class="cmtEmpty">No comments yet — be the first!</span>`; return; }
+  const globals = cmtDocs.filter(d => !d.data.buildId);
+  if (!globals.length){ cmtList.innerHTML = `<span class="cmtEmpty">No comments yet — be the first!</span>`; return; }
   let html = "";
-  for (const d of cmtDocs){
+  for (const d of globals){
     const c = d.data;
     const when = c.ts && c.ts.toDate ? c.ts.toDate().toLocaleDateString(undefined, {day:"numeric", month:"short"}) : "";
     const canDel = user && (isOwner || c.uid === user.uid);
