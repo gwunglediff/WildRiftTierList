@@ -137,6 +137,9 @@
   .bSlot.filled { border-style: solid; border-color: #C8AA6E; }
   .bSlot.sel { border-color: #35D0A0; }
   .bPick { background: #0F1F35; border: 1px solid #22375A; border-radius: 12px; padding: 10px; margin: 8px 0; }
+  .bPick.addPick { border: 1.5px solid #E85D5D; box-shadow: 0 0 10px rgba(232,93,93,0.25); }
+  .bCat.cls { background: #3a2030; border-color: #E85D5D; color: #ffb3b3; }
+  .bCat.clr { background: #2a2a1a; border-color: #C8AA6E; color: #e8d9a8; }
   .bCats { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
   .bCat { flex: 0 0 auto; background: #13233F; border: 1px solid #2A4166; color: #8FA0B8; border-radius: 14px; padding: 5px 10px; font-size: 11px; cursor: pointer; font-family: inherit; }
   .bCat.on { color: #C8AA6E; border-color: #C8AA6E; }
@@ -167,12 +170,13 @@
   .bModal .mrow { display: flex; gap: 8px; margin-top: 12px; }
   .bModal .mrow > * { flex: 1; }
   .bTierHead { font-family: 'Cinzel', serif; font-weight: 800; font-size: 15px; letter-spacing: 1px; margin: 16px 0 6px; }
-  .bRowBtn { display: flex; width: 100%; gap: 10px; align-items: center; background: rgba(19,35,63,0.95); border: 1px solid #2A4166; border-radius: 10px; padding: 8px 10px; cursor: pointer; font-family: inherit; color: #E8EDF4; text-align: left; margin-bottom: 6px; }
-  .bRowBtn .ci { width: 40px; height: 40px; border-radius: 8px; background-size: cover; background-position: center; border: 2px solid #2A4166; flex-shrink: 0; }
-  .bRowBtn .txt { min-width: 0; }
+  .bRowBtn { display: flex; width: 100%; gap: 10px; align-items: center; background: rgba(19,35,63,0.95); border: 1.5px solid #2A4166; border-radius: 12px; padding: 9px 11px; cursor: pointer; font-family: inherit; color: #E8EDF4; text-align: left; margin-bottom: 8px; transition: box-shadow .15s; }
+  .bRowBtn .ci { width: 44px; height: 44px; border-radius: 9px; background-size: cover; background-position: center; border: 2px solid #2A4166; flex-shrink: 0; }
+  .bRowBtn .txt { min-width: 0; flex: 1; }
   .bRowBtn .cn { font-size: 13px; font-weight: 600; display: block; }
-  .bRowBtn .cv { font-size: 11px; color: #AEBBCC; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .bRowBtn .cv { margin-bottom: 2px; }
+  .bRowBtn .cv { font-size: 11px; color: #AEBBCC; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+  .mini2row { display: flex; flex-direction: column; gap: 3px; margin-top: 2px; }
+  .mini2line { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; }
   .bMini2 { width: 22px; height: 22px; border-radius: 5px; border: 1px solid #2A4166; background-size: cover; background-position: center; display: inline-block; margin: 3px 3px 0 0; vertical-align: middle; }
   .bGrid, .bSlotRow, .bItem, .bSlot, .bPick, .bModal, .bSec { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
   .bItem, .bSlot, .bVote, .bRowBtn, .bCat { -webkit-tap-highlight-color: transparent; }
@@ -222,8 +226,8 @@
     border-radius: 8px; padding: 2px 10px; font-size: 13px; margin-bottom: 8px; }
   .bModal .meta { font-size: 11px; color: #7B8BA3; margin-bottom: 8px; }
   /* ===== Champion Hub ===== */
-  .hub { margin: 0 0 40px; }
-  .hubHero { position: relative; height: 260px; border-radius: 0 0 20px 20px; overflow: hidden; background: #0A1428; box-shadow: 0 6px 30px rgba(0,0,0,0.5); }
+  .hub { margin: 12px 0 40px; }
+  .hubHero { position: relative; height: 260px; border-radius: 18px; overflow: hidden; background: #0A1428; box-shadow: 0 6px 30px rgba(0,0,0,0.5); }
   .hubHero .art { position: absolute; inset: 0; background-size: cover; background-position: center 22%; transform: scale(1.05); filter: saturate(1.05); }
   .hubHero .scrim { position: absolute; inset: 0; background:
       linear-gradient(180deg, rgba(6,14,30,0.15) 0%, rgba(6,14,30,0.35) 45%, rgba(6,14,30,0.92) 100%),
@@ -243,7 +247,8 @@
   .hubPlay { font-size: 14px; color: #DCE4EE; line-height: 1.6; white-space: pre-wrap; }
   .hubPlay.empty { color: #5A6B85; font-style: italic; }
   .abilRow { display: flex; gap: 10px; flex-wrap: wrap; }
-  .abil { text-align: center; width: 60px; }
+  .abil { text-align: center; width: 60px; cursor: pointer; }
+  .abil:active .ai { transform: scale(0.93); }
   .abil .ai { width: 52px; height: 52px; border-radius: 12px; border: 2px solid #C8AA6E; background: #0F1F35; background-size: cover; background-position: center; margin: 0 auto; position: relative;
     box-shadow: 0 0 9px rgba(200,170,110,0.5); display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-weight: 800; color: #C8AA6E; font-size: 20px; }
   .abil .key { font-size: 10px; color: #8FA0B8; margin-top: 3px; font-weight: 700; }
@@ -272,6 +277,67 @@
   .patchTag { font-size: 10px; color: #7B8BA3; margin-left: 6px; }
   .bc2 .note2 { font-size: 12px; color: #B9C6D8; background: #0d1c33; border-left: 3px solid #6B3FA0; border-radius: 0 8px 8px 0; padding: 6px 9px; margin: 6px 0; white-space: pre-wrap; word-break: break-word; }
   .bShare { background: #13233F; border: 1px solid #2A4166; color: #9FB2CC; border-radius: 8px; padding: 5px 10px; font-size: 12px; cursor: pointer; font-family: inherit; }
+  /* ===== Draft picker ===== */
+  .draft { margin: 12px 0 60px; }
+  .dHead { font-family: 'Cinzel', serif; color: #C8AA6E; font-size: 18px; letter-spacing: 1px; text-align: center; margin: 6px 0 12px; }
+  .dSub { text-align: center; color: #8FA0B8; font-size: 12px; margin-bottom: 16px; }
+  .dFirst { display: flex; gap: 12px; justify-content: center; margin: 20px 0; }
+  .dFirstBtn { flex: 1; max-width: 200px; padding: 22px 0; border-radius: 16px; border: 2px solid; font-family: 'Cinzel', serif; font-weight: 700; font-size: 18px; cursor: pointer; background: rgba(19,35,63,0.6); }
+  .dFirstBtn.blue { border-color: #3B9BE8; color: #6Fc0ff; box-shadow: 0 0 18px rgba(59,155,232,0.3); }
+  .dFirstBtn.red { border-color: #E85D5D; color: #ff8f8f; box-shadow: 0 0 18px rgba(232,93,93,0.3); }
+  .dBoard { display: flex; gap: 8px; }
+  .dCol { flex: 1; min-width: 0; }
+  .dCol.blue .dColH { color: #6FC0FF; } .dCol.red .dColH { color: #ff8f8f; }
+  .dColH { font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-align: center; margin-bottom: 8px; }
+  .dSlot { display: flex; align-items: center; gap: 8px; background: rgba(15,31,53,0.9); border: 1.5px solid #2A4166; border-radius: 10px; padding: 6px 8px; margin-bottom: 7px; cursor: pointer; min-height: 46px; }
+  .dSlot.blue { border-color: #24506e; } .dSlot.red { border-color: #6e2f34; }
+  .dSlot.ban { border-style: dashed; border-color: #E85D5D; box-shadow: 0 0 8px rgba(232,93,93,0.25); }
+  .dSlot.sel { box-shadow: 0 0 0 2px #C8AA6E, 0 0 14px rgba(200,170,110,0.5); border-color: #C8AA6E; }
+  .dSlot.due { box-shadow: 0 0 12px rgba(200,170,110,0.55); border-color: #C8AA6E; }
+  .dSlot .di { width: 36px; height: 36px; border-radius: 8px; background-size: cover; background-position: center; border: 2px solid #2A4166; flex-shrink: 0; }
+  .dSlot .dl { font-size: 9px; color: #7B8BA3; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; }
+  .dSlot .dn { font-size: 12px; color: #E8EDF4; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dSlot .empty { color: #46566e; font-size: 20px; width: 36px; text-align: center; }
+  .dLaneTabs { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin: 6px 0 10px; }
+  .dLaneTab { padding: 6px 12px; border-radius: 18px; border: 1.5px solid #2A4166; background: rgba(19,35,63,0.7); color: #9FB2CC; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .dLaneTab.on { color: #0A1428; }
+  .dPickGrid { display: flex; flex-direction: column; gap: 8px; }
+  .dTierRow { display: flex; gap: 8px; align-items: flex-start; }
+  .dTierLbl { width: 34px; flex-shrink: 0; font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; text-align: center; padding-top: 8px; }
+  .dChamps { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; }
+  .dChamp { width: 58px; text-align: center; cursor: pointer; }
+  .dChamp .dci { width: 50px; height: 50px; border-radius: 10px; background-size: cover; background-position: center; border: 2px solid #2A4166; margin: 0 auto; position: relative; }
+  .dChamp.used .dci { filter: grayscale(1) brightness(0.4); }
+  .dChamp .dcn { font-size: 9px; color: #AEBBCC; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+  .dChamp .rbadge { position: absolute; bottom: -4px; right: -4px; background: #0A1428; border: 1px solid #C8AA6E; color: #F0E9C8; font-size: 9px; font-weight: 800; border-radius: 6px; padding: 0 4px; }
+  .dRecs { margin-top: 16px; }
+  .dRecCols { display: flex; gap: 8px; }
+  .dRecCol { flex: 1; min-width: 0; border-radius: 12px; padding: 8px; background: rgba(15,31,53,0.6); }
+  .dRecCol.blue { border: 1px solid #24506e; } .dRecCol.red { border: 1px solid #6e2f34; }
+  .dRecCol.due { box-shadow: 0 0 14px rgba(200,170,110,0.4); }
+  .dRecLane { font-size: 10px; font-weight: 800; letter-spacing: .5px; color: #C8AA6E; text-transform: uppercase; margin: 8px 0 5px; }
+  .dRecRow { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 3px; }
+  .dRecChamp { width: 46px; flex-shrink: 0; text-align: center; }
+  .dRecChamp .dci { width: 40px; height: 40px; border-radius: 8px; background-size: cover; background-position: center; border: 2px solid #2A4166; margin: 0 auto; position: relative; }
+  .dRecChamp .dcn { font-size: 8px; color: #9FB2CC; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dBtnRow { display: flex; gap: 8px; justify-content: center; margin: 14px 0; flex-wrap: wrap; }
+  .dBtn { background: #6B3FA0; border: none; color: #F0E9FF; border-radius: 10px; padding: 10px 18px; font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; }
+  .dBtn.ghost { background: #13233F; border: 1px solid #2A4166; color: #9FB2CC; }
+  .dBtn.gold { background: #C8AA6E; color: #0A1428; }
+  /* ratings editor */
+  .rt { margin: 12px 0 60px; }
+  .rtSel { display: flex; gap: 8px; margin-bottom: 12px; }
+  .rtSel input { flex: 1; min-width: 0; background: #0F1F35; border: 1px solid #2A4166; color: #E8EDF4; border-radius: 8px; padding: 10px; font-size: 14px; font-family: inherit; }
+  .rtTags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .rtTag { padding: 6px 11px; border-radius: 16px; border: 1px solid #2A4166; background: rgba(19,35,63,0.7); color: #9FB2CC; font-size: 12px; cursor: pointer; font-family: inherit; }
+  .rtTag.on { background: #6B3FA0; border-color: #6B3FA0; color: #F0E9FF; }
+  .rtRow { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid #1b2f4d; }
+  .rtRow .rtc { width: 34px; height: 34px; border-radius: 7px; background-size: cover; background-position: center; border: 2px solid #2A4166; flex-shrink: 0; }
+  .rtRow .rtn { flex: 1; min-width: 0; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rtRow input[type=number] { width: 60px; background: #0F1F35; border: 1px solid #2A4166; color: #E8EDF4; border-radius: 8px; padding: 7px; font-size: 14px; text-align: center; font-family: inherit; }
+  .rtTabs { display: flex; gap: 6px; margin: 10px 0; }
+  .rtTabBtn { flex: 1; padding: 9px; border-radius: 9px; border: 1px solid #2A4166; background: rgba(19,35,63,0.7); color: #9FB2CC; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .rtTabBtn.on { background: #C8AA6E; color: #0A1428; border-color: #C8AA6E; }
 </style>
 </head>
 <body>
@@ -296,6 +362,7 @@
     <button class="editBtn" id="imgCleanBtn">Clean Photo</button>
     <button class="editBtn" id="imgVotesBtn">Votes Photo</button>
     <button class="editBtn" id="buildsBtn" style="display:none">Builds</button>
+    <button class="editBtn" id="draftBtn" style="display:none">Draft</button>
     <button class="editBtn" id="editBtn" style="display:none">Edit</button>
   </div>
 </div>
@@ -1034,7 +1101,7 @@ const wrSpell = n => WR_SPELLS.find(s => s.name === n);
 let buildsMode = false, bChamp = null, bRole = "all", bSearch = "", bSort = "top";
 let bAll = [], unsubBuilds = null;
 let eb = null, ebSlot = null, ebCat = null, ebAddSlot = null;
-let itemInfo = null, runeInfo = null, spellInfo = null, confirmBDel = null;
+let itemInfo = null, runeInfo = null, spellInfo = null, abilInfo = null, confirmBDel = null;
 let openCmtBuild = null, buildCmts = [], unsubBuildCmts = null;
 let bVotes = {}, unsubBVotes = null;
 let holdTimer = null, holdFired = false;
@@ -1182,6 +1249,10 @@ function infoModalHtml(){
       `<div class="big" style="${sp.img ? `background-image:url('${sp.img}')` : ""}"></div>` +
       `<div class="ttl">${esc(sp.name)}</div><div class="meta">Summoner Spell</div>` +
       `<div class="dsc">Summoner spell — bring the right pair for your matchup.</div>`; }
+  else if (abilInfo){ inner =
+      `<div class="big" style="${abilInfo.img ? `background-image:url('${abilInfo.img}')` : ""}"></div>` +
+      `<div class="ttl">${esc(abilInfo.name || abilInfo.key)}</div><div class="meta">${abilInfo.key === "P" ? "Passive" : "Ability " + abilInfo.key}</div>` +
+      `<div class="dsc">${esc(abilInfo.desc || "No description available.")}</div>`; }
   if (!inner) return "";
   return `<div class="bModalBg" id="mBg"><div class="bModal">${inner}` +
     `<div class="mrow"><button class="authBtn" id="mClose">Close</button></div></div></div>`;
@@ -1272,14 +1343,10 @@ function buildCardHtml(d){
     (b.items || []).map(n => mini(n, "item", "bMini")).join("") +
     ((b.spells && b.spells.filter(Boolean).length) ? `<span class="sep"></span>` + b.spells.map(n => mini(n, "spell", "bMini")).join("") : "") +
     `</div>`;
-  // runes line (no tree text)
+  // runes line + additional items directly after (red), no label
   h += `<div class="rowline">` + mini(b.keystone, "rune", "bMini") +
-    (b.minors || []).map(n => mini(n, "rune", "bMini")).join("") + mini(b.secRune, "rune", "bMini") + `</div>`;
-  // additional items (red)
-  if (add.length){
-    h += `<div class="addlabel">Additional items</div><div class="rowline">` +
-      add.map(n => mini(n, "add", "bMini")).join("") + `</div>`;
-  }
+    (b.minors || []).map(n => mini(n, "rune", "bMini")).join("") + mini(b.secRune, "rune", "bMini") +
+    (add.length ? `<span class="sep"></span>` + add.map(n => mini(n, "add", "bMini")).join("") : "") + `</div>`;
   // build note (baked in)
   if (!b.def && b.notes) h += `<div class="note2">📝 ${esc(b.notes)}</div>`;
   // vote + comments footer
@@ -1307,21 +1374,25 @@ function buildRowsHtml(){
     h += `<div class="bTierHead" id="bt-${esc(t)}" style="color:${TIER_COLORS[t]}">${esc(t)} TIER BUILDS</div>`;
     for (const {c, r} of entries){
       const top = buildsFor(c, r)[0];
+      const tCol = TIER_COLORS[t] || "#2A4166";
       let sub = "No builds yet — be the first!", minis = "", votes = "";
       if (top){
         const b = top.data;
         const cnt = buildCounts(top.id);
         const disp = cnt.score + (b.def ? 5 : 0);
-        sub = b.def ? "Default Build" : `“${esc(b.title)}” by ${esc(authorOf(b))} · net votes ${cnt.score >= 0 ? "+" : ""}${cnt.score}`;
+        sub = b.def ? "Default Build" : `“${esc(b.title)}” by ${esc(authorOf(b))} · net ${cnt.score >= 0 ? "+" : ""}${cnt.score}`;
         const add = (b.additems || []).filter(Boolean);
         minis = `<span class="mini2row">` +
-          (b.items || []).map(n => mini(n, "item", "bMini2")).join("") +
-          `<span style="display:inline-block;width:8px"></span>` +
-          mini(b.keystone, "rune", "bMini2") +
-          (b.minors || []).map(n => mini(n, "rune", "bMini2")).join("") +
-          mini(b.secRune, "rune", "bMini2") +
-          (b.spells || []).map(n => mini(n, "spell", "bMini2")).join("") +
-          (add.length ? `<span style="display:inline-block;width:8px"></span>` + add.map(n => mini(n, "add", "bMini2")).join("") : "") +
+          `<span class="mini2line">` +
+            (b.items || []).map(n => mini(n, "item", "bMini2")).join("") +
+            (b.spells && b.spells.filter(Boolean).length ? `<span style="display:inline-block;width:6px"></span>` + b.spells.map(n => mini(n, "spell", "bMini2")).join("") : "") +
+          `</span>` +
+          `<span class="mini2line">` +
+            mini(b.keystone, "rune", "bMini2") +
+            (b.minors || []).map(n => mini(n, "rune", "bMini2")).join("") +
+            mini(b.secRune, "rune", "bMini2") +
+            (add.length ? `<span style="display:inline-block;width:6px"></span>` + add.map(n => mini(n, "add", "bMini2")).join("") : "") +
+          `</span>` +
           `</span>`;
         const mv = myBuildVote(top.id);
         votes = `<span class="rowVotes">` +
@@ -1329,8 +1400,8 @@ function buildRowsHtml(){
           `<button class="bVote ${mv < 0 ? "mine" : ""}" data-rbv="-1" data-bid="${top.id}" style="color:#E85D5D">▼${cnt.down}</button>` +
           `<span class="bScore" style="${b.def ? "color:#C77DD8" : ""}">${disp > 0 ? "+" + disp : disp}</span></span>`;
       }
-      h += `<span class="bRowBtn" role="button" data-bc="${encodeURIComponent(c)}" data-br="${r}">` +
-        `<span class="ci" style="background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span>` +
+      h += `<span class="bRowBtn" role="button" data-bc="${encodeURIComponent(c)}" data-br="${r}" style="border-color:${tCol};box-shadow:0 0 11px ${tCol}44">` +
+        `<span class="ci" style="border-color:${tCol};box-shadow:0 0 7px ${tCol}66;background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span>` +
         `<span class="txt"><span class="cn">${esc(c)}${role === "all" ? ` <span style="color:${ROLE_TAG[r].col};font-weight:600;font-size:12px">· ${ROLE_LABELS[r]}</span>` : ""}</span>` +
         `<span class="cv">${sub}</span>${minis}</span>${votes}</span>`;
     }
@@ -1379,12 +1450,12 @@ function renderBuilds(content){
       else showToast("No " + b.dataset.jump + " champions here");
     });
     wireBuildRows(content);
-    if ($("mBg")) $("mBg").onclick = ev => { if (ev.target.id === "mBg"){ itemInfo = null; runeInfo = null; spellInfo = null; render(); } };
-    if ($("mClose")) $("mClose").onclick = () => { itemInfo = null; runeInfo = null; spellInfo = null; render(); };
+    if ($("mBg")) $("mBg").onclick = ev => { if (ev.target.id === "mBg"){ itemInfo = null; runeInfo = null; spellInfo = null; abilInfo = null; render(); } };
+    if ($("mClose")) $("mClose").onclick = () => { itemInfo = null; runeInfo = null; spellInfo = null; abilInfo = null; render(); };
     return;
   }
   // -------- champ detail --------
-  $("hint").textContent = "Tap ▲/▼ to vote · tap any item, rune or spell to read it";
+  $("hint").textContent = "";
   const lanes = champRoles(bChamp);
   if (bRole !== "all" && !lanes.includes(bRole)) bRole = "all";
   const dTier = bRole !== "all" ? tierOfChamp(bRole, bChamp)
@@ -1395,7 +1466,8 @@ function renderBuilds(content){
     `<span style="width:40px;height:40px;border-radius:9px;border:2px solid ${dCol};background-size:cover;background-position:center;flex-shrink:0;background-image:url('${iconUrl(bChamp)}'),url('${iconUrl2(bChamp)}')"></span>` +
     `<span class="pname" style="margin:0;color:${dCol}">${esc(bChamp)}${dTier ? ` <span style="font-size:12px;vertical-align:2px">· ${esc(dTier)} tier</span>` : ""}</span>` +
     (eb ? `<button class="editBtn on" id="bCancel">Cancel</button><button class="editBtn" id="bSave">${ebEditId ? "Save changes" : "Save build"}</button>`
-        : (user ? `<button class="editBtn" id="bNew">+ New build</button>` : `<span class="bNote">Sign in to post builds</span>`)) + `</div>`;
+        : (user ? `<button class="editBtn" id="bNew">+ New build</button>` : `<span class="bNote">Sign in to post builds</span>`)) +
+    (!eb ? `<button class="editBtn" id="bDetails" style="background:#6B3FA0;color:#F0E9FF;border:none">✦ Details</button>` : "") + `</div>`;
   if (!eb){
     h += `<div class="bCats">` +
       `<button class="bCat ${bRole === "all" ? "on" : ""}" data-brole="all">All lanes</button>` +
@@ -1409,20 +1481,16 @@ function renderBuilds(content){
       lanes.map(r => `<button class="bCat ${eb.role === r ? "on" : ""}" data-erole="${r}">${ROLE_LABELS[r]}</button>`).join("") +
       (isOwner ? `<button class="bCat ${eb.def ? "on" : ""}" data-edef="1">★ Default build</button>` : "") +
       (lanes.length ? "" : `<span class="bNote">This champion isn't on the tierlist in any lane yet.</span>`) + `</div>`;
-    h += `<div class="bSec">ITEMS — one must be boots</div><div class="bSlotRow">` + eb.items.map((it, i) => {
+    h += `<div class="bSec">ITEMS</div><div class="bSlotRow">` + eb.items.map((it, i) => {
       const d = it && wrItem(it);
       return `<button class="bSlot ${it ? "filled" : ""} ${ebSlot === i ? "sel" : ""}" data-slot="${i}" ${it ? `data-slotitem="${encodeURIComponent(it)}"` : ""} style="${d && d.img ? `background-image:url('${d.img}')` : ""}">${it ? "" : "+"}</button>`;
-    }).join("") + `</div><div class="bNote" style="margin:2px 0">Tap a slot to fill it · tap a filled item to swap · hold it to read what it does.</div>`;
-    const pickOpen = ebSlot !== null || ebAddSlot !== null;
-    if (pickOpen){
-      const isAdd = ebAddSlot !== null;
-      h += `<div class="bPick"><div class="bNote" style="margin:0 0 6px">${isAdd ? "Additional item slot " + (ebAddSlot + 1) : "Item slot " + (ebSlot + 1)}</div><div class="bCats">` +
-        wrCats().map(c => `<button class="bCat ${c === ebCat ? "on" : ""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("") +
-        `<button class="bCat" data-clear="1">✕ Clear slot</button></div><div class="bGrid">` +
-        WR_ITEMS.filter(i => i.cat === ebCat).map(i =>
-          `<button class="bItem" data-pi="${encodeURIComponent(i.name)}" style="${(isAdd ? (eb.additems || []).includes(i.name) : eb.items.includes(i.name)) ? "opacity:0.35" : ""}"><span class="ic" style="${i.img ? `background-image:url('${i.img}')` : ""}"></span><span class="lb">${esc(i.name)}</span></button>`).join("") +
-        `</div></div>`;
-    }
+    }).join("") + `</div>`;
+    if (ebSlot !== null) h += itemPickerHtml(false);
+    h += `<div class="bSec" style="color:#E8859B">ADDITIONAL ITEMS</div><div class="bSlotRow">` +
+      eb.additems.map((it, i) => { const d = it && wrItem(it);
+        return `<button class="bSlot add ${it ? "filled" : ""} ${ebAddSlot === i ? "sel" : ""}" data-addslot="${i}" ${it ? `data-slotitem="${encodeURIComponent(it)}"` : ""} style="${d && d.img ? `background-image:url('${d.img}')` : ""}">${it ? "" : "+"}</button>`;
+      }).join("") + `</div>`;
+    if (ebAddSlot !== null) h += itemPickerHtml(true);
     h += `<div class="bSec">SUMMONER SPELLS — pick 2</div><div class="bGrid">` + WR_SPELLS.map(s =>
       `<button class="bItem ${eb.spells.includes(s.name) ? "on" : ""}" data-sp="${encodeURIComponent(s.name)}"><span class="ic" style="background-image:url('${s.img}')"></span><span class="lb">${esc(s.name)}</span></button>`).join("") + `</div>`;
     h += `<div class="bSec">KEYSTONE</div><div class="bGrid">` +
@@ -1443,13 +1511,8 @@ function renderBuilds(content){
       h += `<div class="bGrid">` + WR_RUNES.filter(r => !r.keystone && r.tree === eb.secTree)
         .map(r => runeBtn(r, `data-sr="1"`, eb.secRune === r.name)).join("") + `</div>`;
     }
-    h += `<div class="bSec" style="color:#E8859B">ADDITIONAL ITEMS — optional (situational)</div><div class="bSlotRow">` +
-      eb.additems.map((it, i) => { const d = it && wrItem(it);
-        return `<button class="bSlot add ${it ? "filled" : ""} ${ebAddSlot === i ? "sel" : ""}" data-addslot="${i}" ${it ? `data-slotitem="${encodeURIComponent(it)}"` : ""} style="${d && d.img ? `background-image:url('${d.img}')` : ""}">${it ? "" : "+"}</button>`;
-      }).join("") + `</div><div class="bNote" style="margin:2px 0">Up to 5 extra picks (swaps, situational buys). They show under the runes in previews.</div>`;
-    h += `<div class="bSec" style="color:#C9B3E8">BUILD NOTE — optional</div>` +
-      `<textarea id="bNotes" maxlength="300" placeholder="Baked into the build: skill order tweaks, when to buy the additional items, matchup tips… (max 300)" style="width:100%;box-sizing:border-box;min-height:70px;resize:vertical;background:#0F1F35;border:1px solid #2A4166;color:#E8EDF4;border-radius:8px;padding:9px;font-size:13px;font-family:inherit">${esc(eb.notes || "")}</textarea>`;
-    h += `<div class="bNote">Tap an item or rune to add it · hold to read what it does.</div>`;
+    h += `<div class="bSec" style="color:#C9B3E8">NOTE</div>` +
+      `<textarea id="bNotes" maxlength="300" placeholder="Notes (optional)" style="width:100%;box-sizing:border-box;min-height:70px;resize:vertical;background:#0F1F35;border:1px solid #2A4166;color:#E8EDF4;border-radius:8px;padding:9px;font-size:13px;font-family:inherit">${esc(eb.notes || "")}</textarea>`;
   } else {
     let shown = buildsFor(bChamp, bRole);
     if (bSort === "new") shown = [...shown].sort((a, b) => ((b.data.ts && b.data.ts.seconds) || 0) - ((a.data.ts && a.data.ts.seconds) || 0));
@@ -1462,7 +1525,11 @@ function renderBuilds(content){
   h += infoModalHtml();
   content.innerHTML = h;
   // wiring
-  $("bBack").onclick = () => { bChamp = null; eb = null; ebEditId = null; confirmBDel = null; itemInfo = null; runeInfo = null; spellInfo = null; closeBuildComments(); };
+  $("bBack").onclick = () => {
+    if (bChamp && bFromHub){ const c = bFromHub; bFromHub = null; bChamp = null; eb = null; ebEditId = null; confirmBDel = null; itemInfo = runeInfo = spellInfo = null; if (unsubBuildCmts){ unsubBuildCmts(); unsubBuildCmts = null; } openCmtBuild = null; openHub(c); return; }
+    bChamp = null; eb = null; ebEditId = null; confirmBDel = null; itemInfo = null; runeInfo = null; spellInfo = null; closeBuildComments();
+  };
+  if ($("bDetails")) $("bDetails").onclick = () => { bFromHub = null; openHub(bChamp); };
   if ($("bNew")) $("bNew").onclick = newBuild;
   if ($("bCancel")) $("bCancel").onclick = () => { eb = null; ebEditId = null; render(); };
   if ($("bSave")) $("bSave").onclick = saveBuild;
@@ -1490,19 +1557,21 @@ function renderBuilds(content){
   });
   content.querySelectorAll("[data-cat]").forEach(b => b.onclick = () => { ebCat = b.dataset.cat; render(); });
   content.querySelectorAll("[data-clear]").forEach(b => b.onclick = () => {
-    if (ebAddSlot !== null){ eb.additems[ebAddSlot] = null; ebAddSlot = null; }
-    else if (ebSlot !== null){ eb.items[ebSlot] = null; ebSlot = null; }
+    if (ebAddSlot !== null) eb.additems[ebAddSlot] = null;
+    else if (ebSlot !== null) eb.items[ebSlot] = null;
     render();
   });
+  content.querySelectorAll("[data-closepick]").forEach(b => b.onclick = () => { ebSlot = null; ebAddSlot = null; render(); });
   content.querySelectorAll("[data-pi]").forEach(b => bindHold(b, decodeURIComponent(b.dataset.pi), showItem,
     n => {
-      if (ebAddSlot !== null){
-        if ((eb.additems || []).includes(n)){ showToast("Already an additional item"); return; }
-        eb.additems[ebAddSlot] = n; ebAddSlot = null; render();
-      } else if (ebSlot !== null){
-        if (eb.items.includes(n)){ showToast("Already in this build"); return; }
-        eb.items[ebSlot] = n; ebSlot = null; render();
-      }
+      const arr = ebAddSlot !== null ? eb.additems : eb.items;
+      const idx = ebAddSlot !== null ? ebAddSlot : ebSlot;
+      if (idx === null || idx === undefined) return;
+      const j = arr.indexOf(n);
+      if (j === idx){ /* same slot — no-op, keep picker open */ }
+      else if (j !== -1){ const tmp = arr[idx]; arr[idx] = n; arr[j] = tmp; } // already picked elsewhere → swap
+      else { arr[idx] = n; }
+      render(); // picker stays open
     }));
   content.querySelectorAll("[data-ks]").forEach(b => bindHold(b, decodeURIComponent(b.dataset.rn), showRune,
     n => { eb.keystone = eb.keystone === n ? null : n; render(); }));
@@ -1542,16 +1611,26 @@ function renderBuilds(content){
   if ($("bcmtIn")){ const btn = content.querySelector("[data-bcpost]"); $("bcmtIn").addEventListener("keydown", e => { if (e.key === "Enter" && btn) btn.click(); }); }
   // clickable info taps on cards
   wireInfoTaps(content);
-  if ($("mBg")) $("mBg").onclick = ev => { if (ev.target.id === "mBg"){ itemInfo = null; runeInfo = null; spellInfo = null; render(); } };
-  if ($("mClose")) $("mClose").onclick = () => { itemInfo = null; runeInfo = null; spellInfo = null; render(); };
+  if ($("mBg")) $("mBg").onclick = ev => { if (ev.target.id === "mBg"){ itemInfo = null; runeInfo = null; spellInfo = null; abilInfo = null; render(); } };
+  if ($("mClose")) $("mClose").onclick = () => { itemInfo = null; runeInfo = null; spellInfo = null; abilInfo = null; render(); };
 }
 function runeBtn(r, extraAttr, on){
   return `<button class="bItem ${on ? "on" : ""}" data-rn="${encodeURIComponent(r.name)}" ${extraAttr}>` +
     `<span class="ic" style="${r.img ? `background-image:url('${r.img}')` : ""}"></span><span class="lb">${esc(r.name)}</span></button>`;
 }
+function itemPickerHtml(isAdd){
+  const picked = isAdd ? (eb.additems || []) : (eb.items || []);
+  return `<div class="bPick ${isAdd ? "addPick" : ""}"><div class="bCats">` +
+    wrCats().map(c => `<button class="bCat ${c === ebCat ? "on" : ""}" data-cat="${esc(c)}">${esc(c)}</button>`).join("") +
+    `<button class="bCat clr" data-clear="1">Clear</button>` +
+    `<button class="bCat cls" data-closepick="1">✕ Close</button></div><div class="bGrid">` +
+    WR_ITEMS.filter(i => i.cat === ebCat).map(i =>
+      `<button class="bItem ${picked.includes(i.name) ? "on" : ""}" data-pi="${encodeURIComponent(i.name)}"><span class="ic" style="${i.img ? `background-image:url('${i.img}')` : ""}"></span><span class="lb">${esc(i.name)}</span></button>`).join("") +
+    `</div></div>`;
+}
 
 // ============ CHAMPION HUB ============
-let hubChamp = null, hubEdit = false, hubDocs = {}, matchDocs = {}, abilCache = {}, finderQ = "";
+let hubChamp = null, hubEdit = false, hubDocs = {}, matchDocs = {}, abilCache = {}, finderQ = "", bFromHub = null;
 let unsubHub = null, unsubMatch = null, mAddSel = null;
 function ensureHubSubs(){
   if (!unsubHub) unsubHub = db.collection("hub").onSnapshot(s => { hubDocs = {}; s.forEach(d => hubDocs[d.id] = d.data()); if (hubChamp) render(); }, e => console.error("hub:", e));
@@ -1564,8 +1643,9 @@ function loadAbilities(champ){
     .then(r => r.ok ? r.json() : Promise.reject())
     .then(j => { const c = j.data[ddId(champ)];
       const base = `https://ddragon.leagueoflegends.com/cdn/${DD_VER}/img/`;
-      const out = [{key:"P", img: base+"passive/"+c.passive.image.full}];
-      ["Q","W","E","R"].forEach((k,i) => out.push({key:k, img: base+"spell/"+c.spells[i].image.full}));
+      const strip = t => (t || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+      const out = [{key:"P", name:c.passive.name, img: base+"passive/"+c.passive.image.full, desc: strip(c.passive.description)}];
+      ["Q","W","E","R"].forEach((k,i) => out.push({key:k, name:c.spells[i].name, img: base+"spell/"+c.spells[i].image.full, desc: strip(c.spells[i].description)}));
       abilCache[champ] = out; if (hubChamp === champ) render();
     })
     .catch(() => { abilCache[champ] = []; if (hubChamp === champ) render(); });
@@ -1618,37 +1698,28 @@ function renderHub(content){
   // hero
   h += `<div class="hubHero"><div class="art" style="background-image:url('${art}'),url('${art2}')"></div><div class="scrim"></div>` +
     `<button class="hubBack" id="hubBack">‹ Back</button>` +
-    (isOwner ? `<button class="hubEditBtn" id="hubEditToggle">${hubEdit ? "Done" : "✎ Edit hub"}</button>` : "") +
+    (isOwner ? `<button class="hubEditBtn" id="hubEditToggle">${hubEdit ? "Done" : "✎ Edit"}</button>` : "") +
     `<div class="titlewrap"><div class="cname">${esc(c)}</div>` +
-    `<div class="csub">Champion Hub</div>` +
+    `<div class="csub">Champion Details</div>` +
     `<div class="tierPills">` + (lanes.length ? lanes.map(r => { const tt = tierOfChamp(r, c); const col = TIER_COLORS[tt]||"#8AA0B8";
         return `<span class="tierPill" style="border-color:${col};color:${col}"><span class="lane">${esc(ROLE_LABELS[r])}</span> ${esc(tt||"?")}</span>`; }).join("")
       : `<span class="tierPill" style="border-color:#566578;color:#8AA0B8">Not on the tierlist yet</span>`) + `</div></div></div>`;
   h += `<div class="hubBody">`;
   if (hubEdit && isOwner){
     // ---- owner edit panel ----
-    h += `<div class="hubCard hubEdit"><h3>Edit hub</h3>` +
+    h += `<div class="hubCard hubEdit"><h3>Edit details</h3>` +
       `<div class="lbl">HOW TO PLAY / WIN CONDITION</div><textarea id="hubPlayIn" placeholder="Write how to play ${esc(c)}…">${esc(hd.play || "")}</textarea>` +
       `<div class="lbl">ABILITY MAX ORDER (e.g. R &gt; Q &gt; W &gt; E)</div><input id="hubMaxIn" value="${esc(hd.maxOrder || "")}" placeholder="R > Q > W > E">` +
-      `<button class="hubSave" id="hubSave">Save hub</button></div>`;
-    // matchup editor
-    const opts = ["baron","jungle","mid","duo","support"].flatMap(r => (tiersByRole[r]?TIERS.flatMap(t=>tiersByRole[r][t]):[]));
-    const allChamps = [...new Set(opts)].filter(x => x !== c).sort();
-    h += `<div class="hubCard hubEdit"><h3>Counters — your call, not stats</h3>` +
-      `<div class="lbl">ADD A MATCHUP</div><div class="row2"><select id="mSel"><option value="">Pick a champion…</option>` +
-      allChamps.map(x => `<option ${mAddSel===x?"selected":""}>${esc(x)}</option>`).join("") + `</select></div>` +
-      `<input id="mNote" placeholder="Optional note (e.g. dodge his Q, then all-in)" style="margin-top:6px">` +
-      `<div class="row2" style="margin-top:8px"><button class="hubSave" style="background:#2f6b48" id="mAddWin">＋ ${esc(c)} wins vs this</button>` +
-      `<button class="hubSave" style="background:#8A3A5E" id="mAddLose">＋ ${esc(c)} loses to this</button></div></div>`;
+      `<button class="hubSave" id="hubSave">Save</button></div>`;
   } else {
     // ---- how to play ----
-    h += `<div class="hubCard"><h3>How to play</h3><div class="hubPlay ${hd.play?"":"empty"}">${hd.play ? esc(hd.play) : (isOwner ? "Tap “Edit hub” to add a play guide." : "No guide yet — check back soon.")}</div></div>`;
+    h += `<div class="hubCard"><h3>How to play</h3><div class="hubPlay ${hd.play?"":"empty"}">${hd.play ? esc(hd.play) : (isOwner ? "Tap Edit to add a guide." : "No guide yet — check back soon.")}</div></div>`;
   }
   // ---- abilities ----
   const ab = abilCache[c];
   h += `<div class="hubCard"><h3>Abilities${hd.maxOrder ? ` · max <b style="color:#C8AA6E">${esc(hd.maxOrder)}</b>` : ""}</h3><div class="abilRow">`;
   if (Array.isArray(ab) && ab.length){
-    h += ab.map(a => `<div class="abil"><div class="ai" style="background-image:url('${a.img}')"></div><div class="key">${a.key}</div></div>`).join("");
+    h += ab.map((a, i) => `<div class="abil" data-abil="${i}"><div class="ai" style="background-image:url('${a.img}')"></div><div class="key">${a.key}</div></div>`).join("");
   } else if (ab === null){
     h += `<div class="hubPlay empty">Loading abilities…</div>`;
   } else {
@@ -1661,28 +1732,13 @@ function renderHub(content){
   if (top){ h += buildCardHtml(top); }
   else { h += `<div class="hubPlay empty">No builds yet.</div>`; }
   h += `<button class="editBtn" id="hubAllBuilds" style="margin-top:6px">See all builds for ${esc(c)} ›</button></div>`;
-  // ---- counters ----
-  h += `<div class="hubCard"><h3>Counters</h3><div class="cntCols">`;
-  const col = (kind, cls, label, list) => {
-    let s = `<div class="cntCol ${cls}"><div class="h">${label}</div>`;
-    if (!list || !list.length) s += `<div class="cntEmpty">${isOwner ? "Add some in Edit hub." : "Nothing here yet."}</div>`;
-    else s += list.map(m => `<div class="cntItem ${cls}" data-hub="${encodeURIComponent(m.c)}">` +
-      `<span class="ci" style="background-image:url('${iconUrl(m.c)}'),url('${iconUrl2(m.c)}')"></span>` +
-      `<span style="min-width:0"><span class="n">${esc(m.c)}</span>${m.note?`<span class="nt">${esc(m.note)}</span>`:""}</span>` +
-      (isOwner ? `<button class="rmx" data-mrm="${kind}" data-mc="${encodeURIComponent(m.c)}">✕</button>` : "") + `</div>`).join("");
-    return s + `</div>`;
-  };
-  h += col("strong","win","Wins vs", md.strong) + col("weak","lose","Loses to", md.weak) + `</div></div>`;
-  // ---- counter finder ----
-  h += `<div class="hubCard finder"><h3>Counter finder</h3>` +
-    `<input id="finderIn" placeholder="Type an enemy champion…" value="${esc(finderQ)}">` +
-    `<div class="finderRes" id="finderRes">${finderResHtml()}</div>` +
-    `<div class="bNote" style="margin-top:6px">Shows who counters that champ based on GwenDiffYT's matchup calls — not win-rate stats.</div></div>`;
+  // (counters + finder hidden for now)
   h += `</div></div>`; // hubBody, hub
   h += infoModalHtml();
   content.innerHTML = h;
   // wiring
   $("hubBack").onclick = () => { hubChamp = null; hubEdit = false; render(); };
+  content.querySelectorAll("[data-abil]").forEach(b => b.onclick = () => { const arr = abilCache[c]; if (arr && arr[+b.dataset.abil]){ abilInfo = arr[+b.dataset.abil]; itemInfo = runeInfo = spellInfo = null; render(); } });
   if ($("hubEditToggle")) $("hubEditToggle").onclick = () => { hubEdit = !hubEdit; render(); };
   if ($("hubSave")) $("hubSave").onclick = saveHub;
   if ($("mSel")) $("mSel").onchange = e => { mAddSel = e.target.value || null; };
@@ -1690,7 +1746,7 @@ function renderHub(content){
   if ($("mAddLose")) $("mAddLose").onclick = () => addMatchup("weak");
   content.querySelectorAll("[data-mrm]").forEach(b => b.onclick = () => removeMatchup(b.dataset.mrm, decodeURIComponent(b.dataset.mc)));
   content.querySelectorAll("[data-hub]").forEach(b => b.onclick = ev => { if (ev.target.closest("[data-mrm]")) return; openHub(decodeURIComponent(b.dataset.hub)); });
-  $("hubAllBuilds").onclick = () => { hubChamp = null; buildsMode = true; eb = null; confirmBDel = null; bChamp = c; bRole = "all"; render(); };
+  $("hubAllBuilds").onclick = () => { bFromHub = c; hubChamp = null; buildsMode = true; eb = null; confirmBDel = null; bChamp = c; bRole = "all"; render(); };
   const fin = $("finderIn");
   if (fin) fin.oninput = () => { finderQ = fin.value; $("finderRes").innerHTML = finderResHtml(); wireFinderRes(content); };
   // build-card interactions inside the hub (votes, comments, share, info taps)
@@ -1719,8 +1775,236 @@ function wireHubBuildCard(content){
   content.querySelectorAll("[data-bdelyes]").forEach(b => b.onclick = () => { const id = b.dataset.bdelyes; confirmBDel = null; db.collection("builds").doc(id).delete().then(()=>showToast("Build deleted")).catch(e=>{console.error(e);showToast("Delete failed");}); });
   if (content.querySelector("[data-bcpost]") && $("bcmtIn")){ const btn = content.querySelector("[data-bcpost]"); $("bcmtIn").addEventListener("keydown", e => { if (e.key === "Enter" && btn) btn.click(); }); }
   wireInfoTaps(content);
-  if ($("mBg")) $("mBg").onclick = ev => { if (ev.target.id === "mBg"){ itemInfo = null; runeInfo = null; spellInfo = null; render(); } };
-  if ($("mClose")) $("mClose").onclick = () => { itemInfo = null; runeInfo = null; spellInfo = null; render(); };
+  if ($("mBg")) $("mBg").onclick = ev => { if (ev.target.id === "mBg"){ itemInfo = null; runeInfo = null; spellInfo = null; abilInfo = null; render(); } };
+  if ($("mClose")) $("mClose").onclick = () => { itemInfo = null; runeInfo = null; spellInfo = null; abilInfo = null; render(); };
+}
+
+// ============ DRAFT PICKER + RATINGS ============
+const TAGS = [
+  // class / archetype
+  "assassin","marksman","mage","bruiser","juggernaut","tank","enchanter","catcher","artillery","battlemage","skirmisher","warden","diver","specialist",
+  // damage profile
+  "AD","AP","mixed damage","on-hit","crit","high burst","sustained dps","execute","%hp damage","true damage","burn","armor shred","magic pen","anti-heal",
+  // range / mobility
+  "melee","ranged","long range","high mobility","global mobility","dash","blink","stealth","immobile",
+  // cc
+  "high cc","point-and-click cc","aoe cc","chain cc","knockup","stun","root","slow","silence","taunt","charm","fear","suppression","displacement","pick potential",
+  // defense / sustain
+  "tanky","armor tanky","spell shield","shield","heal","lifesteal","omnivamp","self-peel","durable","escape","invuln/stasis",
+  // scaling / tempo
+  "early game","lane bully","strong scaler","late game","hypercarry","snowball","item reliant","powerspike","mana hungry","resourceless",
+  // team role / needs
+  "wants frontline","wants engage","wants peel","likes enchanter","provides engage","provides disengage","provides peel",
+  // macro
+  "poke","sustain","dive","peel","waveclear","pushes fast","splitpush","sidelane threat","teamfight","objective control","roaming","vision","hard to gank","squishy"
+];
+const TIER_SCORE = {"S+":86,"S":78,"A+":70,"A":63,"B+":56,"B":50,"C":42,"D":34};
+let draftMode = false, ratingMode = false, cmeta = {}, unsubCmeta = null, draft = null;
+let dPick = {side:null, kind:null, idx:null}, dLane = "all";
+let rtChamp = null, rtTab = "tags", rtDraft = {tags:[],lanes:{},vs:{}}, rtSearch = "", vsSearch = "";
+function ensureMetaSub(){ if (!unsubCmeta) unsubCmeta = db.collection("champmeta").onSnapshot(s => { cmeta = {}; s.forEach(d => cmeta[d.id] = d.data()); if (draftMode) render(); }, e => console.error("champmeta:", e)); }
+function allChampList(){ const s = new Set(); ROLE_KEYS.forEach(r => { if (tiersByRole[r]) TIERS.forEach(t => (tiersByRole[r][t]||[]).forEach(c => s.add(c))); }); return [...s].sort(); }
+function newDraft(){ draft = {first:null, phase:"first", bans:{blue:[null,null,null,null,null], red:[null,null,null,null,null]}, picks:{blue:[null,null,null,null,null], red:[null,null,null,null,null]}}; dPick = {side:null,kind:null,idx:null}; dLane = "all"; }
+function pickSideSeq(first){ const A = first, B = first === "blue" ? "red" : "blue"; return [A,B,B,A,A,B,B,A,A,B]; }
+function totalPicks(){ return draft.picks.blue.filter(Boolean).length + draft.picks.red.filter(Boolean).length; }
+function dueSide(){ if (!draft || draft.phase !== "pick") return null; const n = totalPicks(); return n < 10 ? pickSideSeq(draft.first)[n] : null; }
+function usedChamps(){ const s = new Set(); ["blue","red"].forEach(sd => { draft.bans[sd].forEach(c => c && s.add(c)); draft.picks[sd].forEach(c => c && s.add(c)); }); return s; }
+function champsByTierForLane(lane){
+  const out = {};
+  if (lane === "all"){ const best = {};
+    ROLE_KEYS.forEach(r => { if (tiersByRole[r]) TIERS.forEach((t,ti) => (tiersByRole[r][t]||[]).forEach(c => { if (best[c] === undefined || ti < best[c]) best[c] = ti; })); });
+    Object.keys(best).forEach(c => { const t = TIERS[best[c]]; (out[t] = out[t] || []).push(c); });
+  } else if (tiersByRole[lane]){ TIERS.forEach(t => { if ((tiersByRole[lane][t]||[]).length) out[t] = [...tiersByRole[lane][t]]; }); }
+  return out;
+}
+function teamHasTag(side, tags){ return draft.picks[side].filter(Boolean).some(c => { const t = (cmeta[c] && cmeta[c].tags) || []; return tags.some(x => t.includes(x)); }); }
+function compBonus(champ, side){
+  const t = (cmeta[champ] && cmeta[champ].tags) || []; if (!t.length) return 0; let b = 0;
+  if ((t.includes("tanky") || t.includes("armor tanky")) && !teamHasTag(side, ["tanky","armor tanky"])) b += 4;
+  if ((t.includes("high cc") || t.includes("point-and-click cc")) && !teamHasTag(side, ["high cc","point-and-click cc"])) b += 4;
+  if ((t.includes("hypercarry") || t.includes("strong scaler") || t.includes("late game")) && !teamHasTag(side, ["hypercarry","strong scaler","late game"])) b += 3;
+  if (t.includes("peel") && !teamHasTag(side, ["peel"])) b += 2;
+  if (t.includes("squishy")){ const sq = draft.picks[side].filter(Boolean).filter(c => ((cmeta[c]&&cmeta[c].tags)||[]).includes("squishy")).length; if (sq >= 2) b -= 3; }
+  return b;
+}
+function baseRating(champ, lane){ const m = cmeta[champ]; if (m && m.lanes && typeof m.lanes[lane] === "number") return m.lanes[lane]; const t = tierOfChamp(lane, champ); return t ? TIER_SCORE[t] : 50; }
+function draftRating(champ, lane, side){
+  if (!draft) return 50;
+  const enemy = side === "blue" ? "red" : "blue";
+  const m = cmeta[champ] || {};
+  let score = baseRating(champ, lane);
+  const laneOpp = draft.picks[enemy][ROLE_KEYS.indexOf(lane)];
+  if (laneOpp && m.vs && typeof m.vs[laneOpp] === "number") score -= (m.vs[laneOpp] - 50) * 0.6;
+  let gsum = 0, gc = 0;
+  draft.picks[enemy].forEach(e => { if (e && e !== laneOpp && m.vs && typeof m.vs[e] === "number"){ gsum += (m.vs[e] - 50); gc++; } });
+  if (gc) score -= (gsum / gc) * 0.15;
+  score += compBonus(champ, side);
+  return Math.max(0, Math.min(100, Math.round(score)));
+}
+function recommend(side, lane, n){
+  const used = usedChamps();
+  const pool = tiersByRole[lane] ? TIERS.flatMap(t => tiersByRole[lane][t] || []) : [];
+  return [...new Set(pool)].filter(c => !used.has(c)).map(c => ({c, r: draftRating(c, lane, side)})).sort((a,b) => b.r - a.r).slice(0, n);
+}
+function assignChamp(c){
+  if (!dPick.side) return;
+  if (usedChamps().has(c)){ showToast(c + " is already in the draft"); return; }
+  const arr = draft[dPick.kind === "ban" ? "bans" : "picks"][dPick.side];
+  arr[dPick.idx] = c;
+  let next = -1; for (let i = 0; i < 5; i++){ if (!arr[i]){ next = i; break; } }
+  if (next >= 0){ dPick.idx = next; if (dPick.kind === "pick") dLane = ROLE_KEYS[next]; }
+  else dPick = {side:null,kind:null,idx:null};
+  render();
+}
+function renderDraft(content){
+  ensureMetaSub();
+  if (ratingMode){ renderRatings(content); return; }
+  if (!draft) newDraft();
+  let h = `<div class="draft"><div class="dHead">DRAFT SIMULATOR</div>`;
+  if (draft.phase === "first"){
+    h += `<div class="dSub">Who has first pick?</div><div class="dFirst">` +
+      `<button class="dFirstBtn blue" data-first="blue">Blue Side</button>` +
+      `<button class="dFirstBtn red" data-first="red">Red Side</button></div>`;
+    if (isOwner) h += `<div class="dBtnRow"><button class="dBtn ghost" id="rtOpen">✎ Rate champions</button></div>`;
+    content.innerHTML = h + `</div>`; wireDraft(content); return;
+  }
+  h += `<div class="dSub">First pick: <b style="color:${draft.first === "blue" ? "#6FC0FF" : "#ff8f8f"}">${draft.first === "blue" ? "Blue" : "Red"}</b>${draft.phase === "ban" ? " · Banning phase" : ""}</div>`;
+  h += `<div class="dBoard">`;
+  ["blue","red"].forEach(side => {
+    h += `<div class="dCol ${side}"><div class="dColH">${side === "blue" ? "BLUE" : "RED"}</div>`;
+    if (draft.phase === "ban") draft.bans[side].forEach((c,i) => {
+      const sel = dPick.kind === "ban" && dPick.side === side && dPick.idx === i;
+      h += `<div class="dSlot ban ${sel ? "sel" : ""}" data-dslot="ban" data-dside="${side}" data-didx="${i}">` +
+        (c ? `<span class="di" style="border-color:#E85D5D;background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span><span style="min-width:0"><span class="dl">Ban ${i+1}</span><span class="dn">${esc(c)}</span></span>`
+           : `<span class="empty">🚫</span><span class="dl">Ban ${i+1}</span>`) + `</div>`;
+    });
+    else ROLE_KEYS.forEach((lane,i) => {
+      const c = draft.picks[side][i]; const tCol = c ? (TIER_COLORS[tierOfChamp(lane, c)] || "#2A4166") : "#2A4166";
+      const sel = dPick.kind === "pick" && dPick.side === side && dPick.idx === i;
+      const due = dueSide() === side && !c;
+      h += `<div class="dSlot ${side} ${sel ? "sel" : ""} ${due ? "due" : ""}" data-dslot="pick" data-dside="${side}" data-didx="${i}">` +
+        (c ? `<span class="di" style="border-color:${tCol};box-shadow:0 0 7px ${tCol}66;background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span><span style="min-width:0"><span class="dl">${ROLE_LABELS[lane]}</span><span class="dn">${esc(c)}</span></span>`
+           : `<span class="empty">+</span><span class="dl">${ROLE_LABELS[lane]}</span>`) + `</div>`;
+    });
+    h += `</div>`;
+  });
+  h += `</div>`;
+  if (draft.phase === "ban") h += `<div class="dBtnRow"><button class="dBtn gold" id="dToPick">Start drafting ›</button><button class="dBtn ghost" id="dReset">Reset</button></div>`;
+  else { const due = dueSide();
+    h += `<div class="dSub">${due ? `<b style="color:${due === "blue" ? "#6FC0FF" : "#ff8f8f"}">${due === "blue" ? "Blue" : "Red"}</b> to pick` : "Draft complete"}</div>` +
+      `<div class="dBtnRow"><button class="dBtn ghost" id="dEditBans">Edit bans</button><button class="dBtn ghost" id="dReset">Reset draft</button>${isOwner ? `<button class="dBtn ghost" id="rtOpen">✎ Rate</button>` : ""}</div>`;
+  }
+  if (dPick.side) h += draftPickerHtml();
+  if (draft.phase === "pick") h += draftRecsHtml();
+  content.innerHTML = h + `</div>`; wireDraft(content);
+}
+function draftPickerHtml(){
+  const forPick = dPick.kind === "pick";
+  const slotLane = forPick ? ROLE_KEYS[dPick.idx] : "all";
+  const cur = draft[dPick.kind === "ban" ? "bans" : "picks"][dPick.side][dPick.idx];
+  const used = usedChamps();
+  const lanes = ["all", ...ROLE_KEYS];
+  let h = `<div class="hubCard" style="margin-top:12px"><h3>${forPick ? esc(ROLE_LABELS[slotLane]) + " — pick" : "Pick a ban"}${cur ? ` · <span style="color:#E85D5D">${esc(cur)}</span>` : ""}</h3>`;
+  h += `<div class="dLaneTabs">` + lanes.map(l => {
+    const col = l === "all" ? "#C8AA6E" : (ROLE_TAG[l] ? ROLE_TAG[l].col : "#C8AA6E");
+    return `<button class="dLaneTab ${l === dLane ? "on" : ""}" data-dlane="${l}" style="${l === dLane ? `background:${col};border-color:${col}` : ""}">${l === "all" ? "All" : ROLE_LABELS[l]}</button>`;
+  }).join("") + `</div><div class="dPickGrid">`;
+  const byTier = champsByTierForLane(dLane);
+  TIERS.forEach(t => { const cs = byTier[t]; if (!cs || !cs.length) return; const tc = TIER_COLORS[t];
+    h += `<div class="dTierRow"><div class="dTierLbl" style="color:${tc}">${t}</div><div class="dChamps">` +
+      cs.map(c => { const u = used.has(c) && c !== cur; const rb = forPick && !u ? draftRating(c, slotLane, dPick.side) : null;
+        return `<div class="dChamp ${u ? "used" : ""}" ${u ? "" : `data-dpick="${encodeURIComponent(c)}"`}><div class="dci" style="border-color:${tc};box-shadow:0 0 6px ${tc}66;background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')">${rb != null ? `<span class="rbadge">${rb}</span>` : ""}</div><span class="dcn">${esc(c)}</span></div>`;
+      }).join("") + `</div></div>`;
+  });
+  h += `</div><div class="dBtnRow">${cur ? `<button class="dBtn ghost" data-dclearslot="1">Clear slot</button>` : ""}<button class="dBtn ghost" data-dclosepick="1">Close</button></div></div>`;
+  return h;
+}
+function draftRecsHtml(){
+  let h = `<div class="dRecs"><div class="dHead" style="font-size:15px">RECOMMENDATIONS</div><div class="dSub" style="margin-bottom:8px">Draft rating 0–100 (50 = filler). Flat — improves as you add ratings.</div><div class="dRecCols">`;
+  ["blue","red"].forEach(side => {
+    const due = dueSide() === side;
+    h += `<div class="dRecCol ${side} ${due ? "due" : ""}"><div class="dColH" style="color:${side === "blue" ? "#6FC0FF" : "#ff8f8f"};font-size:12px">${side === "blue" ? "BLUE" : "RED"}${due ? " · to pick" : ""}</div>`;
+    let any = false;
+    ROLE_KEYS.forEach((lane,i) => { if (draft.picks[side][i]) return;
+      const recs = recommend(side, lane, 7); if (!recs.length) return; any = true;
+      h += `<div class="dRecLane">${ROLE_LABELS[lane]}</div><div class="dRecRow">` +
+        recs.map(rc => { const tc = TIER_COLORS[tierOfChamp(lane, rc.c)] || "#2A4166";
+          return `<div class="dRecChamp"><div class="dci" style="border-color:${tc};box-shadow:0 0 5px ${tc}66;background-image:url('${iconUrl(rc.c)}'),url('${iconUrl2(rc.c)}')"><span class="rbadge">${rc.r}</span></div><span class="dcn">${esc(rc.c)}</span></div>`;
+        }).join("") + `</div>`;
+    });
+    if (!any) h += `<div class="cntEmpty">All lanes filled.</div>`;
+    h += `</div>`;
+  });
+  return h + `</div></div>`;
+}
+function wireDraft(content){
+  content.querySelectorAll("[data-first]").forEach(b => b.onclick = () => { draft.first = b.dataset.first; draft.phase = "ban"; dPick = {side:null,kind:null,idx:null}; render(); });
+  content.querySelectorAll("[data-dslot]").forEach(b => b.onclick = () => {
+    const side = b.dataset.dside, idx = +b.dataset.didx, kind = b.dataset.dslot;
+    if (dPick.side === side && dPick.kind === kind && dPick.idx === idx) dPick = {side:null,kind:null,idx:null};
+    else { dPick = {side, kind, idx}; if (kind === "pick") dLane = ROLE_KEYS[idx]; else dLane = "all"; }
+    render();
+  });
+  content.querySelectorAll("[data-dpick]").forEach(b => b.onclick = () => assignChamp(decodeURIComponent(b.dataset.dpick)));
+  content.querySelectorAll("[data-dlane]").forEach(b => b.onclick = () => { dLane = b.dataset.dlane; render(); });
+  content.querySelectorAll("[data-dclosepick]").forEach(b => b.onclick = () => { dPick = {side:null,kind:null,idx:null}; render(); });
+  content.querySelectorAll("[data-dclearslot]").forEach(b => b.onclick = () => { draft[dPick.kind === "ban" ? "bans" : "picks"][dPick.side][dPick.idx] = null; render(); });
+  if ($("dToPick")) $("dToPick").onclick = () => { draft.phase = "pick"; dPick = {side:null,kind:null,idx:null}; render(); };
+  if ($("dEditBans")) $("dEditBans").onclick = () => { draft.phase = "ban"; dPick = {side:null,kind:null,idx:null}; render(); };
+  if ($("dReset")) $("dReset").onclick = () => { newDraft(); render(); };
+  if ($("rtOpen")) $("rtOpen").onclick = () => { ratingMode = true; rtChamp = null; rtSearch = ""; render(); };
+}
+function renderRatings(content){
+  const champs = allChampList();
+  let h = `<div class="rt"><div class="dBtnRow" style="justify-content:space-between;align-items:center"><button class="dBtn ghost" id="rtBack">‹ Back to draft</button><span class="dHead" style="margin:0;font-size:15px">RATE CHAMPIONS</span><span style="width:60px"></span></div>`;
+  if (!rtChamp){
+    h += `<div class="rtSel"><input id="rtSearch" placeholder="Search a champion to rate…" value="${esc(rtSearch)}"></div><div class="dChamps">`;
+    h += champs.map(c => `<div class="dChamp" data-rtpick="${encodeURIComponent(c)}" data-cname="${esc(c.toLowerCase())}"><div class="dci" style="background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></div><span class="dcn">${esc(c)}</span></div>`).join("");
+    h += `</div></div>`; content.innerHTML = h; wireRatings(content); return;
+  }
+  h += `<div class="rtSel"><span style="width:44px;height:44px;border-radius:9px;background-size:cover;background-position:center;border:2px solid #C8AA6E;flex-shrink:0;background-image:url('${iconUrl(rtChamp)}'),url('${iconUrl2(rtChamp)}')"></span><span class="dHead" style="margin:0;font-size:17px;align-self:center;flex:1">${esc(rtChamp)}</span><button class="dBtn ghost" data-rtclose="1">Change</button></div>`;
+  h += `<div class="rtTabs">` + [["tags","Tags"],["lanes","Lanes"],["vs","Matchups"]].map(([k,l]) => `<button class="rtTabBtn ${rtTab === k ? "on" : ""}" data-rttab="${k}">${l}</button>`).join("") + `</div>`;
+  if (rtTab === "tags"){
+    const allTags = [...new Set([...TAGS, ...Object.values(cmeta).flatMap(m => (m && m.tags) || []), ...(rtDraft.tags || [])])];
+    h += `<div class="rtTags">` + allTags.map(t => `<button class="rtTag ${(rtDraft.tags||[]).includes(t) ? "on" : ""}" data-rttag="${esc(t)}">${esc(t)}</button>`).join("") + `</div>`;
+    h += `<div class="rtSel" style="margin-top:12px"><input id="newTag" placeholder="Add your own tag…" maxlength="28"><button class="dBtn" id="addTag">Add</button></div>`;
+  } else if (rtTab === "lanes"){
+    h += `<div class="dSub" style="text-align:left;margin:6px 0">How strong is ${esc(rtChamp)} in each lane? 0–100, blank = use tier score.</div>`;
+    ROLE_KEYS.forEach(l => { const ph = tierOfChamp(l, rtChamp) ? TIER_SCORE[tierOfChamp(l, rtChamp)] : "—";
+      h += `<div class="rtRow"><span class="rtn">${ROLE_LABELS[l]}</span><input type="number" min="0" max="100" data-rtlane="${l}" value="${rtDraft.lanes && rtDraft.lanes[l] != null ? rtDraft.lanes[l] : ""}" placeholder="${ph}"></div>`;
+    });
+  } else {
+    h += `<div class="dSub" style="text-align:left;margin:6px 0">Difficulty vs each champ. 0–100, 100 = hardest for ${esc(rtChamp)}. Fill what you know.</div>`;
+    h += `<div class="rtSel"><input id="vsSearch" placeholder="Filter champions…"></div>`;
+    h += champs.filter(c => c !== rtChamp).map(c =>
+      `<div class="rtRow" data-cname="${esc(c.toLowerCase())}"><span class="rtc" style="background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span><span class="rtn">${esc(c)}</span><input type="number" min="0" max="100" data-rtvs="${encodeURIComponent(c)}" value="${rtDraft.vs && rtDraft.vs[c] != null ? rtDraft.vs[c] : ""}" placeholder="50"></div>`).join("");
+  }
+  h += `<div class="dBtnRow" style="margin-top:16px"><button class="dBtn gold" id="rtSave">Save ${esc(rtChamp)}</button></div></div>`;
+  content.innerHTML = h; wireRatings(content);
+}
+function loadRtDraft(c){ const m = cmeta[c] || {}; rtDraft = {tags: (m.tags || []).slice(), lanes: Object.assign({}, m.lanes || {}), vs: Object.assign({}, m.vs || {})}; }
+async function saveRatings(){
+  if (!isOwner || !rtChamp) return;
+  const payload = {tags: rtDraft.tags || [], lanes: {}, vs: {}};
+  ROLE_KEYS.forEach(l => { const v = rtDraft.lanes && rtDraft.lanes[l]; if (v != null && v !== "") payload.lanes[l] = Math.max(0, Math.min(100, +v)); });
+  for (const c in (rtDraft.vs || {})){ const v = rtDraft.vs[c]; if (v != null && v !== "") payload.vs[c] = Math.max(0, Math.min(100, +v)); }
+  try { await db.collection("champmeta").doc(rtChamp).set(payload); showToast(rtChamp + " saved!"); }
+  catch(e){ console.error(e); showToast("Save failed — publish the champmeta rule"); }
+}
+function wireRatings(content){
+  if ($("rtBack")) $("rtBack").onclick = () => { ratingMode = false; render(); };
+  content.querySelectorAll("[data-rtpick]").forEach(b => b.onclick = () => { rtChamp = decodeURIComponent(b.dataset.rtpick); loadRtDraft(rtChamp); rtTab = "tags"; render(); });
+  content.querySelectorAll("[data-rtclose]").forEach(b => b.onclick = () => { rtChamp = null; render(); });
+  content.querySelectorAll("[data-rttab]").forEach(b => b.onclick = () => { rtTab = b.dataset.rttab; render(); });
+  content.querySelectorAll("[data-rttag]").forEach(b => b.onclick = () => { const t = b.dataset.rttag; rtDraft.tags = rtDraft.tags || []; const i = rtDraft.tags.indexOf(t); if (i >= 0) rtDraft.tags.splice(i,1); else rtDraft.tags.push(t); render(); });
+  const addCustomTag = () => { const inp = $("newTag"); if (!inp) return; const v = inp.value.trim().toLowerCase(); if (!v) return; rtDraft.tags = rtDraft.tags || []; if (!rtDraft.tags.includes(v)) rtDraft.tags.push(v); render(); };
+  if ($("addTag")) $("addTag").onclick = addCustomTag;
+  if ($("newTag")) $("newTag").addEventListener("keydown", e => { if (e.key === "Enter") addCustomTag(); });
+  content.querySelectorAll("[data-rtlane]").forEach(b => b.oninput = () => { rtDraft.lanes = rtDraft.lanes || {}; if (b.value === "") delete rtDraft.lanes[b.dataset.rtlane]; else rtDraft.lanes[b.dataset.rtlane] = +b.value; });
+  content.querySelectorAll("[data-rtvs]").forEach(b => b.oninput = () => { const c = decodeURIComponent(b.dataset.rtvs); rtDraft.vs = rtDraft.vs || {}; if (b.value === "") delete rtDraft.vs[c]; else rtDraft.vs[c] = +b.value; });
+  if ($("rtSave")) $("rtSave").onclick = saveRatings;
+  const filt = (inputId) => { const inp = $(inputId); if (!inp) return; inp.oninput = () => { const q = inp.value.toLowerCase(); content.querySelectorAll("[data-cname]").forEach(el => { el.style.display = el.dataset.cname.includes(q) ? "" : "none"; }); }; };
+  filt("rtSearch"); filt("vsSearch");
 }
 
 // ============ RENDER ============
@@ -1743,14 +2027,17 @@ function render(){
   $("stripZone").style.display = ($("contested").innerHTML || $("pressure").innerHTML || $("autoMoves").innerHTML) ? "" : "none";
   $("tabs").innerHTML = TABS.map(([k,l]) => `<button class="tab ${k===role?"active":""}" data-r="${k}">${l}</button>`).join("");
   document.querySelectorAll(".tab").forEach(b => b.onclick = () => switchRole(b.dataset.r));
-  $("hint").textContent = editMode ? "Tap a champion to move or remove them" : "Tap a champion to vote on their placement";
+  $("hint").textContent = draftMode ? "" : (editMode ? "Tap a champion to move or remove them" : "Tap a champion to vote on their placement");
   $("editBtn").textContent = editMode ? "Done" : "Edit";
   $("editBtn").className = "editBtn" + (editMode ? " on" : "");
   $("editBtn").style.display = (isOwner && role !== "all" && !buildsMode) ? "" : "none";
   $("buildsBtn").style.display = "";
   $("buildsBtn").className = "editBtn" + (buildsMode ? " on" : "");
+  $("draftBtn").style.display = "";
+  $("draftBtn").className = "editBtn" + (draftMode ? " on" : "");
 
   const content = $("content");
+  if (draftMode){ $("editBtn").style.display = "none"; renderDraft(content); return; }
   if (hubChamp){ $("editBtn").style.display = "none"; renderHub(content); return; }
   if (buildsMode){ renderBuilds(content); syncHash(); return; }
   const vr = viewRoles();
@@ -1804,8 +2091,7 @@ function render(){
           `<button class="tpick rm" data-wcv="1">${confirmChampWipe ? "Tap again: wipe votes" : "Wipe this champ's votes"}</button>` +
           `</div>`;
       }
-      html += `<button class="editBtn" id="openHub" style="display:block;margin-top:12px;font-size:15px;padding:11px 22px;background:linear-gradient(135deg,#6B3FA0,#4a2c72);color:#F0E9FF;border:none;border-radius:14px">✦ ${esc(selC)} — Champion Hub</button>`;
-      html += `<button class="editBtn" id="openBuilds" style="display:block;margin-top:8px;font-size:24px;padding:12px 28px;background:#C8AA6E;color:#0A1428;border-color:#C8AA6E;border-radius:14px">Builds for ${esc(selC)} ›</button>`;
+      html += `<button class="editBtn" id="openHub" style="display:block;margin-top:12px;font-size:20px;padding:13px 26px;background:linear-gradient(135deg,#6B3FA0,#4a2c72);color:#F0E9FF;border:none;border-radius:14px;font-weight:700">✦ ${esc(selC)} Details ›</button>`;
       html += `</div>`;
     }
   }
@@ -1881,7 +2167,8 @@ function render(){
   syncHash();
 }
 $("editBtn").onclick = () => { editMode = !editMode; selected = null; hubChamp = null; confirmChampWipe = false; render(); };
-$("buildsBtn").onclick = () => { buildsMode = !buildsMode; editMode = false; selected = null; hubChamp = null; eb = null; ebEditId = null; bChamp = null; confirmBDel = null; render(); };
+$("buildsBtn").onclick = () => { buildsMode = !buildsMode; editMode = false; draftMode = false; selected = null; hubChamp = null; eb = null; ebEditId = null; bChamp = null; confirmBDel = null; render(); };
+$("draftBtn").onclick = () => { draftMode = !draftMode; buildsMode = false; editMode = false; ratingMode = false; selected = null; hubChamp = null; eb = null; bChamp = null; if (draftMode){ ensureMetaSub(); if (!draft) newDraft(); } render(); };
 
 // ============ MUSIC ============
 const bgm = $("bgm");
@@ -1997,45 +2284,41 @@ async function shareBuild(d){
   const b = d.data;
   showToast("Building image…");
   const S = 2, W = 900, pad = 30, icon = 72, gap = 12;
-  // rows: items(+spells), runes, additional
   const items = (b.items||[]).filter(Boolean), spells=(b.spells||[]).filter(Boolean);
   const runes = [b.keystone, ...(b.minors||[]), b.secRune].filter(Boolean);
   const add = (b.additems||[]).filter(Boolean);
-  let rows = 2 + (add.length?1:0);
+  const perLine = Math.floor((W-2*pad+gap)/(icon+gap));
+  const line1 = [...items.map(n=>({n,get:wrItem,bd:"#0AC8B9"})), ...spells.map(n=>({n,get:wrSpell,bd:"#5A9BD8"}))];
+  const line2 = [...runes.map(n=>({n,get:wrRune,bd:"#C8AA6E"})), ...add.map(n=>({n,get:wrItem,bd:"#E85D5D"}))];
+  const rows = Math.max(1,Math.ceil(line1.length/perLine)) + Math.max(1,Math.ceil(line2.length/perLine));
   const noteLines = (!b.def && b.notes) ? Math.min(3, Math.ceil(b.notes.length/64)) : 0;
-  const H = pad + 90 + rows*(icon+28) + (noteLines?noteLines*22+10:0) + 46;
+  const H = pad + 90 + rows*(icon+14) + 14 + (noteLines?noteLines*22+10:0) + 46;
   const cv = document.createElement("canvas"); cv.width = W*S; cv.height = H*S;
   const ctx = cv.getContext("2d"); ctx.scale(S,S);
-  // bg
   const g = ctx.createLinearGradient(0,0,0,H); g.addColorStop(0,"#0e1c34"); g.addColorStop(1,"#070f1e");
   ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
   const tCol = TIER_COLORS[tierOfChamp(b.role, b.champ)] || "#C8AA6E";
   ctx.strokeStyle=tCol; ctx.lineWidth=3; rr(ctx,4,4,W-8,H-8,18); ctx.stroke();
-  // header: champ icon + name
   const cimg = await loadImgCors(iconUrl(b.champ)) || await loadImgCors(iconUrl2(b.champ));
   if (cimg){ ctx.save(); rr(ctx,pad,pad,66,66,12); ctx.clip(); ctx.drawImage(cimg,pad,pad,66,66); ctx.restore();
     ctx.strokeStyle=tCol; ctx.lineWidth=2; rr(ctx,pad,pad,66,66,12); ctx.stroke(); }
   ctx.fillStyle="#F4EFE6"; ctx.font="700 30px Georgia, serif"; ctx.textBaseline="top";
-  ctx.fillText(b.champ + (b.def?"":""), pad+82, pad+2);
+  ctx.fillText(b.champ, pad+82, pad+2);
   ctx.fillStyle=tCol; ctx.font="600 15px Georgia, serif";
   ctx.fillText((b.def?"Default Build":(b.title||"Build")) + "  ·  " + (ROLE_LABELS[b.role]||"") + (b.patch&&!b.def?"  ·  "+b.patch:""), pad+82, pad+40);
   let y = pad + 90;
-  const drawRow = async (names, getter, border, label) => {
-    if (label){ ctx.fillStyle="#8FA0B8"; ctx.font="700 11px system-ui,sans-serif"; ctx.fillText(label.toUpperCase(), pad, y); y += 16; }
+  const drawLine = async (toks) => {
     let x = pad;
-    for (const nm of names){ const o = getter(nm); const im = o && o.img ? await loadImgCors(o.img) : null;
-      ctx.save(); rr(ctx,x,y,icon,icon,12); ctx.clip();
-      ctx.fillStyle="#13233F"; ctx.fillRect(x,y,icon,icon);
+    for (const tk of toks){ const o = tk.get(tk.n); const im = o && o.img ? await loadImgCors(o.img) : null;
+      ctx.save(); rr(ctx,x,y,icon,icon,12); ctx.clip(); ctx.fillStyle="#13233F"; ctx.fillRect(x,y,icon,icon);
       if (im) ctx.drawImage(im,x,y,icon,icon); ctx.restore();
-      ctx.strokeStyle=border; ctx.lineWidth=2; rr(ctx,x,y,icon,icon,12); ctx.stroke();
+      ctx.strokeStyle=tk.bd; ctx.lineWidth=2; rr(ctx,x,y,icon,icon,12); ctx.stroke();
       x += icon+gap; if (x+icon > W-pad){ x=pad; y+=icon+gap; }
     }
-    y += icon + 20;
+    y += icon + 14;
   };
-  // items + spells on one conceptual row
-  await drawRow([...items, ...spells], n => wrItem(n) || wrSpell(n), "#0AC8B9", null);
-  await drawRow(runes, wrRune, "#C8AA6E", null);
-  if (add.length) await drawRow(add, wrItem, "#E85D5D", "Additional");
+  await drawLine(line1);
+  await drawLine(line2);
   if (noteLines){ ctx.fillStyle="#B9C6D8"; ctx.font="14px system-ui,sans-serif";
     const words=(b.notes||"").split(" "); let line="",ln=0;
     for (const w2 of words){ if ((line+w2).length>64){ ctx.fillText("📝 "+line,pad,y); y+=22; line=""; if(++ln>=3)break; } line+=w2+" "; }
