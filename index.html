@@ -286,7 +286,19 @@
   .dFirstBtn.blue { border-color: #3B9BE8; color: #6Fc0ff; box-shadow: 0 0 18px rgba(59,155,232,0.3); }
   .dFirstBtn.red { border-color: #E85D5D; color: #ff8f8f; box-shadow: 0 0 18px rgba(232,93,93,0.3); }
   .dBoard { display: flex; gap: 8px; }
-  .dCol { flex: 1; min-width: 0; }
+  .dBoard3 { display: flex; gap: 6px; align-items: flex-start; }
+  .dSide { width: 68px; flex-shrink: 0; }
+  .dSideH { font-family: 'Cinzel', serif; font-weight: 700; font-size: 11px; letter-spacing: 1px; text-align: center; margin-bottom: 8px; }
+  .dSide.blue .dSideH { color: #6FC0FF; } .dSide.red .dSideH { color: #ff8f8f; }
+  .dMid { flex: 1; min-width: 0; }
+  .dMidHint { text-align: center; color: #7B8BA3; font-size: 12px; padding: 24px 8px; border: 1px dashed #2A4166; border-radius: 12px; }
+  .dCell { text-align: center; margin-bottom: 9px; cursor: pointer; }
+  .dCell .di { width: 52px; height: 52px; border-radius: 11px; background-size: cover; background-position: center; border: 2px solid #2A4166; margin: 0 auto; display: flex; align-items: center; justify-content: center; color: #46566e; font-size: 20px; }
+  .dCell.sel .di { box-shadow: 0 0 0 2px #C8AA6E, 0 0 12px rgba(200,170,110,0.55) !important; border-color: #C8AA6E !important; }
+  .dCell.due .di { box-shadow: 0 0 12px rgba(200,170,110,0.5); border-color: #C8AA6E; }
+  .dCell:active .di { transform: scale(0.94); }
+  .dCell .nm { font-size: 9px; color: #E8EDF4; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; min-height: 11px; }
+  .dCell .ln { font-size: 8px; color: #7B8BA3; text-transform: uppercase; letter-spacing: .5px; }
   .dCol.blue .dColH { color: #6FC0FF; } .dCol.red .dColH { color: #ff8f8f; }
   .dColH { font-family: 'Cinzel', serif; font-weight: 700; font-size: 13px; letter-spacing: 1px; text-align: center; margin-bottom: 8px; }
   .dSlot { display: flex; align-items: center; gap: 8px; background: rgba(15,31,53,0.9); border: 1.5px solid #2A4166; border-radius: 10px; padding: 6px 8px; margin-bottom: 7px; cursor: pointer; min-height: 46px; }
@@ -338,6 +350,13 @@
   .rtTabs { display: flex; gap: 6px; margin: 10px 0; }
   .rtTabBtn { flex: 1; padding: 9px; border-radius: 9px; border: 1px solid #2A4166; background: rgba(19,35,63,0.7); color: #9FB2CC; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
   .rtTabBtn.on { background: #C8AA6E; color: #0A1428; border-color: #C8AA6E; }
+  .rtPalHint { font-size: 11px; color: #7B8BA3; margin: 2px 0 6px; }
+  .rtPal { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; position: sticky; top: 0; background: #0A1428; padding: 6px 0; z-index: 5; }
+  .rtVal { min-width: 40px; padding: 8px 0; border-radius: 8px; border: 1px solid #2A4166; background: rgba(19,35,63,0.8); color: #C6D2E4; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; flex: 1; }
+  .rtVal.on { background: #C8AA6E; color: #0A1428; border-color: #C8AA6E; box-shadow: 0 0 10px rgba(200,170,110,0.5); }
+  .rtVal.clr { flex: 0 0 44px; color: #E85D5D; }
+  .rtVal.clr.on { background: #E85D5D; color: #0A1428; border-color: #E85D5D; box-shadow: 0 0 10px rgba(232,93,93,0.5); }
+  .rtRow .apply { cursor: pointer; }
 </style>
 </head>
 <body>
@@ -1801,7 +1820,8 @@ const TAGS = [
 const TIER_SCORE = {"S+":86,"S":78,"A+":70,"A":63,"B+":56,"B":50,"C":42,"D":34};
 let draftMode = false, ratingMode = false, cmeta = {}, unsubCmeta = null, draft = null;
 let dPick = {side:null, kind:null, idx:null}, dLane = "all";
-let rtChamp = null, rtTab = "tags", rtDraft = {tags:[],lanes:{},vs:{}}, rtSearch = "", vsSearch = "";
+let rtChamp = null, rtTab = "tags", rtDraft = {tags:[],lanes:{},vs:{}}, rtSearch = "", vsSearch = "", rtArmed = null;
+const RT_VALUES = [25,30,35,40,45,50,55,60,65,70,75,80,85,90];
 function ensureMetaSub(){ if (!unsubCmeta) unsubCmeta = db.collection("champmeta").onSnapshot(s => { cmeta = {}; s.forEach(d => cmeta[d.id] = d.data()); if (draftMode) render(); }, e => console.error("champmeta:", e)); }
 function allChampList(){ const s = new Set(); ROLE_KEYS.forEach(r => { if (tiersByRole[r]) TIERS.forEach(t => (tiersByRole[r][t]||[]).forEach(c => s.add(c))); }); return [...s].sort(); }
 function newDraft(){ draft = {first:null, phase:"first", bans:{blue:[null,null,null,null,null], red:[null,null,null,null,null]}, picks:{blue:[null,null,null,null,null], red:[null,null,null,null,null]}}; dPick = {side:null,kind:null,idx:null}; dLane = "all"; }
@@ -1828,16 +1848,32 @@ function compBonus(champ, side){
   return b;
 }
 function baseRating(champ, lane){ const m = cmeta[champ]; if (m && m.lanes && typeof m.lanes[lane] === "number") return m.lanes[lane]; const t = tierOfChamp(lane, champ); return t ? TIER_SCORE[t] : 50; }
+// Advantage FOR `cand` in the cand↔enemy matchup. + = good for cand, − = bad. null = no usable data.
+// forward  cmeta[cand].vs[enemy] : how hard the enemy is FOR cand   (low = good for cand)
+// reverse  cmeta[enemy].vs[cand] : how hard cand is FOR the enemy   (high = good for cand)
+// exactly-50 counts as "no strong opinion" and is ignored so it can't dilute a real rating.
+// if both directions are written they're averaged, so a mutually-rated lane stays balanced.
+function matchupAdv(cand, enemy){
+  let fwd = cmeta[cand] && cmeta[cand].vs && typeof cmeta[cand].vs[enemy] === "number" ? cmeta[cand].vs[enemy] : null;
+  let rev = cmeta[enemy] && cmeta[enemy].vs && typeof cmeta[enemy].vs[cand] === "number" ? cmeta[enemy].vs[cand] : null;
+  if (fwd === 50) fwd = null;
+  if (rev === 50) rev = null;
+  const aFwd = fwd != null ? -(fwd - 50) : null;
+  const aRev = rev != null ? (rev - 50) : null;
+  if (aFwd != null && aRev != null) return (aFwd + aRev) / 2;
+  return aFwd != null ? aFwd : aRev;
+}
 function draftRating(champ, lane, side){
   if (!draft) return 50;
   const enemy = side === "blue" ? "red" : "blue";
-  const m = cmeta[champ] || {};
   let score = baseRating(champ, lane);
   const laneOpp = draft.picks[enemy][ROLE_KEYS.indexOf(lane)];
-  if (laneOpp && m.vs && typeof m.vs[laneOpp] === "number") score -= (m.vs[laneOpp] - 50) * 0.6;
+  // direct lane matchup — heaviest
+  if (laneOpp){ const a = matchupAdv(champ, laneOpp); if (a != null) score += a * 0.6; }
+  // every other enemy champ (cross-lane) — small factor, averaged, both directions
   let gsum = 0, gc = 0;
-  draft.picks[enemy].forEach(e => { if (e && e !== laneOpp && m.vs && typeof m.vs[e] === "number"){ gsum += (m.vs[e] - 50); gc++; } });
-  if (gc) score -= (gsum / gc) * 0.15;
+  draft.picks[enemy].forEach(e => { if (e && e !== laneOpp){ const a = matchupAdv(champ, e); if (a != null){ gsum += a; gc++; } } });
+  if (gc) score += (gsum / gc) * 0.18;
   score += compBonus(champ, side);
   return Math.max(0, Math.min(100, Math.round(score)));
 }
@@ -1869,34 +1905,42 @@ function renderDraft(content){
     content.innerHTML = h + `</div>`; wireDraft(content); return;
   }
   h += `<div class="dSub">First pick: <b style="color:${draft.first === "blue" ? "#6FC0FF" : "#ff8f8f"}">${draft.first === "blue" ? "Blue" : "Red"}</b>${draft.phase === "ban" ? " · Banning phase" : ""}</div>`;
-  h += `<div class="dBoard">`;
-  ["blue","red"].forEach(side => {
-    h += `<div class="dCol ${side}"><div class="dColH">${side === "blue" ? "BLUE" : "RED"}</div>`;
-    if (draft.phase === "ban") draft.bans[side].forEach((c,i) => {
-      const sel = dPick.kind === "ban" && dPick.side === side && dPick.idx === i;
-      h += `<div class="dSlot ban ${sel ? "sel" : ""}" data-dslot="ban" data-dside="${side}" data-didx="${i}">` +
-        (c ? `<span class="di" style="border-color:#E85D5D;background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span><span style="min-width:0"><span class="dl">Ban ${i+1}</span><span class="dn">${esc(c)}</span></span>`
-           : `<span class="empty">🚫</span><span class="dl">Ban ${i+1}</span>`) + `</div>`;
-    });
-    else ROLE_KEYS.forEach((lane,i) => {
-      const c = draft.picks[side][i]; const tCol = c ? (TIER_COLORS[tierOfChamp(lane, c)] || "#2A4166") : "#2A4166";
-      const sel = dPick.kind === "pick" && dPick.side === side && dPick.idx === i;
-      const due = dueSide() === side && !c;
-      h += `<div class="dSlot ${side} ${sel ? "sel" : ""} ${due ? "due" : ""}" data-dslot="pick" data-dside="${side}" data-didx="${i}">` +
-        (c ? `<span class="di" style="border-color:${tCol};box-shadow:0 0 7px ${tCol}66;background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span><span style="min-width:0"><span class="dl">${ROLE_LABELS[lane]}</span><span class="dn">${esc(c)}</span></span>`
-           : `<span class="empty">+</span><span class="dl">${ROLE_LABELS[lane]}</span>`) + `</div>`;
-    });
-    h += `</div>`;
-  });
+  const kind = draft.phase === "ban" ? "ban" : "pick";
+  h += `<div class="dBoard3">`;
+  h += draftSideHtml("blue", kind);
+  h += `<div class="dMid">`;
+  if (dPick.side) h += draftPickerHtml();
+  else h += `<div class="dMidHint">${kind === "ban" ? "Tap a ban slot on either side to fill it." : "Tap a slot on either side to pick for it."}</div>` + (draft.phase === "pick" ? draftRecsHtml() : "");
+  h += `</div>`;
+  h += draftSideHtml("red", kind);
   h += `</div>`;
   if (draft.phase === "ban") h += `<div class="dBtnRow"><button class="dBtn gold" id="dToPick">Start drafting ›</button><button class="dBtn ghost" id="dReset">Reset</button></div>`;
   else { const due = dueSide();
     h += `<div class="dSub">${due ? `<b style="color:${due === "blue" ? "#6FC0FF" : "#ff8f8f"}">${due === "blue" ? "Blue" : "Red"}</b> to pick` : "Draft complete"}</div>` +
       `<div class="dBtnRow"><button class="dBtn ghost" id="dEditBans">Edit bans</button><button class="dBtn ghost" id="dReset">Reset draft</button>${isOwner ? `<button class="dBtn ghost" id="rtOpen">✎ Rate</button>` : ""}</div>`;
   }
-  if (dPick.side) h += draftPickerHtml();
-  if (draft.phase === "pick") h += draftRecsHtml();
   content.innerHTML = h + `</div>`; wireDraft(content);
+}
+function draftSideHtml(side, kind){
+  let h = `<div class="dSide ${side}"><div class="dSideH">${side === "blue" ? "BLUE" : "RED"}</div>`;
+  if (kind === "ban"){
+    draft.bans[side].forEach((c,i) => {
+      const sel = dPick.kind === "ban" && dPick.side === side && dPick.idx === i;
+      h += `<div class="dCell ban ${sel ? "sel" : ""}" data-dslot="ban" data-dside="${side}" data-didx="${i}">` +
+        `<div class="di" style="${c ? `border-color:#E85D5D;box-shadow:0 0 7px rgba(232,93,93,0.5);background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')` : "border-color:#E85D5D;border-style:dashed"}">${c ? "" : "🚫"}</div>` +
+        `<div class="nm">${c ? esc(c) : ""}</div><div class="ln">Ban ${i+1}</div></div>`;
+    });
+  } else {
+    ROLE_KEYS.forEach((lane,i) => {
+      const c = draft.picks[side][i]; const tCol = c ? (TIER_COLORS[tierOfChamp(lane, c)] || "#2A4166") : "#2A4166";
+      const sel = dPick.kind === "pick" && dPick.side === side && dPick.idx === i;
+      const due = dueSide() === side && !c;
+      h += `<div class="dCell ${sel ? "sel" : ""} ${due ? "due" : ""}" data-dslot="pick" data-dside="${side}" data-didx="${i}">` +
+        `<div class="di" style="${c ? `border-color:${tCol};box-shadow:0 0 8px ${tCol}88;background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')` : ""}">${c ? "" : "+"}</div>` +
+        `<div class="nm">${c ? esc(c) : ""}</div><div class="ln">${esc(ROLE_LABELS[lane])}</div></div>`;
+    });
+  }
+  return h + `</div>`;
 }
 function draftPickerHtml(){
   const forPick = dPick.kind === "pick";
@@ -1974,10 +2018,13 @@ function renderRatings(content){
       h += `<div class="rtRow"><span class="rtn">${ROLE_LABELS[l]}</span><input type="number" min="0" max="100" data-rtlane="${l}" value="${rtDraft.lanes && rtDraft.lanes[l] != null ? rtDraft.lanes[l] : ""}" placeholder="${ph}"></div>`;
     });
   } else {
-    h += `<div class="dSub" style="text-align:left;margin:6px 0">Difficulty vs each champ. 0–100, 100 = hardest for ${esc(rtChamp)}. Fill what you know.</div>`;
+    h += `<div class="dSub" style="text-align:left;margin:6px 0">Difficulty vs each champ. 0–100, 100 = hardest for ${esc(rtChamp)}. 50 = even (ignored by the drafter).</div>`;
+    h += `<div class="rtPalHint">Tap a value to arm it, then tap champions to stamp it — or type directly.</div>`;
+    h += `<div class="rtPal">` + RT_VALUES.map(v => `<button class="rtVal ${rtArmed === v ? "on" : ""}" data-rtval="${v}">${v}</button>`).join("") +
+      `<button class="rtVal clr ${rtArmed === "clr" ? "on" : ""}" data-rtval="clr">✕</button></div>`;
     h += `<div class="rtSel"><input id="vsSearch" placeholder="Filter champions…"></div>`;
     h += champs.filter(c => c !== rtChamp).map(c =>
-      `<div class="rtRow" data-cname="${esc(c.toLowerCase())}"><span class="rtc" style="background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span><span class="rtn">${esc(c)}</span><input type="number" min="0" max="100" data-rtvs="${encodeURIComponent(c)}" value="${rtDraft.vs && rtDraft.vs[c] != null ? rtDraft.vs[c] : ""}" placeholder="50"></div>`).join("");
+      `<div class="rtRow" data-cname="${esc(c.toLowerCase())}"><span class="rtc apply" data-apply="${encodeURIComponent(c)}" style="background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span><span class="rtn apply" data-apply="${encodeURIComponent(c)}">${esc(c)}</span><input type="number" min="0" max="100" data-rtvs="${encodeURIComponent(c)}" value="${rtDraft.vs && rtDraft.vs[c] != null ? rtDraft.vs[c] : ""}" placeholder="50"></div>`).join("");
   }
   h += `<div class="dBtnRow" style="margin-top:16px"><button class="dBtn gold" id="rtSave">Save ${esc(rtChamp)}</button></div></div>`;
   content.innerHTML = h; wireRatings(content);
@@ -2003,6 +2050,21 @@ function wireRatings(content){
   content.querySelectorAll("[data-rtlane]").forEach(b => b.oninput = () => { rtDraft.lanes = rtDraft.lanes || {}; if (b.value === "") delete rtDraft.lanes[b.dataset.rtlane]; else rtDraft.lanes[b.dataset.rtlane] = +b.value; });
   content.querySelectorAll("[data-rtvs]").forEach(b => b.oninput = () => { const c = decodeURIComponent(b.dataset.rtvs); rtDraft.vs = rtDraft.vs || {}; if (b.value === "") delete rtDraft.vs[c]; else rtDraft.vs[c] = +b.value; });
   if ($("rtSave")) $("rtSave").onclick = saveRatings;
+  // armed value palette (no re-render so the filter/scroll stays put)
+  content.querySelectorAll("[data-rtval]").forEach(b => b.onclick = () => {
+    const v = b.dataset.rtval === "clr" ? "clr" : +b.dataset.rtval;
+    rtArmed = (rtArmed === v) ? null : v;
+    content.querySelectorAll("[data-rtval]").forEach(x => x.classList.toggle("on", (x.dataset.rtval === "clr" ? "clr" : +x.dataset.rtval) === rtArmed));
+  });
+  content.querySelectorAll("[data-apply]").forEach(b => b.onclick = () => {
+    if (rtArmed == null) { showToast("Tap a value button to arm it first"); return; }
+    const c = decodeURIComponent(b.dataset.apply);
+    const inp = content.querySelector(`[data-rtvs="${b.dataset.apply}"]`);
+    rtDraft.vs = rtDraft.vs || {};
+    if (rtArmed === "clr"){ delete rtDraft.vs[c]; if (inp) inp.value = ""; }
+    else { rtDraft.vs[c] = rtArmed; if (inp) inp.value = rtArmed; }
+    const row = b.closest(".rtRow"); if (row){ row.style.background = "rgba(200,170,110,0.14)"; setTimeout(() => { row.style.background = ""; }, 220); }
+  });
   const filt = (inputId) => { const inp = $(inputId); if (!inp) return; inp.oninput = () => { const q = inp.value.toLowerCase(); content.querySelectorAll("[data-cname]").forEach(el => { el.style.display = el.dataset.cname.includes(q) ? "" : "none"; }); }; };
   filt("rtSearch"); filt("vsSearch");
 }
