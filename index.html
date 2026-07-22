@@ -328,6 +328,9 @@
   .dRecCol.blue { border: 1px solid #24506e; } .dRecCol.red { border: 1px solid #6e2f34; }
   .dRecCol.due { box-shadow: 0 0 14px rgba(200,170,110,0.4); }
   .dRecLane { font-size: 10px; font-weight: 800; letter-spacing: .5px; color: #C8AA6E; text-transform: uppercase; margin: 8px 0 5px; }
+  .dRecTag { font-size: 8px; font-weight: 700; letter-spacing: .5px; color: #6b7d96; text-transform: uppercase; margin: 4px 0 2px; }
+  .dRecTag.yours { color: #7FD8A6; }
+  .pdot { position: absolute; top: -3px; left: -3px; width: 9px; height: 9px; border-radius: 50%; border: 1px solid #0A1428; }
   .dRecRow { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 3px; }
   .dRecChamp { width: 46px; flex-shrink: 0; text-align: center; }
   .dRecChamp .dci { width: 40px; height: 40px; border-radius: 8px; background-size: cover; background-position: center; border: 2px solid #2A4166; margin: 0 auto; position: relative; }
@@ -348,14 +351,25 @@
   .rtRow .rtn { flex: 1; min-width: 0; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .rtRow input[type=number] { width: 60px; background: #0F1F35; border: 1px solid #2A4166; color: #E8EDF4; border-radius: 8px; padding: 7px; font-size: 14px; text-align: center; font-family: inherit; }
   .rtTabs { display: flex; gap: 6px; margin: 10px 0; }
-  .rtTabBtn { flex: 1; padding: 9px; border-radius: 9px; border: 1px solid #2A4166; background: rgba(19,35,63,0.7); color: #9FB2CC; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .rtTabBtn { flex: 1; padding: 9px 2px; border-radius: 9px; border: 1px solid #2A4166; background: rgba(19,35,63,0.7); color: #9FB2CC; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .mFlags { display: flex; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
+  .mFlags .mConf { margin-left: 0; }
   .rtTabBtn.on { background: #C8AA6E; color: #0A1428; border-color: #C8AA6E; }
-  .rtPalHint { font-size: 11px; color: #7B8BA3; margin: 2px 0 6px; }
-  .rtPal { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; position: sticky; top: 0; background: #0A1428; padding: 6px 0; z-index: 5; }
-  .rtVal { min-width: 40px; padding: 8px 0; border-radius: 8px; border: 1px solid #2A4166; background: rgba(19,35,63,0.8); color: #C6D2E4; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; flex: 1; }
-  .rtVal.on { background: #C8AA6E; color: #0A1428; border-color: #C8AA6E; box-shadow: 0 0 10px rgba(200,170,110,0.5); }
-  .rtVal.clr { flex: 0 0 44px; color: #E85D5D; }
-  .rtVal.clr.on { background: #E85D5D; color: #0A1428; border-color: #E85D5D; box-shadow: 0 0 10px rgba(232,93,93,0.5); }
+  .mRow { border-bottom: 1px solid #1b2f4d; padding: 8px 0; transition: background .18s; }
+  .mTop { display: flex; align-items: center; gap: 8px; }
+  .mTop .rtc { width: 34px; height: 34px; border-radius: 7px; background-size: cover; background-position: center; border: 2px solid #2A4166; flex-shrink: 0; }
+  .mTop .rtn { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mConf { font-size: 9px; padding: 3px 7px; border-radius: 10px; border: 1px solid #2A4166; background: rgba(19,35,63,0.8); color: #7B8BA3; cursor: pointer; font-family: inherit; white-space: nowrap; flex-shrink: 0; margin-left: auto; }
+  .mConf.sure { color: #7FD8A6; border-color: #2f6b48; background: rgba(47,107,72,0.2); }
+  .mConf.guess { color: #F0C070; border-color: #7a5a20; background: rgba(122,90,32,0.2); }
+  .mTop input[type=number] { width: 56px; margin-left: 6px; background: #0F1F35; border: 1px solid #2A4166; color: #E8EDF4; border-radius: 8px; padding: 6px; font-size: 14px; text-align: center; font-family: inherit; flex-shrink: 0; }
+  .mHint { font-size: 10px; padding: 2px 7px; border-radius: 10px; white-space: nowrap; color: #7B8BA3; border: 1px solid #2A4166; }
+  .mHint.ok { color: #7FD8A6; border-color: #2f6b48; background: rgba(47,107,72,0.18); cursor: pointer; }
+  .mHint.warn { color: #F0C070; border-color: #7a5a20; background: rgba(122,90,32,0.22); cursor: pointer; }
+  .mBtns { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .mV { flex: 1; min-width: 30px; padding: 7px 0; border-radius: 7px; border: 1px solid #2A4166; background: rgba(19,35,63,0.8); color: #A9B8CC; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  .mV.on { background: #C8AA6E; color: #0A1428; border-color: #C8AA6E; box-shadow: 0 0 8px rgba(200,170,110,0.45); }
+  .mV.x { color: #E85D5D; flex: 0 0 34px; }
   .rtRow .apply { cursor: pointer; }
 </style>
 </head>
@@ -812,6 +826,7 @@ auth.onAuthStateChanged(u => {
   myName = (u && usernames[u.uid]) || null;
   authMode = null; nameEditOpen = false; cfgOpen = false;
   if (isOwner){ loadCfg(); ensureBuildSubs(); }
+  loadPool();
   renderAuth(true); render();
 });
 let authSig = "";
@@ -1818,7 +1833,22 @@ const TAGS = [
   "poke","sustain","dive","peel","waveclear","pushes fast","splitpush","sidelane threat","teamfight","objective control","roaming","vision","hard to gank","squishy"
 ];
 const TIER_SCORE = {"S+":86,"S":78,"A+":70,"A":63,"B+":56,"B":50,"C":42,"D":34};
-let draftMode = false, ratingMode = false, cmeta = {}, unsubCmeta = null, draft = null;
+let draftMode = false, ratingMode = false, poolMode = false, cmeta = {}, unsubCmeta = null, draft = null;
+let myPool = {}, unsubPool = null, poolSearch = "";
+const POOL_TIERS = [["best","Best","#4FC08A"],["good","Confident","#4FA8E8"],["ok","Okay","#C8AA6E"],["avoid","Avoid","#E85D5D"]];
+const POOL_BONUS = {best: 6, good: 3, ok: 0};
+function loadPool(){
+  if (unsubPool){ unsubPool(); unsubPool = null; }
+  myPool = {};
+  if (!user) return;
+  unsubPool = db.collection("pools").doc(user.uid).onSnapshot(d => { myPool = (d.exists && d.data().pool) || {}; if (draftMode) render(); },
+    e => console.error("pool:", e));
+}
+async function savePool(){
+  if (!user) return;
+  try { await db.collection("pools").doc(user.uid).set({pool: myPool}); showToast("Pool saved!"); }
+  catch(e){ console.error(e); showToast("Save failed — publish the pools rule"); }
+}
 let dPick = {side:null, kind:null, idx:null}, dLane = "all";
 let rtChamp = null, rtTab = "tags", rtDraft = {tags:[],lanes:{},vs:{}}, rtSearch = "", vsSearch = "", rtArmed = null;
 const RT_VALUES = [25,30,35,40,45,50,55,60,65,70,75,80,85,90];
@@ -1853,15 +1883,250 @@ function baseRating(champ, lane){ const m = cmeta[champ]; if (m && m.lanes && ty
 // reverse  cmeta[enemy].vs[cand] : how hard cand is FOR the enemy   (high = good for cand)
 // exactly-50 counts as "no strong opinion" and is ignored so it can't dilute a real rating.
 // if both directions are written they're averaged, so a mutually-rated lane stays balanced.
+// how much to trust champ A's written rating about B. "s" = sure, "g" = rough guess.
+function confWeight(a, b){ const c = cmeta[a] && cmeta[a].conf ? cmeta[a].conf[b] : null; return c === "s" ? 1.3 : c === "g" ? 0.6 : 1; }
+function skillOf(c){ const m = cmeta[c]; return m && typeof m.skill === "number" ? m.skill : 50; }
+// high skill expression = outcome depends more on the player than the draft, so shrink the
+// matchup's pull toward neutral (never more than 20%).
+function volDamp(a, b){ const vol = (skillOf(a) + skillOf(b)) / 2; return 1 - Math.max(0, (vol - 50) / 100) * 0.4; }
 function matchupAdv(cand, enemy){
   let fwd = cmeta[cand] && cmeta[cand].vs && typeof cmeta[cand].vs[enemy] === "number" ? cmeta[cand].vs[enemy] : null;
   let rev = cmeta[enemy] && cmeta[enemy].vs && typeof cmeta[enemy].vs[cand] === "number" ? cmeta[enemy].vs[cand] : null;
-  if (fwd === 50) fwd = null;
-  if (rev === 50) rev = null;
+  // a bare 50 means "haven't thought about it / irrelevant" → ignore it entirely.
+  // a 50 marked ★ sure means "I genuinely think this is dead even" → keep it as real data.
+  const fwdSure = cmeta[cand] && cmeta[cand].conf && cmeta[cand].conf[enemy] === "s";
+  const revSure = cmeta[enemy] && cmeta[enemy].conf && cmeta[enemy].conf[cand] === "s";
+  if (fwd === 50 && !fwdSure) fwd = null;
+  if (rev === 50 && !revSure) rev = null;
   const aFwd = fwd != null ? -(fwd - 50) : null;
   const aRev = rev != null ? (rev - 50) : null;
-  if (aFwd != null && aRev != null) return (aFwd + aRev) / 2;
-  return aFwd != null ? aFwd : aRev;
+  let adv;
+  if (aFwd != null && aRev != null){
+    const wF = confWeight(cand, enemy), wR = confWeight(enemy, cand);
+    adv = (aFwd * wF + aRev * wR) / (wF + wR);            // confidence-weighted average
+  } else if (aFwd != null) adv = aFwd * Math.min(1, confWeight(cand, enemy));
+  else if (aRev != null) adv = aRev * Math.min(1, confWeight(enemy, cand));
+  else return null;
+  // per-pair volatility (18): a coinflip lane shouldn't swing the draft much
+  const vf = cmeta[cand] && cmeta[cand].vol && typeof cmeta[cand].vol[enemy] === "number" ? cmeta[cand].vol[enemy] : null;
+  const vr = cmeta[enemy] && cmeta[enemy].vol && typeof cmeta[enemy].vol[cand] === "number" ? cmeta[enemy].vol[cand] : null;
+  const vv = (vf != null && vr != null) ? (vf + vr) / 2 : (vf != null ? vf : vr);
+  if (vv != null) adv *= 1 - Math.max(0, (vv - 50) / 100) * 0.5;
+  return adv * volDamp(cand, enemy);
+}
+// --- profile-driven factors (damage balance, counterability, scaling fit) ---
+function numOf(c, k){ const m = cmeta[c]; return m && typeof m[k] === "number" ? m[k] : null; }
+// damage split: physical / magic / true (normalised). falls back to the old single "dmg" field.
+function dmgSplit(c){
+  const m = cmeta[c]; if (!m) return null;
+  let P = typeof m.dmgP === "number" ? m.dmgP : (typeof m.dmg === "number" ? m.dmg : null);
+  let M = typeof m.dmgM === "number" ? m.dmgM : (typeof m.dmg === "number" ? 100 - m.dmg : null);
+  let T = typeof m.dmgT === "number" ? m.dmgT : 0;
+  if (P == null && M == null && !T) return null;
+  P = P || 0; M = M || 0;
+  const sum = P + M + T; if (!sum) return null;
+  return {p: P/sum*100, m: M/sum*100, t: T/sum*100};
+}
+// reward the pick that evens out your team's physical/magic mix; true damage is always welcome
+function dmgBalance(champ, side){
+  const cd = dmgSplit(champ); if (!cd) return 0;
+  const sp = draft.picks[side].filter(Boolean).map(dmgSplit).filter(Boolean);
+  let b = (cd.t / 100) * 2.5;
+  if (!sp.length) return b;
+  const share = arr => { const P = arr.reduce((a,x) => a+x.p, 0), M = arr.reduce((a,x) => a+x.m, 0); return (P+M) ? P/(P+M)*100 : 50; };
+  const before = Math.abs(share(sp) - 50), after = Math.abs(share(sp.concat([cd])) - 50);
+  return b + (before - after) * 0.12;
+}
+// ---- comp needs: what does this team still lack, and what does the enemy comp demand? ----
+const TG = {
+  front:   ["tank","juggernaut","warden","tanky","armor tanky","durable","bruiser"],
+  engage:  ["provides engage","dive","aoe cc","knockup","diver","catcher"],
+  peel:    ["peel","provides peel","enchanter","warden","point-and-click cc","provides disengage"],
+  dmg:     ["marksman","mage","assassin","hypercarry","high burst","sustained dps","artillery","battlemage"],
+  clear:   ["waveclear","pushes fast"],
+  dive:    ["dive","assassin","high mobility","diver","blink","dash"],
+  cc:      ["high cc","aoe cc","chain cc","stun","root","knockup","suppression","point-and-click cc"],
+  antiTank:["%hp damage","true damage","armor shred","magic pen","anti-heal"],
+  heals:   ["heal","lifesteal","omnivamp","enchanter","sustain"],
+  poke:    ["poke","artillery","long range"],
+  guard:   ["spell shield","escape","invuln/stasis","self-peel","provides disengage"],
+  scale:   ["hypercarry","strong scaler","late game"]
+};
+const ARCH_KEYS = [["poke","Poke"],["dive","Dive"],["prot","Protect the carry"],["split","Split push"],["pick","Pick / catch"],["wombo","Wombo teamfight"]];
+const PROF_FIELDS = [
+  ["prio","Lane priority","How easily does it shove and roam? High = generates prio.",0,100],
+  ["gank","Gankability","How easy is this champ to gank? High = very gankable.",0,100],
+  ["gasst","Gank assist","How much setup do you give your own jungler?",0,100],
+  ["solo","Solo carry (1v9)","Can this champ win a game on its own?",0,100],
+  ["tdep","Team dependency","How much coordination does it need? High = needs a team.",0,100],
+  ["floor","Skill floor","How safe is it for an average player? High = easy to play well.",0,100],
+  ["spike","Powerspike (item count)","Which item is the big spike — 1, 2 or 3.",1,3],
+  ["siege","Siege / turret pressure","How well does it convert a won fight into towers?",0,100],
+  ["obj","Objective fights","Dragon / baron fight contribution.",0,100],
+  ["flexb","Build flexibility","Can it go AP/AD/tank? High = hard to counter-itemise.",0,100],
+  ["ban","Ban-worthiness","How much do you NOT want to face this? Drives ban suggestions.",0,100],
+  ["blind","First-pick safety","Safe to pick blind, before you see them?",0,100],
+  ["cpick","Counter-pick reward","How much do you gain picking this AFTER seeing them?",0,100]
+];
+const SYN_VALUES = [30,40,50,60,70,80,90];
+function tagsOf(c){ return (cmeta[c] && cmeta[c].tags) || []; }
+function archOf(c){ const m = cmeta[c]; return (m && m.arch) || null; }
+// ---- A. champion identity factors (1-10) ----
+function identityFactors(champ, side){
+  const mine = draft.picks[side].filter(Boolean);
+  const foes = draft.picks[side === "blue" ? "red" : "blue"];
+  const n = k => numOf(champ, k);
+  let b = 0;
+  if (n("solo") != null) b += (n("solo") - 50) / 100 * 3;          // solo-carry matters in ranked
+  if (n("tdep") != null) b -= (n("tdep") - 50) / 100 * 3;          // coordination-hungry = worse solo
+  if (n("floor") != null) b += (n("floor") - 50) / 100 * 1.5;      // safe floor = reliable
+  // lane priority — worth more when your team has none
+  const pr = mine.map(c => numOf(c, "prio")).filter(v => v != null);
+  if (n("prio") != null && pr.length && pr.reduce((a,x) => a+x, 0) / pr.length < 50) b += (n("prio") - 50) / 100 * 2;
+  // gankability vs the enemy jungler that's actually on the board
+  const ej = foes[1];
+  if (n("gank") != null && ej){ const threat = tagsOf(ej).some(x => TG.dive.includes(x) || TG.engage.includes(x)) ? 1 : 0.4;
+    b -= (n("gank") - 50) / 100 * 3 * threat; }
+  // gank assist pays off with a ganking jungler of your own
+  const mj = draft.picks[side][1];
+  if (n("gasst") != null && mj && mj !== champ && tagsOf(mj).some(x => TG.dive.includes(x) || TG.engage.includes(x)))
+    b += (n("gasst") - 50) / 100 * 2.5;
+  // siege / objective gaps
+  const gap = (k, w) => { if (n(k) == null) return 0;
+    const vs = mine.map(c => numOf(c, k)).filter(v => v != null);
+    const avg = vs.length ? vs.reduce((a,x) => a+x, 0) / vs.length : 50;
+    return avg < 50 ? (n(k) - 50) / 100 * w : 0; };
+  b += gap("siege", 2) + gap("obj", 2);
+  // powerspike coherence — a team that spikes together wins together
+  const sp = mine.map(c => numOf(c, "spike")).filter(v => v != null);
+  if (n("spike") != null && sp.length) b -= Math.abs(n("spike") - sp.reduce((a,x) => a+x, 0) / sp.length) * 0.4;
+  return b;
+}
+// ---- B. comp modelling (11-14) ----
+function archFit(champ, side){
+  const a = archOf(champ); if (!a) return 0;
+  const mine = draft.picks[side].filter(Boolean).map(archOf).filter(Boolean);
+  if (!mine.length) return 0;
+  const keys = ARCH_KEYS.map(x => x[0]), tot = {};
+  keys.forEach(k => tot[k] = mine.reduce((s2,x) => s2 + (typeof x[k] === "number" ? x[k] : 50), 0) / mine.length);
+  const dom = keys.reduce((x,y) => tot[x] >= tot[y] ? x : y);
+  if (tot[dom] < 55) return 0;                                     // team has no identity yet
+  const cv = typeof a[dom] === "number" ? a[dom] : 50;
+  return (cv - 50) / 100 * 4;
+}
+function synergyFit(champ, side, lane){
+  let sum = 0, cnt = 0;
+  draft.picks[side].forEach((c,i) => {
+    if (!c || c === champ) return;
+    const f = cmeta[champ] && cmeta[champ].syn && typeof cmeta[champ].syn[c] === "number" ? cmeta[champ].syn[c] : null;
+    const r = cmeta[c] && cmeta[c].syn && typeof cmeta[c].syn[champ] === "number" ? cmeta[c].syn[champ] : null;
+    const v = (f != null && r != null) ? (f + r) / 2 : (f != null ? f : r);
+    if (v == null || v === 50) return;
+    const duoPair = (lane === "duo" && i === 4) || (lane === "support" && i === 3);
+    sum += (v - 50) * (duoPair ? 2 : 1); cnt++;                     // duo lane synergy counts double
+  });
+  return cnt ? (sum / cnt) / 100 * 5 : 0;
+}
+function posBalance(champ, side){
+  const pv = numOf(champ, "pos"); if (pv == null) return 0;
+  const vals = draft.picks[side].filter(Boolean).map(c => numOf(c, "pos")).filter(v => v != null);
+  if (!vals.length) return 0;
+  const front = vals.filter(v => v >= 60).length;
+  if (pv >= 60 && front < 2) return 2.5;
+  if (pv >= 60 && front >= 3) return -2;
+  if (pv < 40 && front === 0) return -1.5;
+  return 0;
+}
+// ---- C. draft order (15-17) ----
+function draftOrderValue(champ, side){
+  const foes = draft.picks[side === "blue" ? "red" : "blue"];
+  const shown = foes.filter(Boolean).length, left = 5 - shown;
+  let b = 0;
+  const bl = numOf(champ, "blind"); if (bl != null) b += (bl - 50) / 100 * left * 0.7;
+  const cp = numOf(champ, "cpick"); if (cp != null) b += (cp - 50) / 100 * shown * 0.7;
+  return b;
+}
+// ---- D. matchup phase flip (19) ----
+function flipAdjust(champ, opp, side){
+  const f = cmeta[champ] && cmeta[champ].flip ? cmeta[champ].flip[opp] : null;
+  if (!f) return 0;
+  const late = draft.picks[side].filter(Boolean).map(c => cmeta[c] && cmeta[c].scal ? cmeta[c].scal.l : null)
+    .filter(v => typeof v === "number");
+  const lean = late.length ? late.reduce((a,x) => a+x, 0) / late.length : 50;
+  return (f === "l" ? 1 : -1) * (lean - 50) / 100 * 3;
+}
+function countTag(list, group){ return list.filter(c => tagsOf(c).some(t => group.includes(t))).length; }
+function isTag(champ, group){ return tagsOf(champ).some(t => group.includes(t)); }
+function compNeeds(champ, side){
+  if (!tagsOf(champ).length) return 0;
+  const mine = draft.picks[side].filter(Boolean);
+  const foes = draft.picks[side === "blue" ? "red" : "blue"].filter(Boolean);
+  let b = 0;
+  // --- gaps in your own comp ---
+  if (!countTag(mine, TG.front) && isTag(champ, TG.front)) b += 4.5;
+  if (!countTag(mine, TG.engage) && isTag(champ, TG.engage)) b += 4;
+  if (countTag(mine, TG.dmg) < 2 && isTag(champ, TG.dmg)) b += 3;
+  if (!countTag(mine, TG.clear) && isTag(champ, TG.clear)) b += 1.5;
+  if (countTag(mine, TG.scale) && !countTag(mine, TG.peel) && isTag(champ, TG.peel)) b += 3;
+  // --- synergy with what you already have (the tag pairings) ---
+  const t = tagsOf(champ);
+  if (t.includes("wants frontline") && countTag(mine, TG.front)) b += 2;
+  if (t.includes("wants engage") && countTag(mine, TG.engage)) b += 2;
+  if (t.includes("likes enchanter") && mine.some(c => tagsOf(c).includes("enchanter"))) b += 2;
+  if (t.includes("provides engage") && mine.some(c => tagsOf(c).includes("wants engage"))) b += 2;
+  if (isTag(champ, TG.front) && mine.some(c => tagsOf(c).includes("wants frontline"))) b += 2;
+  // --- answering the enemy comp ---
+  if (countTag(foes, TG.dive) >= 2 && isTag(champ, TG.peel)) b += 3;
+  if (countTag(foes, TG.cc) >= 2 && isTag(champ, TG.guard)) b += 2;
+  if (countTag(foes, TG.poke) >= 2 && isTag(champ, TG.engage)) b += 2.5;
+  if (countTag(foes, TG.front) >= 2 && isTag(champ, TG.antiTank)) b += 3;
+  if (countTag(foes, TG.heals) >= 2 && t.includes("anti-heal")) b += 3;
+  if (countTag(foes, TG.scale) >= 2 && t.includes("early game")) b += 2;
+  // --- overload penalties ---
+  const sq = mine.filter(c => tagsOf(c).includes("squishy")).length;
+  if (t.includes("squishy") && sq >= 2) b -= 3;
+  if (t.includes("immobile") && mine.filter(c => tagsOf(c).includes("immobile")).length >= 2) b -= 2;
+  return b;
+}
+// flex picks hide information while you still have picks to make
+function flexBonus(champ, side){
+  let n = 0; ROLE_KEYS.forEach(l => { if (tierOfChamp(l, champ)) n++; });
+  if (n < 2) return 0;
+  const left = draft.picks[side].filter(x => !x).length;
+  return Math.min(n - 1, 2) * 0.8 * (left >= 2 ? 1 : 0.3);
+}
+// ban suggestions: strongest + hardest-to-answer champs still available
+function banRecs(n){
+  const used = usedChamps();
+  return allChampList().filter(c => !used.has(c)).map(c => {
+    let best = 0, lane = null;
+    ROLE_KEYS.forEach(l => { if (tierOfChamp(l, c)){ const v = baseRating(c, l); if (v > best){ best = v; lane = l; } } });
+    let s = best;
+    const ct = numOf(c, "ctr"); if (ct != null) s += (50 - ct) * 0.12;
+    const bn = numOf(c, "ban"); if (bn != null) s = s * 0.55 + bn * 0.45;
+    if (myPool[c] === "avoid") s += 5;
+    return {c, r: Math.round(s), lane};
+  }).sort((a,b) => b.r - a.r).slice(0, n);
+}
+// counterability: easily-countered champs are risky while the enemy still has picks left
+function counterRisk(champ, side){
+  const ct = numOf(champ, "ctr"); if (ct == null) return 0;
+  const enemy = side === "blue" ? "red" : "blue";
+  const remaining = draft.picks[enemy].filter(x => !x).length;
+  const fx = numOf(champ, "flexb");
+  const soften = fx != null ? 1 - Math.max(0, (fx - 50) / 100) * 0.5 : 1;   // flexible builds resist counter-itemising
+  return -((ct - 50) / 100) * remaining * 2 * soften;
+}
+// scaling: reward covering your team's weakest game phase
+function scalingFit(champ, side){
+  const m = cmeta[champ]; if (!m || !m.scal) return 0;
+  const picks = draft.picks[side].filter(Boolean);
+  const phases = ["e","m","l"], avg = {};
+  phases.forEach(p => { const v = picks.map(c => cmeta[c] && cmeta[c].scal ? cmeta[c].scal[p] : null).filter(x => typeof x === "number");
+    avg[p] = v.length ? v.reduce((a,b) => a+b, 0) / v.length : 50; });
+  const weak = phases.reduce((a,b) => avg[a] <= avg[b] ? a : b);
+  const cv = typeof m.scal[weak] === "number" ? m.scal[weak] : 50;
+  return ((cv - 50) / 100) * 3;
 }
 function draftRating(champ, lane, side){
   if (!draft) return 50;
@@ -1869,12 +2134,16 @@ function draftRating(champ, lane, side){
   let score = baseRating(champ, lane);
   const laneOpp = draft.picks[enemy][ROLE_KEYS.indexOf(lane)];
   // direct lane matchup — heaviest
-  if (laneOpp){ const a = matchupAdv(champ, laneOpp); if (a != null) score += a * 0.6; }
+  if (laneOpp){ const a = matchupAdv(champ, laneOpp); if (a != null) score += a * 0.6;
+    score += flipAdjust(champ, laneOpp, side); }
   // every other enemy champ (cross-lane) — small factor, averaged, both directions
   let gsum = 0, gc = 0;
   draft.picks[enemy].forEach(e => { if (e && e !== laneOpp){ const a = matchupAdv(champ, e); if (a != null){ gsum += a; gc++; } } });
   if (gc) score += (gsum / gc) * 0.18;
-  score += compBonus(champ, side);
+  score += compBonus(champ, side) + compNeeds(champ, side) + dmgBalance(champ, side) +
+           counterRisk(champ, side) + scalingFit(champ, side) + flexBonus(champ, side) +
+           identityFactors(champ, side) + archFit(champ, side) + synergyFit(champ, side, lane) +
+           posBalance(champ, side) + draftOrderValue(champ, side);
   return Math.max(0, Math.min(100, Math.round(score)));
 }
 function recommend(side, lane, n){
@@ -1892,8 +2161,41 @@ function assignChamp(c){
   else dPick = {side:null,kind:null,idx:null};
   render();
 }
+function renderPool(content){
+  const champs = allChampList();
+  let h = `<div class="rt"><div class="dBtnRow" style="justify-content:space-between;align-items:center">` +
+    `<button class="dBtn ghost" id="poolBack">‹ Back</button><span class="dHead" style="margin:0;font-size:15px">MY CHAMPION POOL</span>` +
+    `<button class="dBtn gold" id="poolSave">Save</button></div>`;
+  const counts = {};
+  POOL_TIERS.forEach(([k]) => counts[k] = Object.keys(myPool).filter(c => myPool[c] === k).length);
+  h += `<div class="dSub" style="margin-bottom:10px">` + POOL_TIERS.map(([k,l,col]) =>
+    `<span style="color:${col};margin-right:10px">${l}: ${counts[k]}</span>`).join("") + `</div>`;
+  h += `<div class="rtSel"><input id="poolSearch" placeholder="Filter champions…"></div><div id="pList">`;
+  h += champs.map(c => {
+    const cur = myPool[c] || "";
+    return `<div class="mRow" data-cname="${esc(c.toLowerCase())}">` +
+      `<div class="mTop"><span class="rtc" style="background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span>` +
+      `<span class="rtn">${esc(c)}</span></div><div class="mBtns">` +
+      POOL_TIERS.map(([k,l,col]) => `<button class="mV ${cur === k ? "on" : ""}" data-pset="${encodeURIComponent(c)}" data-pv="${k}" ${cur === k ? `style="background:${col};border-color:${col};color:#0A1428"` : ""}>${l}</button>`).join("") +
+      `<button class="mV x" data-pset="${encodeURIComponent(c)}" data-pv="x">✕</button></div></div>`;
+  }).join("");
+  h += `</div></div>`;
+  content.innerHTML = h;
+  $("poolBack").onclick = () => { poolMode = false; render(); };
+  $("poolSave").onclick = savePool;
+  const pl = $("pList");
+  if (pl) pl.onclick = ev => {
+    const b = ev.target.closest ? ev.target.closest("[data-pset]") : null; if (!b) return;
+    const c = decodeURIComponent(b.dataset.pset), v = b.dataset.pv;
+    if (v === "x") delete myPool[c]; else myPool[c] = v;
+    render();
+  };
+  const inp = $("poolSearch");
+  if (inp) inp.oninput = () => { const q = inp.value.toLowerCase(); content.querySelectorAll("[data-cname]").forEach(el => { el.style.display = el.dataset.cname.includes(q) ? "" : "none"; }); };
+}
 function renderDraft(content){
   ensureMetaSub();
+  if (poolMode){ renderPool(content); return; }
   if (ratingMode){ renderRatings(content); return; }
   if (!draft) newDraft();
   let h = `<div class="draft"><div class="dHead">DRAFT SIMULATOR</div>`;
@@ -1901,7 +2203,7 @@ function renderDraft(content){
     h += `<div class="dSub">Who has first pick?</div><div class="dFirst">` +
       `<button class="dFirstBtn blue" data-first="blue">Blue Side</button>` +
       `<button class="dFirstBtn red" data-first="red">Red Side</button></div>`;
-    if (isOwner) h += `<div class="dBtnRow"><button class="dBtn ghost" id="rtOpen">✎ Rate champions</button></div>`;
+    h += `<div class="dBtnRow">${user ? `<button class="dBtn ghost" id="poolOpen">☆ My champion pool</button>` : ""}${isOwner ? `<button class="dBtn ghost" id="rtOpen">✎ Rate champions</button>` : ""}</div>`;
     content.innerHTML = h + `</div>`; wireDraft(content); return;
   }
   h += `<div class="dSub">First pick: <b style="color:${draft.first === "blue" ? "#6FC0FF" : "#ff8f8f"}">${draft.first === "blue" ? "Blue" : "Red"}</b>${draft.phase === "ban" ? " · Banning phase" : ""}</div>`;
@@ -1914,10 +2216,19 @@ function renderDraft(content){
   h += `</div>`;
   h += draftSideHtml("red", kind);
   h += `</div>`;
-  if (draft.phase === "ban") h += `<div class="dBtnRow"><button class="dBtn gold" id="dToPick">Start drafting ›</button><button class="dBtn ghost" id="dReset">Reset</button></div>`;
+  if (draft.phase === "ban"){
+    h += `<div class="dBtnRow"><button class="dBtn gold" id="dToPick">Start drafting ›</button><button class="dBtn ghost" id="dReset">Reset</button>` +
+      `${user ? `<button class="dBtn ghost" id="poolOpen">☆ My pool</button>` : ""}${isOwner ? `<button class="dBtn ghost" id="rtOpen">✎ Rate</button>` : ""}</div>`;
+    const br = banRecs(10);
+    if (br.length) h += `<div class="dRecs"><div class="dHead" style="font-size:14px">SUGGESTED BANS</div><div class="dRecRow" style="flex-wrap:wrap">` +
+      br.map(rc => { const tc = TIER_COLORS[tierOfChamp(rc.lane, rc.c)] || "#2A4166";
+        return `<div class="dRecChamp"><div class="dci" style="border-color:${tc};box-shadow:0 0 5px ${tc}66;background-image:url('${iconUrl(rc.c)}'),url('${iconUrl2(rc.c)}')"><span class="rbadge">${rc.r}</span></div><span class="dcn">${esc(rc.c)}</span></div>`;
+      }).join("") + `</div></div>`;
+  }
   else { const due = dueSide();
     h += `<div class="dSub">${due ? `<b style="color:${due === "blue" ? "#6FC0FF" : "#ff8f8f"}">${due === "blue" ? "Blue" : "Red"}</b> to pick` : "Draft complete"}</div>` +
-      `<div class="dBtnRow"><button class="dBtn ghost" id="dEditBans">Edit bans</button><button class="dBtn ghost" id="dReset">Reset draft</button>${isOwner ? `<button class="dBtn ghost" id="rtOpen">✎ Rate</button>` : ""}</div>`;
+      `<div class="dBtnRow"><button class="dBtn ghost" id="dEditBans">Edit bans</button><button class="dBtn ghost" id="dReset">Reset draft</button>` +
+      `${user ? `<button class="dBtn ghost" id="poolOpen">☆ My pool</button>` : ""}${isOwner ? `<button class="dBtn ghost" id="rtOpen">✎ Rate</button>` : ""}</div>`;
   }
   content.innerHTML = h + `</div>`; wireDraft(content);
 }
@@ -1969,12 +2280,24 @@ function draftRecsHtml(){
     const due = dueSide() === side;
     h += `<div class="dRecCol ${side} ${due ? "due" : ""}"><div class="dColH" style="color:${side === "blue" ? "#6FC0FF" : "#ff8f8f"};font-size:12px">${side === "blue" ? "BLUE" : "RED"}${due ? " · to pick" : ""}</div>`;
     let any = false;
+    const havePool = Object.keys(myPool).length > 0;
+    const chip = (rc, lane) => { const tc = TIER_COLORS[tierOfChamp(lane, rc.c)] || "#2A4166";
+      const pt = myPool[rc.c];
+      return `<div class="dRecChamp"><div class="dci" style="border-color:${tc};box-shadow:0 0 5px ${tc}66;background-image:url('${iconUrl(rc.c)}'),url('${iconUrl2(rc.c)}')">` +
+        `<span class="rbadge">${rc.r}</span>${pt && pt !== "avoid" ? `<span class="pdot" style="background:${(POOL_TIERS.find(x => x[0] === pt)||[])[2]}"></span>` : ""}</div>` +
+        `<span class="dcn">${esc(rc.c)}</span></div>`; };
     ROLE_KEYS.forEach((lane,i) => { if (draft.picks[side][i]) return;
       const recs = recommend(side, lane, 7); if (!recs.length) return; any = true;
-      h += `<div class="dRecLane">${ROLE_LABELS[lane]}</div><div class="dRecRow">` +
-        recs.map(rc => { const tc = TIER_COLORS[tierOfChamp(lane, rc.c)] || "#2A4166";
-          return `<div class="dRecChamp"><div class="dci" style="border-color:${tc};box-shadow:0 0 5px ${tc}66;background-image:url('${iconUrl(rc.c)}'),url('${iconUrl2(rc.c)}')"><span class="rbadge">${rc.r}</span></div><span class="dcn">${esc(rc.c)}</span></div>`;
-        }).join("") + `</div>`;
+      h += `<div class="dRecLane">${ROLE_LABELS[lane]}</div>`;
+      if (havePool){
+        const mineRecs = recommend(side, lane, 60).filter(r => myPool[r.c] && myPool[r.c] !== "avoid")
+          .map(r => ({c: r.c, r: Math.min(100, r.r + (POOL_BONUS[myPool[r.c]] || 0))}))
+          .sort((a,b) => b.r - a.r).slice(0, 5);
+        h += `<div class="dRecTag yours">Your pool</div><div class="dRecRow">` +
+          (mineRecs.length ? mineRecs.map(rc => chip(rc, lane)).join("") : `<span class="cntEmpty">Nothing from your pool here.</span>`) + `</div>`;
+        h += `<div class="dRecTag">Best overall</div>`;
+      }
+      h += `<div class="dRecRow">` + recs.map(rc => chip(rc, lane)).join("") + `</div>`;
     });
     if (!any) h += `<div class="cntEmpty">All lanes filled.</div>`;
     h += `</div>`;
@@ -1997,6 +2320,7 @@ function wireDraft(content){
   if ($("dEditBans")) $("dEditBans").onclick = () => { draft.phase = "ban"; dPick = {side:null,kind:null,idx:null}; render(); };
   if ($("dReset")) $("dReset").onclick = () => { newDraft(); render(); };
   if ($("rtOpen")) $("rtOpen").onclick = () => { ratingMode = true; rtChamp = null; rtSearch = ""; render(); };
+  if ($("poolOpen")) $("poolOpen").onclick = () => { poolMode = true; render(); };
 }
 function renderRatings(content){
   const champs = allChampList();
@@ -2007,7 +2331,7 @@ function renderRatings(content){
     h += `</div></div>`; content.innerHTML = h; wireRatings(content); return;
   }
   h += `<div class="rtSel"><span style="width:44px;height:44px;border-radius:9px;background-size:cover;background-position:center;border:2px solid #C8AA6E;flex-shrink:0;background-image:url('${iconUrl(rtChamp)}'),url('${iconUrl2(rtChamp)}')"></span><span class="dHead" style="margin:0;font-size:17px;align-self:center;flex:1">${esc(rtChamp)}</span><button class="dBtn ghost" data-rtclose="1">Change</button></div>`;
-  h += `<div class="rtTabs">` + [["tags","Tags"],["lanes","Lanes"],["vs","Matchups"]].map(([k,l]) => `<button class="rtTabBtn ${rtTab === k ? "on" : ""}" data-rttab="${k}">${l}</button>`).join("") + `</div>`;
+  h += `<div class="rtTabs">` + [["tags","Tags"],["lanes","Profile"],["comp","Comp"],["vs","Vs"],["syn","Syn"]].map(([k,l]) => `<button class="rtTabBtn ${rtTab === k ? "on" : ""}" data-rttab="${k}">${l}</button>`).join("") + `</div>`;
   if (rtTab === "tags"){
     const allTags = [...new Set([...TAGS, ...Object.values(cmeta).flatMap(m => (m && m.tags) || []), ...(rtDraft.tags || [])])];
     h += `<div class="rtTags">` + allTags.map(t => `<button class="rtTag ${(rtDraft.tags||[]).includes(t) ? "on" : ""}" data-rttag="${esc(t)}">${esc(t)}</button>`).join("") + `</div>`;
@@ -2017,24 +2341,118 @@ function renderRatings(content){
     ROLE_KEYS.forEach(l => { const ph = tierOfChamp(l, rtChamp) ? TIER_SCORE[tierOfChamp(l, rtChamp)] : "—";
       h += `<div class="rtRow"><span class="rtn">${ROLE_LABELS[l]}</span><input type="number" min="0" max="100" data-rtlane="${l}" value="${rtDraft.lanes && rtDraft.lanes[l] != null ? rtDraft.lanes[l] : ""}" placeholder="${ph}"></div>`;
     });
+    h += `<div class="dSub" style="text-align:left;margin:16px 0 4px">Skill expression — how much does the better player swing this champ? 50 = normal, 90 = huge (Camille, Fiora), 20 = low (point-and-click).</div>` +
+      `<div class="rtRow"><span class="rtn" style="color:#C8AA6E;font-weight:700">Skill expression</span>` +
+      `<input type="number" min="0" max="100" id="rtSkill" value="${rtDraft.skill != null ? rtDraft.skill : ""}" placeholder="50"></div>`;
+    const dP = rtDraft.dmgP != null ? +rtDraft.dmgP : (rtDraft.dmg != null ? +rtDraft.dmg : 0);
+    const dM = rtDraft.dmgM != null ? +rtDraft.dmgM : (rtDraft.dmg != null ? 100 - +rtDraft.dmg : 0);
+    const dT = rtDraft.dmgT != null ? +rtDraft.dmgT : 0;
+    const dSum = dP + dM + dT;
+    h += `<div class="dSub" style="text-align:left;margin:16px 0 4px">Damage mix — roughly what % of this champ's damage is each type. Aim for ~100 total <span style="color:${dSum === 100 ? "#7FD8A6" : dSum ? "#F0C070" : "#7B8BA3"}">(now ${dSum})</span>.</div>`;
+    [["dmgP","Physical %"],["dmgM","Magic %"],["dmgT","True %"]].forEach(([k,l]) => {
+      h += `<div class="rtRow"><span class="rtn">${l}</span><input type="number" min="0" max="100" data-rtf="${k}" value="${rtDraft[k] != null ? rtDraft[k] : ""}" placeholder="0"></div>`;
+    });
+    h += `<div class="dSub" style="text-align:left;margin:16px 0 4px">Counterability — how easily is this champ punished once the enemy knows it's coming? 20 = safe blind pick (K'Sante), 90 = gets hard-countered.</div>` +
+      `<div class="rtRow"><span class="rtn" style="color:#C8AA6E;font-weight:700">Counterability</span>` +
+      `<input type="number" min="0" max="100" data-rtf="ctr" value="${rtDraft.ctr != null ? rtDraft.ctr : ""}" placeholder="50"></div>`;
+    h += `<div class="dSub" style="text-align:left;margin:16px 0 4px">Power by game phase — 0–100 each.</div>`;
+    [["e","Early"],["m","Mid"],["l","Late"]].forEach(([k,l]) => {
+      h += `<div class="rtRow"><span class="rtn">${l} game</span><input type="number" min="0" max="100" data-rtscal="${k}" value="${rtDraft.scal && rtDraft.scal[k] != null ? rtDraft.scal[k] : ""}" placeholder="50"></div>`;
+    });
+    PROF_FIELDS.forEach(([k,l,d,mn,mx]) => {
+      h += `<div class="dSub" style="text-align:left;margin:14px 0 2px">${esc(d)}</div>` +
+        `<div class="rtRow"><span class="rtn" style="color:#C8AA6E;font-weight:700">${esc(l)}</span>` +
+        `<input type="number" min="${mn}" max="${mx}" data-rtf="${k}" value="${rtDraft[k] != null ? rtDraft[k] : ""}" placeholder="${mn === 1 ? 2 : 50}"></div>`;
+    });
+  } else if (rtTab === "comp"){
+    h += `<div class="dSub" style="text-align:left;margin:6px 0">How well does ${esc(rtChamp)} fit each comp style? 0–100, 50 = fine anywhere.</div>`;
+    ARCH_KEYS.forEach(([k,l]) => {
+      h += `<div class="rtRow"><span class="rtn">${l}</span><input type="number" min="0" max="100" data-rtarch="${k}" value="${rtDraft.arch && rtDraft.arch[k] != null ? rtDraft.arch[k] : ""}" placeholder="50"></div>`;
+    });
+    h += `<div class="dSub" style="text-align:left;margin:16px 0 2px">Position in a fight — 0 = pure backline, 100 = pure frontline.</div>` +
+      `<div class="rtRow"><span class="rtn" style="color:#C8AA6E;font-weight:700">Frontline weight</span>` +
+      `<input type="number" min="0" max="100" data-rtf="pos" value="${rtDraft.pos != null ? rtDraft.pos : ""}" placeholder="50"></div>`;
+  } else if (rtTab === "syn"){
+    h += `<div class="dSub" style="text-align:left;margin:6px 0">How well does ${esc(rtChamp)} combo with each ally? 50 = neutral, 90 = amazing together. Only fill the ones that matter. Duo-lane pairs count double.</div>`;
+    h += `<div class="rtSel"><input id="synSearch" placeholder="Filter champions…"></div><div id="sList">`;
+    h += champs.filter(c => c !== rtChamp).map(c => {
+      const own = rtDraft.syn && rtDraft.syn[c] != null ? rtDraft.syn[c] : null;
+      const rev = cmeta[c] && cmeta[c].syn && typeof cmeta[c].syn[rtChamp] === "number" ? cmeta[c].syn[rtChamp] : null;
+      const badge = (rev != null && own == null) ? `<span class="mHint ok" data-sadopt="${encodeURIComponent(c)}" data-sv="${rev}">✓ they say ${rev}</span>` : "";
+      return `<div class="mRow" data-cname="${esc(c.toLowerCase())}">` +
+        `<div class="mTop"><span class="rtc" style="background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span>` +
+        `<span class="rtn">${esc(c)}</span>${badge}` +
+        `<input type="number" min="0" max="100" data-rtsyn="${encodeURIComponent(c)}" value="${own != null ? own : ""}" placeholder="—"></div>` +
+        `<div class="mBtns">` + SYN_VALUES.map(v =>
+          `<button class="mV ${own === v ? "on" : ""}" data-synset="${encodeURIComponent(c)}" data-sv2="${v}">${v}</button>`).join("") +
+        `<button class="mV x" data-synset="${encodeURIComponent(c)}" data-sv2="x">✕</button></div></div>`;
+    }).join("");
+    h += `</div>`;
   } else {
-    h += `<div class="dSub" style="text-align:left;margin:6px 0">Difficulty vs each champ. 0–100, 100 = hardest for ${esc(rtChamp)}. 50 = even (ignored by the drafter).</div>`;
-    h += `<div class="rtPalHint">Tap a value to arm it, then tap champions to stamp it — or type directly.</div>`;
-    h += `<div class="rtPal">` + RT_VALUES.map(v => `<button class="rtVal ${rtArmed === v ? "on" : ""}" data-rtval="${v}">${v}</button>`).join("") +
-      `<button class="rtVal clr ${rtArmed === "clr" ? "on" : ""}" data-rtval="clr">✕</button></div>`;
-    h += `<div class="rtSel"><input id="vsSearch" placeholder="Filter champions…"></div>`;
-    h += champs.filter(c => c !== rtChamp).map(c =>
-      `<div class="rtRow" data-cname="${esc(c.toLowerCase())}"><span class="rtc apply" data-apply="${encodeURIComponent(c)}" style="background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span><span class="rtn apply" data-apply="${encodeURIComponent(c)}">${esc(c)}</span><input type="number" min="0" max="100" data-rtvs="${encodeURIComponent(c)}" value="${rtDraft.vs && rtDraft.vs[c] != null ? rtDraft.vs[c] : ""}" placeholder="50"></div>`).join("");
+    h += `<div class="dSub" style="text-align:left;margin:6px 0">100 = hardest for ${esc(rtChamp)}. 50 = even. Blank is fine — leave irrelevant matchups empty.</div>`;
+    h += `<div class="rtSel"><input id="vsSearch" placeholder="Filter champions…"></div><div id="mList">`;
+    h += champs.filter(c => c !== rtChamp).map(c => {
+      const own = rtDraft.vs && rtDraft.vs[c] != null ? rtDraft.vs[c] : null;
+      // what the OTHER champion's sheet already says about this pair
+      const rev = cmeta[c] && cmeta[c].vs && typeof cmeta[c].vs[rtChamp] === "number" ? cmeta[c].vs[rtChamp] : null;
+      const implied = rev != null ? 100 - rev : null;
+      let badge = "";
+      if (implied != null && own == null)
+        badge = `<span class="mHint ok" data-adopt="${encodeURIComponent(c)}" data-av="${implied}">✓ covered · implies ${implied}</span>`;
+      else if (implied != null && own != null)
+        badge = Math.abs(own - implied) > 20
+          ? `<span class="mHint warn" data-adopt="${encodeURIComponent(c)}" data-av="${implied}">⚠ other sheet implies ${implied}</span>`
+          : `<span class="mHint">↔ ${implied}</span>`;
+      const cf = (rtDraft.conf && rtDraft.conf[c]) || "";
+      const cfLbl = cf === "s" ? "★ sure" : cf === "g" ? "? guess" : "• ok";
+      const vv = rtDraft.vol && rtDraft.vol[c] != null ? rtDraft.vol[c] : null;
+      const vLbl = vv == null ? "~ steady" : (vv >= 85 ? "~ coinflip" : "~ swingy");
+      const fv = (rtDraft.flip && rtDraft.flip[c]) || "";
+      const fLbl = fv === "e" ? "⏱ wins early" : fv === "l" ? "⏱ wins late" : "⏱ no flip";
+      return `<div class="mRow" data-cname="${esc(c.toLowerCase())}">` +
+        `<div class="mTop"><span class="rtc" style="background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></span>` +
+        `<span class="rtn">${esc(c)}</span>${badge}` +
+        `<input type="number" min="0" max="100" data-rtvs="${encodeURIComponent(c)}" value="${own != null ? own : ""}" placeholder="—"></div>` +
+        `<div class="mFlags">` +
+          `<button class="mConf ${cf ? (cf === "s" ? "sure" : "guess") : ""}" data-mconf="${encodeURIComponent(c)}">${cfLbl}</button>` +
+          `<button class="mConf ${vv != null ? "guess" : ""}" data-mvol="${encodeURIComponent(c)}">${vLbl}</button>` +
+          `<button class="mConf ${fv ? "sure" : ""}" data-mflip="${encodeURIComponent(c)}">${fLbl}</button>` +
+        `</div>` +
+        `<div class="mBtns">` + RT_VALUES.map(v =>
+          `<button class="mV ${own === v ? "on" : ""}" data-mset="${encodeURIComponent(c)}" data-mv="${v}">${v}</button>`).join("") +
+        `<button class="mV x" data-mset="${encodeURIComponent(c)}" data-mv="x">✕</button></div></div>`;
+    }).join("");
+    h += `</div>`;
   }
   h += `<div class="dBtnRow" style="margin-top:16px"><button class="dBtn gold" id="rtSave">Save ${esc(rtChamp)}</button></div></div>`;
   content.innerHTML = h; wireRatings(content);
 }
-function loadRtDraft(c){ const m = cmeta[c] || {}; rtDraft = {tags: (m.tags || []).slice(), lanes: Object.assign({}, m.lanes || {}), vs: Object.assign({}, m.vs || {})}; }
+function loadRtDraft(c){ const m = cmeta[c] || {}; rtDraft = {tags: (m.tags || []).slice(), lanes: Object.assign({}, m.lanes || {}), vs: Object.assign({}, m.vs || {}), conf: Object.assign({}, m.conf || {}), skill: typeof m.skill === "number" ? m.skill : null, dmg: typeof m.dmg === "number" ? m.dmg : null, dmgP: typeof m.dmgP === "number" ? m.dmgP : null, dmgM: typeof m.dmgM === "number" ? m.dmgM : null, dmgT: typeof m.dmgT === "number" ? m.dmgT : null, ctr: typeof m.ctr === "number" ? m.ctr : null, scal: Object.assign({}, m.scal || {}),
+    arch: Object.assign({}, m.arch || {}), syn: Object.assign({}, m.syn || {}),
+    vol: Object.assign({}, m.vol || {}), flip: Object.assign({}, m.flip || {})};
+  PROF_FIELDS.forEach(([k]) => rtDraft[k] = typeof m[k] === "number" ? m[k] : null);
+  rtDraft.pos = typeof m.pos === "number" ? m.pos : null;
+}
 async function saveRatings(){
   if (!isOwner || !rtChamp) return;
-  const payload = {tags: rtDraft.tags || [], lanes: {}, vs: {}};
+  const payload = {tags: rtDraft.tags || [], lanes: {}, vs: {}, conf: {}};
   ROLE_KEYS.forEach(l => { const v = rtDraft.lanes && rtDraft.lanes[l]; if (v != null && v !== "") payload.lanes[l] = Math.max(0, Math.min(100, +v)); });
   for (const c in (rtDraft.vs || {})){ const v = rtDraft.vs[c]; if (v != null && v !== "") payload.vs[c] = Math.max(0, Math.min(100, +v)); }
+  for (const c in (rtDraft.conf || {})){ const v = rtDraft.conf[c]; if (v === "s" || v === "g") payload.conf[c] = v; }
+  if (rtDraft.skill != null && rtDraft.skill !== "") payload.skill = Math.max(0, Math.min(100, +rtDraft.skill));
+  ["dmgP","dmgM","dmgT","ctr"].forEach(k => { const v = rtDraft[k]; if (v != null && v !== "") payload[k] = Math.max(0, Math.min(100, +v)); });
+  const sc = {}; ["e","m","l"].forEach(k => { const v = rtDraft.scal && rtDraft.scal[k]; if (v != null && v !== "") sc[k] = Math.max(0, Math.min(100, +v)); });
+  if (Object.keys(sc).length) payload.scal = sc;
+  PROF_FIELDS.forEach(([k,l,d,mn,mx]) => { const v = rtDraft[k]; if (v != null && v !== "") payload[k] = Math.max(mn, Math.min(mx, +v)); });
+  if (rtDraft.pos != null && rtDraft.pos !== "") payload.pos = Math.max(0, Math.min(100, +rtDraft.pos));
+  const ar = {}; ARCH_KEYS.forEach(([k]) => { const v = rtDraft.arch && rtDraft.arch[k]; if (v != null && v !== "") ar[k] = Math.max(0, Math.min(100, +v)); });
+  if (Object.keys(ar).length) payload.arch = ar;
+  const sy = {}; for (const c in (rtDraft.syn || {})){ const v = rtDraft.syn[c]; if (v != null && v !== "") sy[c] = Math.max(0, Math.min(100, +v)); }
+  payload.syn = sy;
+  const vo = {}; for (const c in (rtDraft.vol || {})){ const v = rtDraft.vol[c]; if (v != null && v !== "") vo[c] = Math.max(0, Math.min(100, +v)); }
+  payload.vol = vo;
+  const fl = {}; for (const c in (rtDraft.flip || {})){ const v = rtDraft.flip[c]; if (v === "e" || v === "l") fl[c] = v; }
+  payload.flip = fl;
   try { await db.collection("champmeta").doc(rtChamp).set(payload); showToast(rtChamp + " saved!"); }
   catch(e){ console.error(e); showToast("Save failed — publish the champmeta rule"); }
 }
@@ -2048,25 +2466,83 @@ function wireRatings(content){
   if ($("addTag")) $("addTag").onclick = addCustomTag;
   if ($("newTag")) $("newTag").addEventListener("keydown", e => { if (e.key === "Enter") addCustomTag(); });
   content.querySelectorAll("[data-rtlane]").forEach(b => b.oninput = () => { rtDraft.lanes = rtDraft.lanes || {}; if (b.value === "") delete rtDraft.lanes[b.dataset.rtlane]; else rtDraft.lanes[b.dataset.rtlane] = +b.value; });
+  if ($("rtSkill")) $("rtSkill").oninput = e => { rtDraft.skill = e.target.value === "" ? null : +e.target.value; };
+  content.querySelectorAll("[data-rtf]").forEach(b => b.oninput = () => { rtDraft[b.dataset.rtf] = b.value === "" ? null : +b.value; });
+  content.querySelectorAll("[data-rtscal]").forEach(b => b.oninput = () => { rtDraft.scal = rtDraft.scal || {}; if (b.value === "") delete rtDraft.scal[b.dataset.rtscal]; else rtDraft.scal[b.dataset.rtscal] = +b.value; });
   content.querySelectorAll("[data-rtvs]").forEach(b => b.oninput = () => { const c = decodeURIComponent(b.dataset.rtvs); rtDraft.vs = rtDraft.vs || {}; if (b.value === "") delete rtDraft.vs[c]; else rtDraft.vs[c] = +b.value; });
   if ($("rtSave")) $("rtSave").onclick = saveRatings;
-  // armed value palette (no re-render so the filter/scroll stays put)
-  content.querySelectorAll("[data-rtval]").forEach(b => b.onclick = () => {
-    const v = b.dataset.rtval === "clr" ? "clr" : +b.dataset.rtval;
-    rtArmed = (rtArmed === v) ? null : v;
-    content.querySelectorAll("[data-rtval]").forEach(x => x.classList.toggle("on", (x.dataset.rtval === "clr" ? "clr" : +x.dataset.rtval) === rtArmed));
-  });
-  content.querySelectorAll("[data-apply]").forEach(b => b.onclick = () => {
-    if (rtArmed == null) { showToast("Tap a value button to arm it first"); return; }
-    const c = decodeURIComponent(b.dataset.apply);
-    const inp = content.querySelector(`[data-rtvs="${b.dataset.apply}"]`);
+  // per-champion value buttons — one delegated listener (fast with 100+ rows), no re-render
+  const mList = $("mList");
+  if (mList) mList.onclick = ev => {
+    const cfBtn = ev.target.closest ? ev.target.closest("[data-mconf]") : null;
+    if (cfBtn){
+      const c = decodeURIComponent(cfBtn.dataset.mconf);
+      rtDraft.conf = rtDraft.conf || {};
+      const cur = rtDraft.conf[c] || "";
+      const next = cur === "" ? "s" : cur === "s" ? "g" : "";
+      if (next) rtDraft.conf[c] = next; else delete rtDraft.conf[c];
+      cfBtn.textContent = next === "s" ? "★ sure" : next === "g" ? "? guess" : "• ok";
+      cfBtn.className = "mConf " + (next === "s" ? "sure" : next === "g" ? "guess" : "");
+      return;
+    }
+    const volBtn = ev.target.closest ? ev.target.closest("[data-mvol]") : null;
+    if (volBtn){
+      const c = decodeURIComponent(volBtn.dataset.mvol);
+      rtDraft.vol = rtDraft.vol || {};
+      const cur = rtDraft.vol[c] == null ? null : rtDraft.vol[c];
+      const next = cur == null ? 70 : (cur < 85 ? 90 : null);
+      if (next == null) delete rtDraft.vol[c]; else rtDraft.vol[c] = next;
+      volBtn.textContent = next == null ? "~ steady" : (next >= 85 ? "~ coinflip" : "~ swingy");
+      volBtn.className = "mConf " + (next == null ? "" : "guess");
+      return;
+    }
+    const flipBtn = ev.target.closest ? ev.target.closest("[data-mflip]") : null;
+    if (flipBtn){
+      const c = decodeURIComponent(flipBtn.dataset.mflip);
+      rtDraft.flip = rtDraft.flip || {};
+      const cur = rtDraft.flip[c] || "";
+      const next = cur === "" ? "e" : cur === "e" ? "l" : "";
+      if (!next) delete rtDraft.flip[c]; else rtDraft.flip[c] = next;
+      flipBtn.textContent = next === "e" ? "⏱ wins early" : next === "l" ? "⏱ wins late" : "⏱ no flip";
+      flipBtn.className = "mConf " + (next ? "sure" : "");
+      return;
+    }
+    const setBtn = ev.target.closest ? ev.target.closest("[data-mset]") : null;
+    const adopt = ev.target.closest ? ev.target.closest("[data-adopt]") : null;
+    const hit = setBtn || adopt;
+    if (!hit) return;
+    const key = setBtn ? setBtn.dataset.mset : adopt.dataset.adopt;
+    const c = decodeURIComponent(key);
+    const raw = setBtn ? setBtn.dataset.mv : adopt.dataset.av;
+    const row = hit.closest(".mRow");
+    const inp = row ? row.querySelector("[data-rtvs]") : null;
     rtDraft.vs = rtDraft.vs || {};
-    if (rtArmed === "clr"){ delete rtDraft.vs[c]; if (inp) inp.value = ""; }
-    else { rtDraft.vs[c] = rtArmed; if (inp) inp.value = rtArmed; }
-    const row = b.closest(".rtRow"); if (row){ row.style.background = "rgba(200,170,110,0.14)"; setTimeout(() => { row.style.background = ""; }, 220); }
-  });
+    if (raw === "x"){ delete rtDraft.vs[c]; if (inp) inp.value = ""; }
+    else { rtDraft.vs[c] = +raw; if (inp) inp.value = +raw; }
+    if (row){
+      row.querySelectorAll("[data-mv]").forEach(x => x.classList.toggle("on", x.dataset.mv === raw && raw !== "x"));
+      row.style.background = "rgba(200,170,110,0.14)";
+      setTimeout(() => { row.style.background = ""; }, 200);
+    }
+  };
+  content.querySelectorAll("[data-rtarch]").forEach(b => b.oninput = () => { rtDraft.arch = rtDraft.arch || {}; if (b.value === "") delete rtDraft.arch[b.dataset.rtarch]; else rtDraft.arch[b.dataset.rtarch] = +b.value; });
+  content.querySelectorAll("[data-rtsyn]").forEach(b => b.oninput = () => { const c = decodeURIComponent(b.dataset.rtsyn); rtDraft.syn = rtDraft.syn || {}; if (b.value === "") delete rtDraft.syn[c]; else rtDraft.syn[c] = +b.value; });
+  const sList = $("sList");
+  if (sList) sList.onclick = ev => {
+    const ad = ev.target.closest ? ev.target.closest("[data-sadopt]") : null;
+    const b = ev.target.closest ? ev.target.closest("[data-synset]") : null;
+    const hit = b || ad; if (!hit) return;
+    const c = decodeURIComponent(b ? b.dataset.synset : ad.dataset.sadopt);
+    const raw = b ? b.dataset.sv2 : ad.dataset.sv;
+    const row = hit.closest(".mRow"), inp = row ? row.querySelector("[data-rtsyn]") : null;
+    rtDraft.syn = rtDraft.syn || {};
+    if (raw === "x"){ delete rtDraft.syn[c]; if (inp) inp.value = ""; }
+    else { rtDraft.syn[c] = +raw; if (inp) inp.value = +raw; }
+    if (row){ row.querySelectorAll("[data-sv2]").forEach(x => x.classList.toggle("on", x.dataset.sv2 === raw && raw !== "x"));
+      row.style.background = "rgba(200,170,110,0.14)"; setTimeout(() => { row.style.background = ""; }, 200); }
+  };
   const filt = (inputId) => { const inp = $(inputId); if (!inp) return; inp.oninput = () => { const q = inp.value.toLowerCase(); content.querySelectorAll("[data-cname]").forEach(el => { el.style.display = el.dataset.cname.includes(q) ? "" : "none"; }); }; };
-  filt("rtSearch"); filt("vsSearch");
+  filt("rtSearch"); filt("vsSearch"); filt("synSearch");
 }
 
 // ============ RENDER ============
@@ -2230,7 +2706,7 @@ function render(){
 }
 $("editBtn").onclick = () => { editMode = !editMode; selected = null; hubChamp = null; confirmChampWipe = false; render(); };
 $("buildsBtn").onclick = () => { buildsMode = !buildsMode; editMode = false; draftMode = false; selected = null; hubChamp = null; eb = null; ebEditId = null; bChamp = null; confirmBDel = null; render(); };
-$("draftBtn").onclick = () => { draftMode = !draftMode; buildsMode = false; editMode = false; ratingMode = false; selected = null; hubChamp = null; eb = null; bChamp = null; if (draftMode){ ensureMetaSub(); if (!draft) newDraft(); } render(); };
+$("draftBtn").onclick = () => { draftMode = !draftMode; buildsMode = false; editMode = false; ratingMode = false; poolMode = false; selected = null; hubChamp = null; eb = null; bChamp = null; if (draftMode){ ensureMetaSub(); if (!draft) newDraft(); } render(); };
 
 // ============ MUSIC ============
 const bgm = $("bgm");
