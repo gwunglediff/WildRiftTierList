@@ -353,6 +353,8 @@
   .rtTabs { display: flex; gap: 6px; margin: 10px 0; }
   .rtTabBtn { flex: 1; padding: 9px 2px; border-radius: 9px; border: 1px solid #2A4166; background: rgba(19,35,63,0.7); color: #9FB2CC; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; }
   .mFlags { display: flex; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
+  .nRow .rtn { flex: 1; white-space: normal; }
+  .nRow .mV { font-size: 10px; min-width: 26px; }
   .mFlags .mConf { margin-left: 0; }
   .rtTabBtn.on { background: #C8AA6E; color: #0A1428; border-color: #C8AA6E; }
   .mRow { border-bottom: 1px solid #1b2f4d; padding: 8px 0; transition: background .18s; }
@@ -1954,20 +1956,30 @@ const TG = {
 };
 const ARCH_KEYS = [["poke","Poke"],["dive","Dive"],["prot","Protect the carry"],["split","Split push"],["pick","Pick / catch"],["wombo","Wombo teamfight"]];
 const PROF_FIELDS = [
-  ["prio","Lane priority","How easily does it shove and roam? High = generates prio.",0,100],
-  ["gank","Gankability","How easy is this champ to gank? High = very gankable.",0,100],
-  ["gasst","Gank assist","How much setup do you give your own jungler?",0,100],
-  ["solo","Solo carry (1v9)","Can this champ win a game on its own?",0,100],
-  ["tdep","Team dependency","How much coordination does it need? High = needs a team.",0,100],
-  ["floor","Skill floor","How safe is it for an average player? High = easy to play well.",0,100],
-  ["spike","Powerspike (item count)","Which item is the big spike — 1, 2 or 3.",1,3],
-  ["siege","Siege / turret pressure","How well does it convert a won fight into towers?",0,100],
-  ["obj","Objective fights","Dragon / baron fight contribution.",0,100],
-  ["flexb","Build flexibility","Can it go AP/AD/tank? High = hard to counter-itemise.",0,100],
-  ["ban","Ban-worthiness","How much do you NOT want to face this? Drives ban suggestions.",0,100],
-  ["blind","First-pick safety","Safe to pick blind, before you see them?",0,100],
-  ["cpick","Counter-pick reward","How much do you gain picking this AFTER seeing them?",0,100]
+  ["prio","Lane priority","How fast can they clear the wave and leave? HIGH = shoves and roams freely. LOW = stuck under tower farming.",0,100],
+  ["gank","Gankability","How easy are they to gank? HIGH = free kill for the enemy jungler (no escape, overextends). LOW = very hard to catch.",0,100],
+  ["gasst","Gank assist","How much do they help YOUR jungler get a kill? HIGH = reliable hard CC that sets ganks up. LOW = no setup, jungler gets nothing.",0,100],
+  ["solo","Solo carry (1v9)","Can they take a game over by themselves? HIGH = wins games alone. LOW = only as good as the team around them.",0,100],
+  ["tdep","Team dependency","How much do they need teammates to function? HIGH = needs a comp built around them. LOW = completely self-sufficient.",0,100],
+  ["floor","Skill floor","How well does an AVERAGE player do on them? HIGH = easy to play, hard to grief. LOW = punishing, needs real practice.",0,100],
+  ["spike","Powerspike (item count)","Which item makes them genuinely scary? 1 = one-item monster, 2 = two items, 3 = needs three.",1,3],
+  ["siege","Siege / turret pressure","After winning a fight, how well do they take the tower? HIGH = melts turrets or sieges from range. LOW = no structure threat.",0,100],
+  ["obj","Objective fights","How strong are they in dragon/baron pit fights specifically? HIGH = AoE and zone control in cramped fights. LOW = weak there.",0,100],
+  ["flexb","Build flexibility","Can they build several ways? HIGH = AP/AD/tank options, so the enemy can't itemise against them. LOW = one build only.",0,100],
+  ["blind","First-pick safety","Safe to pick BEFORE you see the enemy? HIGH = no hard counters, fine into anything. LOW = gets destroyed if they counter-pick.",0,100],
+  ["cpick","Counter-pick reward","How much better are they picked LAST, after seeing the enemy? HIGH = a great specific answer. LOW = doesn't care what they have.",0,100]
 ];
+const PROF_VALUES = [0,10,20,30,40,50,60,70,80,90,100];
+function numRow(kind, key, label, val, mn, mx, desc){
+  const vals = (mn === 1 && mx === 3) ? [1,2,3] : PROF_VALUES;
+  const attr = kind === "lane" ? "data-rtlane" : kind === "scal" ? "data-rtscal" : kind === "arch" ? "data-rtarch" : "data-rtf";
+  return (desc ? `<div class="dSub" style="text-align:left;margin:12px 0 2px">${esc(desc)}</div>` : "") +
+    `<div class="mRow nRow"><div class="mTop"><span class="rtn" style="color:#C8AA6E;font-weight:700">${esc(label)}</span>` +
+    `<input type="number" min="${mn}" max="${mx}" ${attr}="${key}" value="${val != null ? val : ""}" placeholder="—"></div>` +
+    `<div class="mBtns">` + vals.map(v =>
+      `<button class="mV ${val === v ? "on" : ""}" data-nset="${kind}:${key}" data-nv="${v}">${v}</button>`).join("") +
+    `<button class="mV x" data-nset="${kind}:${key}" data-nv="x">✕</button></div></div>`;
+}
 const SYN_VALUES = [30,40,50,60,70,80,90];
 function tagsOf(c){ return (cmeta[c] && cmeta[c].tags) || []; }
 function archOf(c){ const m = cmeta[c]; return (m && m.arch) || null; }
@@ -2102,8 +2114,12 @@ function banRecs(n){
     let best = 0, lane = null;
     ROLE_KEYS.forEach(l => { if (tierOfChamp(l, c)){ const v = baseRating(c, l); if (v > best){ best = v; lane = l; } } });
     let s = best;
-    const ct = numOf(c, "ctr"); if (ct != null) s += (50 - ct) * 0.12;
-    const bn = numOf(c, "ban"); if (bn != null) s = s * 0.55 + bn * 0.45;
+    const ct = numOf(c, "ctr"); if (ct != null) s += (50 - ct) * 0.12;      // hard to counter = ban it
+    const so = numOf(c, "solo"); if (so != null) s += (so - 50) * 0.08;      // solo-carry threat
+    const bl = numOf(c, "blind"); if (bl != null) s += (bl - 50) * 0.05;     // safe blind picks are annoying
+    const fl = numOf(c, "flexb"); if (fl != null) s += (fl - 50) * 0.04;     // can't itemise against them
+    let lanes = 0; ROLE_KEYS.forEach(l => { if (tierOfChamp(l, c)) lanes++; });
+    if (lanes >= 2) s += (lanes - 1) * 1.5;                                   // flex picks are worth removing
     if (myPool[c] === "avoid") s += 5;
     return {c, r: Math.round(s), lane};
   }).sort((a,b) => b.r - a.r).slice(0, n);
@@ -2337,41 +2353,40 @@ function renderRatings(content){
     h += `<div class="rtTags">` + allTags.map(t => `<button class="rtTag ${(rtDraft.tags||[]).includes(t) ? "on" : ""}" data-rttag="${esc(t)}">${esc(t)}</button>`).join("") + `</div>`;
     h += `<div class="rtSel" style="margin-top:12px"><input id="newTag" placeholder="Add your own tag…" maxlength="28"><button class="dBtn" id="addTag">Add</button></div>`;
   } else if (rtTab === "lanes"){
-    h += `<div class="dSub" style="text-align:left;margin:6px 0">How strong is ${esc(rtChamp)} in each lane? 0–100, blank = use tier score.</div>`;
-    ROLE_KEYS.forEach(l => { const ph = tierOfChamp(l, rtChamp) ? TIER_SCORE[tierOfChamp(l, rtChamp)] : "—";
-      h += `<div class="rtRow"><span class="rtn">${ROLE_LABELS[l]}</span><input type="number" min="0" max="100" data-rtlane="${l}" value="${rtDraft.lanes && rtDraft.lanes[l] != null ? rtDraft.lanes[l] : ""}" placeholder="${ph}"></div>`;
-    });
-    h += `<div class="dSub" style="text-align:left;margin:16px 0 4px">Skill expression — how much does the better player swing this champ? 50 = normal, 90 = huge (Camille, Fiora), 20 = low (point-and-click).</div>` +
-      `<div class="rtRow"><span class="rtn" style="color:#C8AA6E;font-weight:700">Skill expression</span>` +
-      `<input type="number" min="0" max="100" id="rtSkill" value="${rtDraft.skill != null ? rtDraft.skill : ""}" placeholder="50"></div>`;
+    h += `<div id="nList">`;
+    h += `<div class="dSub" style="text-align:left;margin:6px 0">Lane strength — HIGHER = stronger in that lane. Blank = fall back to their tier.</div>`;
+    ROLE_KEYS.forEach(l => { h += numRow("lane", l, ROLE_LABELS[l], rtDraft.lanes && rtDraft.lanes[l] != null ? rtDraft.lanes[l] : null, 0, 100, ""); });
+    h += numRow("f", "skill", "Skill expression", rtDraft.skill, 0, 100,
+      "How much does the better player swing this champ? HIGH = a good player wins far more (Camille, Fiora). LOW = the outcome barely changes with skill.");
     const dP = rtDraft.dmgP != null ? +rtDraft.dmgP : (rtDraft.dmg != null ? +rtDraft.dmg : 0);
     const dM = rtDraft.dmgM != null ? +rtDraft.dmgM : (rtDraft.dmg != null ? 100 - +rtDraft.dmg : 0);
     const dT = rtDraft.dmgT != null ? +rtDraft.dmgT : 0;
     const dSum = dP + dM + dT;
-    h += `<div class="dSub" style="text-align:left;margin:16px 0 4px">Damage mix — roughly what % of this champ's damage is each type. Aim for ~100 total <span style="color:${dSum === 100 ? "#7FD8A6" : dSum ? "#F0C070" : "#7B8BA3"}">(now ${dSum})</span>.</div>`;
+    h += `<div class="dSub" style="text-align:left;margin:14px 0 2px">Damage mix — roughly what % of their damage is each type. Aim for ~100 total <span style="color:${dSum === 100 ? "#7FD8A6" : dSum ? "#F0C070" : "#7B8BA3"}">(now ${dSum})</span>.</div>`;
     [["dmgP","Physical %"],["dmgM","Magic %"],["dmgT","True %"]].forEach(([k,l]) => {
-      h += `<div class="rtRow"><span class="rtn">${l}</span><input type="number" min="0" max="100" data-rtf="${k}" value="${rtDraft[k] != null ? rtDraft[k] : ""}" placeholder="0"></div>`;
+      h += numRow("f", k, l, rtDraft[k] != null ? +rtDraft[k] : null, 0, 100, "");
     });
-    h += `<div class="dSub" style="text-align:left;margin:16px 0 4px">Counterability — how easily is this champ punished once the enemy knows it's coming? 20 = safe blind pick (K'Sante), 90 = gets hard-countered.</div>` +
-      `<div class="rtRow"><span class="rtn" style="color:#C8AA6E;font-weight:700">Counterability</span>` +
-      `<input type="number" min="0" max="100" data-rtf="ctr" value="${rtDraft.ctr != null ? rtDraft.ctr : ""}" placeholder="50"></div>`;
-    h += `<div class="dSub" style="text-align:left;margin:16px 0 4px">Power by game phase — 0–100 each.</div>`;
-    [["e","Early"],["m","Mid"],["l","Late"]].forEach(([k,l]) => {
-      h += `<div class="rtRow"><span class="rtn">${l} game</span><input type="number" min="0" max="100" data-rtscal="${k}" value="${rtDraft.scal && rtDraft.scal[k] != null ? rtDraft.scal[k] : ""}" placeholder="50"></div>`;
+    h += numRow("f", "ctr", "Counterability", rtDraft.ctr != null ? +rtDraft.ctr : null, 0, 100,
+      "How badly can they be punished once the enemy knows they're coming? HIGH = gets hard-countered or itemised out. LOW = safe into almost anything (K'Sante).");
+    h += `<div class="dSub" style="text-align:left;margin:14px 0 2px">Power by game phase — HIGH = strong in that phase.</div>`;
+    [["e","Early game"],["m","Mid game"],["l","Late game"]].forEach(([k,l]) => {
+      h += numRow("scal", k, l, rtDraft.scal && rtDraft.scal[k] != null ? rtDraft.scal[k] : null, 0, 100, "");
     });
-    PROF_FIELDS.forEach(([k,l,d,mn,mx]) => {
-      h += `<div class="dSub" style="text-align:left;margin:14px 0 2px">${esc(d)}</div>` +
-        `<div class="rtRow"><span class="rtn" style="color:#C8AA6E;font-weight:700">${esc(l)}</span>` +
-        `<input type="number" min="${mn}" max="${mx}" data-rtf="${k}" value="${rtDraft[k] != null ? rtDraft[k] : ""}" placeholder="${mn === 1 ? 2 : 50}"></div>`;
-    });
+    PROF_FIELDS.forEach(([k,l,d,mn,mx]) => { h += numRow("f", k, l, rtDraft[k] != null ? +rtDraft[k] : null, mn, mx, d); });
+    h += `</div>`;
   } else if (rtTab === "comp"){
-    h += `<div class="dSub" style="text-align:left;margin:6px 0">How well does ${esc(rtChamp)} fit each comp style? 0–100, 50 = fine anywhere.</div>`;
-    ARCH_KEYS.forEach(([k,l]) => {
-      h += `<div class="rtRow"><span class="rtn">${l}</span><input type="number" min="0" max="100" data-rtarch="${k}" value="${rtDraft.arch && rtDraft.arch[k] != null ? rtDraft.arch[k] : ""}" placeholder="50"></div>`;
-    });
-    h += `<div class="dSub" style="text-align:left;margin:16px 0 2px">Position in a fight — 0 = pure backline, 100 = pure frontline.</div>` +
-      `<div class="rtRow"><span class="rtn" style="color:#C8AA6E;font-weight:700">Frontline weight</span>` +
-      `<input type="number" min="0" max="100" data-rtf="pos" value="${rtDraft.pos != null ? rtDraft.pos : ""}" placeholder="50"></div>`;
+    h += `<div id="nList">`;
+    h += `<div class="dSub" style="text-align:left;margin:6px 0">How well does ${esc(rtChamp)} fit each comp style? HIGH = they're a core piece of that comp. 50 = fine anywhere. LOW = actively wrong for it.</div>`;
+    const AD = {poke:"Poke — chips from range and forces retreats before the fight.",
+      dive:"Dive — jumps onto the enemy backline.",
+      prot:"Protect the carry — shields and peels for a hypercarry.",
+      split:"Split push — wins the sidelane 1v1 and takes towers.",
+      pick:"Pick / catch — catches someone out to start a fight 5v4.",
+      wombo:"Wombo teamfight — big AoE combo that wins a straight 5v5."};
+    ARCH_KEYS.forEach(([k,l]) => { h += numRow("arch", k, l, rtDraft.arch && rtDraft.arch[k] != null ? rtDraft.arch[k] : null, 0, 100, AD[k]); });
+    h += numRow("f", "pos", "Frontline weight", rtDraft.pos != null ? +rtDraft.pos : null, 0, 100,
+      "Where do they stand in a fight? HIGH (100) = pure frontline, starts fights and soaks damage. LOW (0) = pure backline, sits at max range.");
+    h += `</div>`;
   } else if (rtTab === "syn"){
     h += `<div class="dSub" style="text-align:left;margin:6px 0">How well does ${esc(rtChamp)} combo with each ally? 50 = neutral, 90 = amazing together. Only fill the ones that matter. Duo-lane pairs count double.</div>`;
     h += `<div class="rtSel"><input id="synSearch" placeholder="Filter champions…"></div><div id="sList">`;
@@ -2521,6 +2536,25 @@ function wireRatings(content){
     else { rtDraft.vs[c] = +raw; if (inp) inp.value = +raw; }
     if (row){
       row.querySelectorAll("[data-mv]").forEach(x => x.classList.toggle("on", x.dataset.mv === raw && raw !== "x"));
+      row.style.background = "rgba(200,170,110,0.14)";
+      setTimeout(() => { row.style.background = ""; }, 200);
+    }
+  };
+  const nList = $("nList");
+  if (nList) nList.onclick = ev => {
+    const b = ev.target.closest ? ev.target.closest("[data-nset]") : null; if (!b) return;
+    const parts = b.dataset.nset.split(":"), kind = parts[0], key = parts[1], raw = b.dataset.nv;
+    const row = b.closest(".mRow"), inp = row ? row.querySelector("input") : null;
+    const put = v => {
+      if (kind === "f"){ rtDraft[key] = v; return; }
+      const o = kind === "lane" ? "lanes" : kind === "scal" ? "scal" : "arch";
+      rtDraft[o] = rtDraft[o] || {};
+      if (v == null) delete rtDraft[o][key]; else rtDraft[o][key] = v;
+    };
+    if (raw === "x"){ put(null); if (inp) inp.value = ""; }
+    else { put(+raw); if (inp) inp.value = +raw; }
+    if (row){
+      row.querySelectorAll("[data-nv]").forEach(x => x.classList.toggle("on", x.dataset.nv === raw && raw !== "x"));
       row.style.background = "rgba(200,170,110,0.14)";
       setTimeout(() => { row.style.background = ""; }, 200);
     }
