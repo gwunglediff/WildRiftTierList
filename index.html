@@ -321,7 +321,7 @@
   .dChamp .dci { width: 50px; height: 50px; border-radius: 10px; background-size: cover; background-position: center; border: 2px solid #2A4166; margin: 0 auto; position: relative; }
   .dChamp.used .dci { filter: grayscale(1) brightness(0.4); }
   .dChamp .dcn { font-size: 9px; color: #AEBBCC; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
-  .dChamp .rbadge { position: absolute; bottom: -4px; right: -4px; background: #0A1428; border: 1px solid #C8AA6E; color: #F0E9C8; font-size: 9px; font-weight: 800; border-radius: 6px; padding: 0 4px; }
+  .dChamp .rbadge, .dRecChamp .rbadge { position: absolute; bottom: -4px; right: -5px; background: #0A1428; border: 1px solid #C8AA6E; color: #F0E9C8; font-size: 9px; font-weight: 800; border-radius: 6px; padding: 0 3px; min-width: 14px; text-align: center; }
   .dRecs { margin-top: 16px; }
   .dRecCols { display: flex; gap: 8px; }
   .dRecCol { flex: 1; min-width: 0; border-radius: 12px; padding: 8px; background: rgba(15,31,53,0.6); }
@@ -1966,7 +1966,7 @@ const PROF_FIELDS = [
   ["floor","Skill floor","How well does an AVERAGE player do on them? HIGH = easy to play, hard to grief. LOW = punishing, needs real practice.",0,100],
   ["itemdep","Item dependency","How much gold do they need to FUNCTION? HIGH = does nothing until 2-3 items and collapses when behind. LOW = still dangerous at level 1 with no items (Lee Sin).",0,100],
   ["siege","Siege / turret pressure","After winning a fight, how well do they take the tower? HIGH = melts turrets or sieges from range. LOW = no structure threat.",0,100],
-  ["obj","Objective fights","How strong are they in dragon/baron pit fights specifically? HIGH = AoE and zone control in cramped fights. LOW = weak there.",0,100],
+  ["obj","Objective fights","How strong are they in a cramped 5v5 around dragon/baron? Any of: AoE, zone control, burst that reaches the backline in tight space, or big damage to the objective itself. HIGH = wants to fight there (Amumu, Akali). LOW = needs open ground or gets forced off.",0,100],
   ["flexb","Build flexibility","Can they build several ways? HIGH = AP/AD/tank options, so the enemy can't itemise against them. LOW = one build only.",0,100],
   ["blind","First-pick safety","Safe to pick BEFORE you see the enemy? HIGH = no hard counters, fine into anything. LOW = gets destroyed if they counter-pick.",0,100],
   ["cpick","Counter-pick reward","How much better are they picked LAST, after seeing the enemy? HIGH = a great specific answer. LOW = doesn't care what they have.",0,100]
@@ -2088,8 +2088,8 @@ function draftOrderValue(champ, side){
   const foes = draft.picks[side === "blue" ? "red" : "blue"];
   const shown = foes.filter(Boolean).length, left = 5 - shown;
   let b = 0;
-  const bl = numOf(champ, "blind"); if (bl != null) b += (bl - 50) / 100 * left * 0.7;
-  const cp = numOf(champ, "cpick"); if (cp != null) b += (cp - 50) / 100 * shown * 0.7;
+  const bl = numOf(champ, "blind"); if (bl != null) b += (bl - 50) / 100 * left * 1.2;
+  const cp = numOf(champ, "cpick"); if (cp != null) b += (cp - 50) / 100 * shown * 1.2;
   return b;
 }
 // ---- D. matchup phase flip (19) ----
@@ -2133,6 +2133,21 @@ function compNeeds(champ, side){
   if (t.includes("squishy") && sq >= 2) b -= 3;
   if (t.includes("immobile") && mine.filter(c => tagsOf(c).includes("immobile")).length >= 2) b -= 2;
   return b;
+}
+// A banned champ can't counter you any more. If one of this champ's bad matchups is
+// sitting in the ban list, that threat is gone and the pick gets safer.
+function banRelief(champ, lane){
+  const bans = draft.bans.blue.concat(draft.bans.red).filter(Boolean);
+  if (!bans.length) return 0;
+  let sum = 0;
+  bans.forEach(b => {
+    if (b === champ) return;
+    if (!tierOfChamp(lane, b)) return;          // couldn't have met them in this lane anyway
+    const a = matchupAdv(champ, b);
+    if (a == null || a >= 0) return;            // only counters count as relief
+    sum += -a;
+  });
+  return Math.min(sum * 0.3, 8);
 }
 // flex picks hide information while you still have picks to make
 function flexBonus(champ, side){
@@ -2211,12 +2226,12 @@ function draftRating(champ, lane, side){
   // every other enemy champ (cross-lane) — small factor, averaged, both directions
   let gsum = 0, gc = 0;
   draft.picks[enemy].forEach(e => { if (e && e !== laneOpp){ const a = matchupAdv(champ, e); if (a != null){ gsum += a; gc++; } } });
-  if (gc) score += (gsum / gc) * 0.18;
+  if (gc) score += (gsum / gc) * 0.25;   // comp counters live here — they need not be your laner
   score += compBonus(champ, side) + compNeeds(champ, side) + dmgBalance(champ, side) +
            counterRisk(champ, side) + scalingFit(champ, side) + flexBonus(champ, side) +
            identityFactors(champ, side, lane) + archFit(champ, side) + synergyFit(champ, side, lane) +
-           posBalance(champ, side) + draftOrderValue(champ, side);
-  return Math.max(0, Math.min(100, Math.round(score)));
+           posBalance(champ, side) + draftOrderValue(champ, side) + banRelief(champ, lane);
+  return Math.max(0, Math.min(200, Math.round(score)));
 }
 function recommend(side, lane, n){
   const used = usedChamps();
@@ -2347,7 +2362,7 @@ function draftPickerHtml(){
   return h;
 }
 function draftRecsHtml(){
-  let h = `<div class="dRecs"><div class="dHead" style="font-size:15px">RECOMMENDATIONS</div><div class="dSub" style="margin-bottom:8px">Draft rating 0–100 (50 = filler). Flat — improves as you add ratings.</div><div class="dRecCols">`;
+  let h = `<div class="dRecs"><div class="dHead" style="font-size:15px">RECOMMENDATIONS</div><div class="dSub" style="margin-bottom:8px">Draft rating — 50 is filler, 100 is a strong pick, above that is a standout. Flat, not relative.</div><div class="dRecCols">`;
   ["blue","red"].forEach(side => {
     const due = dueSide() === side;
     h += `<div class="dRecCol ${side} ${due ? "due" : ""}"><div class="dColH" style="color:${side === "blue" ? "#6FC0FF" : "#ff8f8f"};font-size:12px">${side === "blue" ? "BLUE" : "RED"}${due ? " · to pick" : ""}</div>`;
@@ -2440,10 +2455,10 @@ function renderRatings(content){
     h += `<div class="dSub" style="text-align:left;margin:6px 0">How well does ${esc(rtChamp)} fit each comp style? HIGH = they're a core piece of that comp. 50 = fine anywhere. LOW = actively wrong for it.</div>`;
     const AD = {poke:"Poke — chips from range and forces retreats before the fight.",
       dive:"Dive — jumps onto the enemy backline.",
-      prot:"Protect the carry — shields and peels for a hypercarry.",
+      prot:"Protect the carry — the comp shields and peels for one immobile hypercarry. Rate HIGH if they are that carry, or if they protect one. Rate LOW if they are a self-sufficient carry who wants to be let loose instead.",
       split:"Split push — wins the sidelane 1v1 and takes towers.",
       pick:"Pick / catch — catches someone out to start a fight 5v4.",
-      wombo:"Wombo teamfight — big AoE combo that wins a straight 5v5."};
+      wombo:"Wombo teamfight — a coordinated all-in that wins a straight 5v5: chained CC and overlapping AoE, or a comp that simply storms forward together and deletes people."};
     ARCH_KEYS.forEach(([k,l]) => { h += numRow("arch", k, l, rtDraft.arch && rtDraft.arch[k] != null ? rtDraft.arch[k] : null, 0, 100, AD[k]); });
     h += numRow("f", "pos", "Frontline weight", rtDraft.pos != null ? +rtDraft.pos : null, 0, 100,
       "Where do they stand in a fight? HIGH (100) = pure frontline, starts fights and soaks damage. LOW (0) = pure backline, sits at max range.");
