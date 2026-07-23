@@ -355,6 +355,7 @@
   .mFlags { display: flex; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
   .nRow .rtn { flex: 1; white-space: normal; }
   .nRow.dim { opacity: 0.38; }
+  .trHead { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px; color: #C8AA6E; margin: 18px 0 4px; padding-top: 10px; border-top: 1px solid #22375A; }
   .nRow .mV { font-size: 10px; min-width: 26px; }
   .mFlags .mConf { margin-left: 0; }
   .rtTabBtn.on { background: #C8AA6E; color: #0A1428; border-color: #C8AA6E; }
@@ -1817,24 +1818,39 @@ function wireHubBuildCard(content){
 }
 
 // ============ DRAFT PICKER + RATINGS ============
-const TAGS = [
-  // class / archetype
-  "assassin","marksman","mage","bruiser","juggernaut","tank","enchanter","catcher","artillery","battlemage","skirmisher","warden","diver","specialist",
-  // damage profile
-  "AD","AP","mixed damage","on-hit","crit","high burst","sustained dps","execute","%hp damage","true damage","burn","armor shred","magic pen","anti-heal",
-  // range / mobility
-  "melee","ranged","long range","high mobility","global mobility","dash","blink","stealth","immobile",
-  // cc
-  "high cc","point-and-click cc","aoe cc","chain cc","knockup","stun","root","slow","silence","taunt","charm","fear","suppression","displacement","pick potential",
-  // defense / sustain
-  "tanky","armor tanky","spell shield","shield","heal","lifesteal","omnivamp","self-peel","durable","escape","invuln/stasis",
-  // scaling / tempo
-  "early game","lane bully","strong scaler","late game","hypercarry","snowball","item reliant","powerspike","mana hungry","resourceless",
-  // team role / needs
-  "wants frontline","wants engage","wants peel","likes enchanter","provides engage","provides disengage","provides peel",
-  // macro
-  "poke","sustain","dive","peel","waveclear","pushes fast","splitpush","sidelane threat","teamfight","objective control","roaming","vision","hard to gank","squishy"
+// Numeric traits replace the old tag soup. ★ = fill these first, they carry the most weight.
+const TRAITS = [
+  ["__h","COMBAT IDENTITY","",0],
+  ["durab","Durability ★","0 = paper, dies instantly. 100 = unkillable frontline that soaks a whole team.",1],
+  ["mob","Mobility ★","0 = totally immobile (Ashe). 100 = repeated dashes/blinks (Akali, Camille).",1],
+  ["rng","Effective range ★","0 = melee. 50 = short-range caster. 100 = artillery that never gets touched.",1],
+  ["burst","Burst vs sustained","0 = pure sustained DPS over a long fight. 100 = deletes a target in one combo.",0],
+  ["__h2","FIGHT CONTRIBUTION","",0],
+  ["engage","Engage ★","Can they START a fight on demand? HIGH = reliable hard initiation. LOW = can't open.",1],
+  ["peel","Peel ★","Can they keep an ally alive? HIGH = shields/CC to protect the carry. LOW = nothing.",1],
+  ["diseng","Disengage","Can they call a fight OFF? HIGH = zoning, slows, walls to escape. LOW = committed.",0],
+  ["ccw","CC weight ★","Total lockdown they bring. HIGH = long, hard, repeated CC. LOW = a light slow at best.",1],
+  ["ccr","CC reliability","0 = hard skillshots that miss. 100 = point-and-click, cannot be dodged.",0],
+  ["__h3","WHERE THEY WIN","",0],
+  ["duel","1v1 duelling","Straight sidelane fight. HIGH = wins almost any 1v1 (Fiora, Camille).",0],
+  ["skirm","Skirmishing (2v2-3v3)","Scrappy mid-size fights around objectives. Very jungle-relevant.",0],
+  ["tf","Teamfight (5v5) ★","Value in a full 5v5. HIGH = swings whole fights. LOW = falls off in chaos.",1],
+  ["__h4","MACRO","",0],
+  ["clear","Waveclear","How fast can they clear a wave / defend a siege? HIGH = instant.",0],
+  ["tdive","Tower dive","Can they dive someone under turret? HIGH = dives safely and often.",0],
+  ["adive","Anti-dive","Do they punish enemies who dive? HIGH = divers die trying.",0],
+  ["zone","Zone control","Area denial — walls, pools, ground effects that say 'you cannot stand here'.",0],
+  ["tsust","Team sustain","Healing/shielding OTHERS. HIGH = an enchanter. LOW = nothing for allies.",0],
+  ["glob","Global presence","Map-wide impact — long-range ults, TP-like plays. HIGH = affects every lane.",0],
+  ["__h5","WHAT THEY NEED","",0],
+  ["ndfront","Needs frontline","How badly do they need a tank in front? HIGH = useless without one.",0],
+  ["ndpeel","Needs peel","How badly do they need protecting? HIGH = dies instantly if left alone.",0],
+  ["ndeng","Needs engage","Do they need someone else to start the fight? HIGH = can't open alone.",0]
 ];
+// Genuinely binary mechanics — these aren't scales, you either have it or you don't.
+const TAGS = ["spell shield","stasis / invuln","untargetable","stealth","knockup / displacement",
+  "suppression","built-in anti-heal","%max HP damage","resourceless","turret pressure ult"];
+
 const TIER_SCORE = {"S+":86,"S":78,"A+":70,"A":63,"B+":56,"B":50,"C":42,"D":34};
 let draftMode = false, ratingMode = false, poolMode = false, cmeta = {}, unsubCmeta = null, draft = null;
 let myPool = {}, unsubPool = null, poolSearch = "";
@@ -1974,7 +1990,7 @@ const PROF_FIELDS = [
 const PROF_VALUES = [0,10,20,30,40,50,60,70,80,90,100];
 function numRow(kind, key, label, val, mn, mx, desc, dead){
   const vals = (mn === 1 && mx === 3) ? [1,2,3] : PROF_VALUES;
-  const attr = kind === "lane" ? "data-rtlane" : kind === "scal" ? "data-rtscal" : kind === "arch" ? "data-rtarch" : "data-rtf";
+  const attr = kind === "lane" ? "data-rtlane" : kind === "scal" ? "data-rtscal" : kind === "arch" ? "data-rtarch" : kind === "tr" ? "data-rttr" : "data-rtf";
   return (desc ? `<div class="dSub" style="text-align:left;margin:12px 0 2px">${esc(desc)}</div>` : "") +
     `<div class="mRow nRow ${dead ? "dim" : ""}"><div class="mTop"><span class="rtn" style="color:#C8AA6E;font-weight:700">${esc(label)}</span>` +
     `<input type="number" min="${mn}" max="${mx}" ${attr}="${key}" value="${val != null ? val : ""}" placeholder="—"></div>` +
@@ -2008,6 +2024,16 @@ function laneNote(key){
   return out;
 }
 function tagsOf(c){ return (cmeta[c] && cmeta[c].tags) || []; }
+function trOf(c, k){ const m = cmeta[c]; return m && m.tr && typeof m.tr[k] === "number" ? m.tr[k] : null; }
+function teamBest(list, k){ const v = list.map(c => trOf(c, k)).filter(x => x != null); return v.length ? Math.max.apply(null, v) : null; }
+function teamAvgTr(list, k){ const v = list.map(c => trOf(c, k)).filter(x => x != null); return v.length ? v.reduce((a,b) => a+b, 0) / v.length : null; }
+function hasMech(c, tag){ return tagsOf(c).indexOf(tag) >= 0; }
+// "is this champ a ganking threat" — prefers traits, falls back to old tags
+function isGanker(c){
+  const e = trOf(c, "engage"), m = trOf(c, "mob");
+  if (e != null || m != null) return (e != null && e >= 60) || (m != null && m >= 65);
+  return tagsOf(c).some(x => TG.dive.indexOf(x) >= 0 || TG.engage.indexOf(x) >= 0);
+}
 function archOf(c){ const m = cmeta[c]; return (m && m.arch) || null; }
 // ---- A. champion identity factors (1-10) ----
 function identityFactors(champ, side, lane){
@@ -2027,11 +2053,11 @@ function identityFactors(champ, side, lane){
   if (n("roam") != null) b += (n("roam") - 50) / 100 * 2 * w("roam");
   // gankability vs the enemy jungler that's actually on the board
   const ej = foes[1];
-  if (n("gank") != null && ej){ const threat = tagsOf(ej).some(x => TG.dive.includes(x) || TG.engage.includes(x)) ? 1 : 0.4;
+  if (n("gank") != null && ej){ const threat = isGanker(ej) ? 1 : 0.4;
     b -= (n("gank") - 50) / 100 * 3 * threat * w("gank"); }
   // gank assist pays off with a ganking jungler of your own
   const mj = draft.picks[side][1];
-  if (n("gasst") != null && mj && mj !== champ && tagsOf(mj).some(x => TG.dive.includes(x) || TG.engage.includes(x)))
+  if (n("gasst") != null && mj && mj !== champ && isGanker(mj))
     b += (n("gasst") - 50) / 100 * 2.5 * w("gasst");
   // siege / objective gaps
   const gap = (k, wt) => { if (n(k) == null) return 0;
@@ -2104,36 +2130,51 @@ function flipAdjust(champ, opp, side){
 function countTag(list, group){ return list.filter(c => tagsOf(c).some(t => group.includes(t))).length; }
 function isTag(champ, group){ return tagsOf(champ).some(t => group.includes(t)); }
 function compNeeds(champ, side){
-  if (!tagsOf(champ).length) return 0;
   const mine = draft.picks[side].filter(Boolean);
   const foes = draft.picks[side === "blue" ? "red" : "blue"].filter(Boolean);
+  const me = k => trOf(champ, k);
   let b = 0;
-  // --- gaps in your own comp ---
-  if (!countTag(mine, TG.front) && isTag(champ, TG.front)) b += 4.5;
-  if (!countTag(mine, TG.engage) && isTag(champ, TG.engage)) b += 4;
-  if (countTag(mine, TG.dmg) < 2 && isTag(champ, TG.dmg)) b += 3;
-  if (!countTag(mine, TG.clear) && isTag(champ, TG.clear)) b += 1.5;
-  if (countTag(mine, TG.scale) && !countTag(mine, TG.peel) && isTag(champ, TG.peel)) b += 3;
-  // --- synergy with what you already have (the tag pairings) ---
-  const t = tagsOf(champ);
-  if (t.includes("wants frontline") && countTag(mine, TG.front)) b += 2;
-  if (t.includes("wants engage") && countTag(mine, TG.engage)) b += 2;
-  if (t.includes("likes enchanter") && mine.some(c => tagsOf(c).includes("enchanter"))) b += 2;
-  if (t.includes("provides engage") && mine.some(c => tagsOf(c).includes("wants engage"))) b += 2;
-  if (isTag(champ, TG.front) && mine.some(c => tagsOf(c).includes("wants frontline"))) b += 2;
-  // --- answering the enemy comp ---
-  if (countTag(foes, TG.dive) >= 2 && isTag(champ, TG.peel)) b += 3;
-  if (countTag(foes, TG.cc) >= 2 && isTag(champ, TG.guard)) b += 2;
-  if (countTag(foes, TG.poke) >= 2 && isTag(champ, TG.engage)) b += 2.5;
-  if (countTag(foes, TG.front) >= 2 && isTag(champ, TG.antiTank)) b += 3;
-  if (countTag(foes, TG.heals) >= 2 && t.includes("anti-heal")) b += 3;
-  if (countTag(foes, TG.scale) >= 2 && t.includes("early game")) b += 2;
-  // --- overload penalties ---
-  const sq = mine.filter(c => tagsOf(c).includes("squishy")).length;
-  if (t.includes("squishy") && sq >= 2) b -= 3;
-  if (t.includes("immobile") && mine.filter(c => tagsOf(c).includes("immobile")).length >= 2) b -= 2;
+  // --- gaps in your own comp: does anyone already provide this? ---
+  const fillGap = (k, thresh, w) => {
+    const v = me(k); if (v == null) return 0;
+    const t = teamBest(mine, k); if (t == null || t >= thresh) return 0;
+    return (v - 50) / 100 * w * Math.min(1, (thresh - t) / 30);
+  };
+  b += fillGap("durab", 60, 5) + fillGap("engage", 60, 4.5) + fillGap("clear", 55, 2) + fillGap("zone", 55, 1.5);
+  // peel is only worth points if someone on your team actually needs protecting
+  if ((teamBest(mine, "ndpeel") || 0) >= 60) b += fillGap("peel", 60, 3.5);
+  if ((teamBest(mine, "ndfront") || 0) >= 60 && me("durab") != null) b += (me("durab") - 50) / 100 * 2;
+  if ((teamBest(mine, "ndeng") || 0) >= 60 && me("engage") != null) b += (me("engage") - 50) / 100 * 2;
+  // --- and does the comp already satisfy what THIS champ needs? ---
+  const need = (nk, pk) => { const n = me(nk); if (n == null || n < 60) return 0;
+    const t = teamBest(mine, pk); return t == null ? 0 : (t - 55) / 100 * 2.5; };
+  b += need("ndfront", "durab") + need("ndpeel", "peel") + need("ndeng", "engage");
+  // --- answering their comp ---
+  const foeDive = teamAvgTr(foes, "tdive"), foeMob = teamAvgTr(foes, "mob");
+  if (me("peel") != null && ((foeDive != null && foeDive > 60) || (foeMob != null && foeMob > 65)))
+    b += (me("peel") - 50) / 100 * 3;
+  if (me("adive") != null && foeDive != null && foeDive > 60) b += (me("adive") - 50) / 100 * 3;
+  const foeCC = teamAvgTr(foes, "ccw");
+  if (foeCC != null && foeCC > 60){
+    if (hasMech(champ, "spell shield") || hasMech(champ, "stasis / invuln")) b += 2;
+    if (me("mob") != null) b += (me("mob") - 50) / 100 * 2;
+  }
+  const foeRng = teamAvgTr(foes, "rng");
+  if (foeRng != null && foeRng > 65 && me("engage") != null) b += (me("engage") - 50) / 100 * 3;
+  const foeDur = teamAvgTr(foes, "durab");
+  if (foeDur != null && foeDur > 60){
+    const sp = dmgSplit(champ);
+    if (sp && sp.t > 25) b += 2.5;
+    if (hasMech(champ, "%max HP damage")) b += 2.5;
+  }
+  const foeSust = teamAvgTr(foes, "tsust");
+  if (foeSust != null && foeSust > 60 && hasMech(champ, "built-in anti-heal")) b += 3;
+  // --- overload: a whole team of paper ---
+  const dur = mine.map(c => trOf(c, "durab")).filter(x => x != null);
+  if (dur.length >= 2 && dur.every(x => x < 40) && me("durab") != null && me("durab") < 40) b -= 3;
   return b;
 }
+
 // A banned champ can't counter you any more. If one of this champ's bad matchups is
 // sitting in the ban list, that threat is gone and the pick gets safer.
 function banRelief(champ, lane){
@@ -2418,11 +2459,18 @@ function renderRatings(content){
     h += `</div></div>`; content.innerHTML = h; wireRatings(content); return;
   }
   h += `<div class="rtSel"><span style="width:44px;height:44px;border-radius:9px;background-size:cover;background-position:center;border:2px solid #C8AA6E;flex-shrink:0;background-image:url('${iconUrl(rtChamp)}'),url('${iconUrl2(rtChamp)}')"></span><span class="dHead" style="margin:0;font-size:17px;align-self:center;flex:1">${esc(rtChamp)}</span><button class="dBtn ghost" data-rtclose="1">Change</button></div>`;
-  h += `<div class="rtTabs">` + [["tags","Tags"],["lanes","Profile"],["comp","Comp"],["vs","Vs"],["syn","Syn"]].map(([k,l]) => `<button class="rtTabBtn ${rtTab === k ? "on" : ""}" data-rttab="${k}">${l}</button>`).join("") + `</div>`;
+  h += `<div class="rtTabs">` + [["tags","Traits"],["lanes","Profile"],["comp","Comp"],["vs","Vs"],["syn","Syn"]].map(([k,l]) => `<button class="rtTabBtn ${rtTab === k ? "on" : ""}" data-rttab="${k}">${l}</button>`).join("") + `</div>`;
   if (rtTab === "tags"){
+    h += `<div id="nList">`;
+    TRAITS.forEach(([k,l,d,star]) => {
+      if (k.indexOf("__h") === 0){ h += `<div class="trHead">${esc(l)}</div>`; return; }
+      h += numRow("tr", k, l, rtDraft.tr && rtDraft.tr[k] != null ? rtDraft.tr[k] : null, 0, 100, d);
+    });
+    h += `</div>`;
     const allTags = [...new Set([...TAGS, ...Object.values(cmeta).flatMap(m => (m && m.tags) || []), ...(rtDraft.tags || [])])];
-    h += `<div class="rtTags">` + allTags.map(t => `<button class="rtTag ${(rtDraft.tags||[]).includes(t) ? "on" : ""}" data-rttag="${esc(t)}">${esc(t)}</button>`).join("") + `</div>`;
-    h += `<div class="rtSel" style="margin-top:12px"><input id="newTag" placeholder="Add your own tag…" maxlength="28"><button class="dBtn" id="addTag">Add</button></div>`;
+    h += `<div class="trHead">MECHANICS — tap any that apply</div><div class="rtTags">` +
+      allTags.map(t => `<button class="rtTag ${(rtDraft.tags||[]).includes(t) ? "on" : ""}" data-rttag="${esc(t)}">${esc(t)}</button>`).join("") + `</div>`;
+    h += `<div class="rtSel" style="margin-top:12px"><input id="newTag" placeholder="Add your own mechanic…" maxlength="28"><button class="dBtn" id="addTag">Add</button></div>`;
   } else if (rtTab === "lanes"){
     h += `<div id="nList">`;
     h += `<div class="dSub" style="text-align:left;margin:6px 0">Lane strength — HIGHER = stronger in that lane. Blank = fall back to their tier.</div>`;
@@ -2519,7 +2567,7 @@ function renderRatings(content){
   content.innerHTML = h; wireRatings(content);
 }
 function loadRtDraft(c){ const m = cmeta[c] || {}; rtDraft = {tags: (m.tags || []).slice(), lanes: Object.assign({}, m.lanes || {}), vs: Object.assign({}, m.vs || {}), conf: Object.assign({}, m.conf || {}), skill: typeof m.skill === "number" ? m.skill : null, dmg: typeof m.dmg === "number" ? m.dmg : null, dmgP: typeof m.dmgP === "number" ? m.dmgP : null, dmgM: typeof m.dmgM === "number" ? m.dmgM : null, dmgT: typeof m.dmgT === "number" ? m.dmgT : null, ctr: typeof m.ctr === "number" ? m.ctr : null, scal: Object.assign({}, m.scal || {}),
-    arch: Object.assign({}, m.arch || {}), syn: Object.assign({}, m.syn || {}),
+    arch: Object.assign({}, m.arch || {}), syn: Object.assign({}, m.syn || {}), tr: Object.assign({}, m.tr || {}),
     vol: Object.assign({}, m.vol || {}), flip: Object.assign({}, m.flip || {})};
   PROF_FIELDS.forEach(([k]) => rtDraft[k] = typeof m[k] === "number" ? m[k] : null);
   rtDraft.pos = typeof m.pos === "number" ? m.pos : null;
@@ -2536,6 +2584,8 @@ async function saveRatings(){
   if (Object.keys(sc).length) payload.scal = sc;
   PROF_FIELDS.forEach(([k,l,d,mn,mx]) => { const v = rtDraft[k]; if (v != null && v !== "") payload[k] = Math.max(mn, Math.min(mx, +v)); });
   if (rtDraft.pos != null && rtDraft.pos !== "") payload.pos = Math.max(0, Math.min(100, +rtDraft.pos));
+  const tr = {}; TRAITS.forEach(([k]) => { if (k.indexOf("__h") === 0) return; const v = rtDraft.tr && rtDraft.tr[k]; if (v != null && v !== "") tr[k] = Math.max(0, Math.min(100, +v)); });
+  payload.tr = tr;
   const ar = {}; ARCH_KEYS.forEach(([k]) => { const v = rtDraft.arch && rtDraft.arch[k]; if (v != null && v !== "") ar[k] = Math.max(0, Math.min(100, +v)); });
   if (Object.keys(ar).length) payload.arch = ar;
   const sy = {}; for (const c in (rtDraft.syn || {})){ const v = rtDraft.syn[c]; if (v != null && v !== "") sy[c] = Math.max(0, Math.min(100, +v)); }
@@ -2623,7 +2673,7 @@ function wireRatings(content){
     const row = b.closest(".mRow"), inp = row ? row.querySelector("input") : null;
     const put = v => {
       if (kind === "f"){ rtDraft[key] = v; return; }
-      const o = kind === "lane" ? "lanes" : kind === "scal" ? "scal" : "arch";
+      const o = kind === "lane" ? "lanes" : kind === "scal" ? "scal" : kind === "tr" ? "tr" : "arch";
       rtDraft[o] = rtDraft[o] || {};
       if (v == null) delete rtDraft[o][key]; else rtDraft[o][key] = v;
     };
@@ -2635,6 +2685,7 @@ function wireRatings(content){
       setTimeout(() => { row.style.background = ""; }, 200);
     }
   };
+  content.querySelectorAll("[data-rttr]").forEach(b => b.oninput = () => { rtDraft.tr = rtDraft.tr || {}; if (b.value === "") delete rtDraft.tr[b.dataset.rttr]; else rtDraft.tr[b.dataset.rttr] = +b.value; });
   content.querySelectorAll("[data-rtarch]").forEach(b => b.oninput = () => { rtDraft.arch = rtDraft.arch || {}; if (b.value === "") delete rtDraft.arch[b.dataset.rtarch]; else rtDraft.arch[b.dataset.rtarch] = +b.value; });
   content.querySelectorAll("[data-rtsyn]").forEach(b => b.oninput = () => { const c = decodeURIComponent(b.dataset.rtsyn); rtDraft.syn = rtDraft.syn || {}; if (b.value === "") delete rtDraft.syn[c]; else rtDraft.syn[c] = +b.value; });
   const sList = $("sList");
