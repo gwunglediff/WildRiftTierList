@@ -339,6 +339,39 @@
   .dBtn { background: #6B3FA0; border: none; color: #F0E9FF; border-radius: 10px; padding: 10px 18px; font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit; }
   .dBtn.ghost { background: #13233F; border: 1px solid #2A4166; color: #9FB2CC; }
   .dBtn.gold { background: #C8AA6E; color: #0A1428; }
+  .evalWrap { margin: 4px 0 14px; }
+  .evalNums { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 5px; }
+  .evalPct { font-family: 'Cinzel', serif; font-weight: 800; font-size: 22px; }
+  .evalPct.blue { color: #6FC0FF; text-shadow: 0 0 12px rgba(59,155,232,0.5); }
+  .evalPct.red { color: #ff8f8f; text-shadow: 0 0 12px rgba(232,93,93,0.5); }
+  .evalVerdict { font-size: 11px; color: #C8AA6E; font-family: 'Cinzel', serif; letter-spacing: 1px; text-transform: uppercase; }
+  .evalBar { position: relative; display: flex; height: 14px; border-radius: 7px; overflow: hidden; background: #0F1F35; border: 1px solid #2A4166; }
+  .evalFill { height: 100%; transition: width .4s ease; }
+  .evalFill.blue { background: linear-gradient(90deg, #2b6fa8, #4FA8E8); box-shadow: 0 0 10px rgba(59,155,232,0.55); }
+  .evalFill.red { background: linear-gradient(90deg, #E85D5D, #a83a3a); box-shadow: 0 0 10px rgba(232,93,93,0.55); }
+  .evalMid { position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: rgba(244,239,230,0.55); }
+  .evalRaw { text-align: center; font-size: 9px; color: #5A6B85; margin-top: 4px; letter-spacing: .5px; }
+  .sIdent { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-family: 'Cinzel', serif;
+    font-size: 12px; font-weight: 700; text-align: center; margin: 6px 0 10px; }
+  .sIdent span:nth-child(2) { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; }
+  .sDmg { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 10px; text-align: center; margin-bottom: 10px; }
+  .sDmgL { font-size: 9px; color: #5A6B85; letter-spacing: .5px; text-transform: uppercase; flex-shrink: 0; }
+  .sSec { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 1.5px; color: #C8AA6E; margin: 14px 0 6px;
+    padding-top: 8px; border-top: 1px solid #1b2f4d; }
+  .sRow { display: flex; align-items: center; gap: 5px; margin-bottom: 5px; }
+  .sBarWrap { flex: 1; height: 7px; background: rgba(15,31,53,0.8); border-radius: 4px; overflow: hidden; display: flex; }
+  .sRow .sBarWrap:first-child { justify-content: flex-end; }
+  .sBar { height: 100%; border-radius: 4px; opacity: 0.55; }
+  .sBar.blue { background: #3B9BE8; } .sBar.red { background: #E85D5D; }
+  .sBar.lead { opacity: 1; box-shadow: 0 0 8px currentColor; }
+  .sNum { width: 24px; text-align: center; font-size: 10px; font-weight: 700; color: #7B8BA3; flex-shrink: 0; }
+  .sNum.lead { color: #F4EFE6; }
+  .sLbl { width: 84px; text-align: center; font-size: 9px; color: #9FB2CC; flex-shrink: 0; text-transform: uppercase; letter-spacing: .3px; }
+  .sEdges { display: flex; flex-direction: column; gap: 4px; }
+  .sEdge { font-size: 11px; padding: 5px 9px; border-radius: 8px; border-left: 3px solid; }
+  .sEdge.blue { border-color: #3B9BE8; background: rgba(59,155,232,0.1); color: #C6DCF2; }
+  .sEdge.red { border-color: #E85D5D; background: rgba(232,93,93,0.1); color: #F2CFCF; }
+  .sEdge.warn { background: rgba(122,90,32,0.18); color: #F0C070; }
   /* ratings editor */
   .rt { margin: 12px 0 60px; }
   .rtSel { display: flex; gap: 8px; margin-bottom: 12px; }
@@ -1869,7 +1902,7 @@ async function savePool(){
   try { await db.collection("pools").doc(user.uid).set({pool: myPool}); showToast("Pool saved!"); }
   catch(e){ console.error(e); showToast("Save failed — publish the pools rule"); }
 }
-let dPick = {side:null, kind:null, idx:null}, dLane = "all";
+let dPick = {side:null, kind:null, idx:null}, dLane = "all", showSummary = false;
 let rtChamp = null, rtTab = "tags", rtDraft = {tags:[],lanes:{},vs:{}}, rtSearch = "", vsSearch = "", rtArmed = null;
 const RT_VALUES = [25,30,35,40,45,50,55,60,65,70,75,80,85,90];
 function ensureMetaSub(){ if (!unsubCmeta) unsubCmeta = db.collection("champmeta").onSnapshot(s => { cmeta = {}; s.forEach(d => cmeta[d.id] = d.data()); if (draftMode) render(); }, e => console.error("champmeta:", e)); }
@@ -2327,6 +2360,175 @@ function renderPool(content){
   const inp = $("poolSearch");
   if (inp) inp.oninput = () => { const q = inp.value.toLowerCase(); content.querySelectorAll("[data-cname]").forEach(el => { el.style.display = el.dataset.cname.includes(q) ? "" : "none"; }); };
 }
+// ---- team analysis: what did each side actually draft? ----
+function teamStat(side, key, mode){
+  const picks = draft.picks[side].filter(Boolean);
+  const v = picks.map(c => trOf(c, key)).filter(x => x != null);
+  if (!v.length) return null;
+  return mode === "max" ? Math.max.apply(null, v) : Math.round(v.reduce((a,b) => a+b, 0) / v.length);
+}
+function teamDmg(side){
+  const sp = draft.picks[side].filter(Boolean).map(dmgSplit).filter(Boolean);
+  if (!sp.length) return null;
+  const P = sp.reduce((a,x) => a+x.p, 0), M = sp.reduce((a,x) => a+x.m, 0), T = sp.reduce((a,x) => a+x.t, 0);
+  const tot = P+M+T; if (!tot) return null;
+  return {p: Math.round(P/tot*100), m: Math.round(M/tot*100), t: Math.round(T/tot*100)};
+}
+function teamArch(side){
+  const list = draft.picks[side].filter(Boolean).map(archOf).filter(Boolean);
+  if (!list.length) return null;
+  const tot = {};
+  ARCH_KEYS.forEach(([k]) => tot[k] = list.reduce((a,x) => a + (typeof x[k] === "number" ? x[k] : 50), 0) / list.length);
+  const dom = ARCH_KEYS.map(x => x[0]).reduce((a,b) => tot[a] >= tot[b] ? a : b);
+  if (tot[dom] < 55) return null;
+  return {key: dom, label: (ARCH_KEYS.find(x => x[0] === dom) || [])[1], score: Math.round(tot[dom])};
+}
+// Overall draft strength. Two halves: how good each champ is in its lane (incl. matchups),
+// then whether the five picks actually form a comp. Averaged per champ so a half-finished
+// draft still compares fairly.
+function teamStrength(side){
+  const mine = draft.picks[side], foes = draft.picks[side === "blue" ? "red" : "blue"];
+  const picked = mine.filter(Boolean);
+  if (!picked.length) return null;
+  let s = 0;
+  ROLE_KEYS.forEach((lane, i) => {
+    const c = mine[i]; if (!c) return;
+    s += baseRating(c, lane);
+    const opp = foes[i];
+    if (opp){ const a = matchupAdv(c, opp); if (a != null) s += a * 0.6; s += flipAdjust(c, opp, side); }
+    let gs = 0, gc = 0;
+    foes.forEach((e, j) => { if (e && j !== i){ const a = matchupAdv(c, e); if (a != null){ gs += a; gc++; } } });
+    if (gc) s += (gs / gc) * 0.25;
+  });
+  s = s / picked.length;
+  // ---- comp cohesion, added on top of the per-champ average ----
+  let coh = 0;
+  const dur = teamStat(side, "durab", "max"); if (dur != null) coh += (dur - 50) / 100 * 4;
+  const eng = teamStat(side, "engage", "max"); if (eng != null) coh += (eng - 50) / 100 * 4;
+  const ndp = teamStat(side, "ndpeel", "max"), peel = teamStat(side, "peel", "max");
+  if (ndp != null && ndp >= 60 && peel != null) coh += (peel - 50) / 100 * 3;
+  const cc = teamStat(side, "ccw", "avg"); if (cc != null) coh += (cc - 50) / 100 * 2;
+  // damage skew — an all-physical or all-magic comp gets itemised against
+  const d = teamDmg(side);
+  if (d){
+    const mit = d.p + d.m;
+    if (mit > 0) coh -= Math.abs(d.p / mit * 100 - 50) / 50 * 5;
+    coh += d.t / 100 * 2;
+  }
+  // power curve — being weak in any phase is exploitable
+  const e = phaseAvg(picked, "e"), l = phaseAvg(picked, "l");
+  if (e != null && l != null) coh += (Math.min(e, l) - 45) / 100 * 5;
+  // a whole team that needs gold first
+  const idv = picked.map(c => numOf(c, "itemdep")).filter(x => x != null);
+  if (idv.length >= 3){ const av = idv.reduce((a,b) => a+b, 0) / idv.length; if (av > 60) coh -= (av - 60) / 100 * 4; }
+  return s + coh;
+}
+function draftOdds(){
+  const b = teamStrength("blue"), r = teamStrength("red");
+  if (b == null || r == null) return null;
+  const pb = 1 / (1 + Math.exp(-(b - r) / 12));
+  const blue = Math.max(5, Math.min(95, Math.round(pb * 100)));
+  return {blue, red: 100 - blue, raw: {b: Math.round(b * 10) / 10, r: Math.round(r * 10) / 10}};
+}
+function oddsVerdict(o){
+  const d = Math.abs(o.blue - 50);
+  const lead = o.blue > o.red ? "Blue" : "Red";
+  if (d < 4) return "Even draft";
+  if (d < 10) return lead + " slightly ahead";
+  if (d < 20) return lead + " favoured";
+  return lead + " heavily favoured";
+}
+const SUM_ROWS = [
+  ["durab","Durability","avg"], ["ccw","CC","avg"], ["engage","Engage","max"],
+  ["peel","Peel","max"], ["diseng","Disengage","max"], ["mob","Mobility","avg"],
+  ["rng","Range","avg"], ["tf","Teamfight","avg"], ["clear","Waveclear","avg"],
+  ["tsust","Team sustain","max"], ["zone","Zone control","max"], ["glob","Global presence","max"]
+];
+function draftEdges(){
+  const out = [];
+  const cmp = (label, b, r, unit, thresh) => {
+    if (b == null || r == null) return;
+    const d = b - r; if (Math.abs(d) < (thresh || 12)) return;
+    out.push({side: d > 0 ? "blue" : "red", text: (d > 0 ? "Blue" : "Red") + " " + label + " (" + b + unit + " vs " + r + unit + ")"});
+  };
+  const phases = [["e","the early game"],["m","the mid game"],["l","the late game"]];
+  phases.forEach(([k,l]) => cmp("wins " + l, Math.round(phaseAvg(draft.picks.blue.filter(Boolean), k) || 0) || null,
+    Math.round(phaseAvg(draft.picks.red.filter(Boolean), k) || 0) || null, "", 10));
+  SUM_ROWS.forEach(([k,l,m]) => cmp("has more " + l.toLowerCase(), teamStat("blue", k, m), teamStat("red", k, m), "", 15));
+  // structural warnings
+  ["blue","red"].forEach(side => {
+    const nm = side === "blue" ? "Blue" : "Red";
+    const dur = teamStat(side, "durab", "max");
+    if (dur != null && dur < 50) out.push({side, warn: 1, text: nm + " has no real frontline"});
+    const eng = teamStat(side, "engage", "max");
+    if (eng != null && eng < 50) out.push({side, warn: 1, text: nm + " struggles to start fights"});
+    const needsPeel = teamStat(side, "ndpeel", "max"), peel = teamStat(side, "peel", "max");
+    if (needsPeel != null && needsPeel >= 60 && peel != null && peel < 50)
+      out.push({side, warn: 1, text: nm + " has a carry with nobody to protect them"});
+    const d = teamDmg(side);
+    if (d && d.p >= 75) out.push({side, warn: 1, text: nm + " is " + d.p + "% physical — one armour item hurts them"});
+    if (d && d.m >= 75) out.push({side, warn: 1, text: nm + " is " + d.m + "% magic — one MR item hurts them"});
+    const idv = draft.picks[side].filter(Boolean).map(c => numOf(c, "itemdep")).filter(x => x != null);
+    if (idv.length >= 3 && idv.reduce((a,b) => a+b, 0) / idv.length > 65)
+      out.push({side, warn: 1, text: nm + " needs a lot of gold before they come online"});
+  });
+  return out;
+}
+function draftSummaryHtml(){
+  const bar = (label, b, r) => {
+    if (b == null && r == null) return "";
+    const bw = b == null ? 0 : b, rw = r == null ? 0 : r;
+    const lead = (b != null && r != null) ? (b > r + 6 ? "b" : r > b + 6 ? "r" : "") : "";
+    return `<div class="sRow"><div class="sBarWrap"><div class="sBar blue ${lead === "b" ? "lead" : ""}" style="width:${bw / 2}%"></div></div>` +
+      `<div class="sNum ${lead === "b" ? "lead" : ""}">${b == null ? "—" : b}</div>` +
+      `<div class="sLbl">${esc(label)}</div>` +
+      `<div class="sNum ${lead === "r" ? "lead" : ""}">${r == null ? "—" : r}</div>` +
+      `<div class="sBarWrap"><div class="sBar red ${lead === "r" ? "lead" : ""}" style="width:${rw / 2}%"></div></div></div>`;
+  };
+  let h = `<div class="dRecs"><div class="dHead" style="font-size:15px">TEAM ANALYSIS</div>`;
+  const odds = draftOdds();
+  if (odds){
+    h += `<div class="evalWrap"><div class="evalNums">` +
+      `<span class="evalPct blue">${odds.blue}%</span>` +
+      `<span class="evalVerdict">${esc(oddsVerdict(odds))}</span>` +
+      `<span class="evalPct red">${odds.red}%</span></div>` +
+      `<div class="evalBar"><div class="evalFill blue" style="width:${odds.blue}%"></div>` +
+      `<div class="evalFill red" style="width:${odds.red}%"></div>` +
+      `<div class="evalMid"></div></div>` +
+      `<div class="evalRaw">draft score ${odds.raw.b} vs ${odds.raw.r}</div></div>`;
+  }
+  // comp identity
+  const ab = teamArch("blue"), ar = teamArch("red");
+  h += `<div class="sIdent"><span style="color:#6FC0FF">${ab ? esc(ab.label) : "No clear identity"}</span>` +
+    `<span style="color:#5A6B85">comp</span><span style="color:#ff8f8f">${ar ? esc(ar.label) : "No clear identity"}</span></div>`;
+  // damage mix
+  const db = teamDmg("blue"), dr = teamDmg("red");
+  if (db || dr){
+    const mix = d => d ? `<span style="color:#E8A87C">${d.p}% phys</span> · <span style="color:#8FB8F0">${d.m}% magic</span>${d.t ? ` · <span style="color:#F0E9C8">${d.t}% true</span>` : ""}` : "—";
+    h += `<div class="sDmg"><div>${mix(db)}</div><div class="sDmgL">damage mix</div><div>${mix(dr)}</div></div>`;
+  }
+  // power curve
+  h += `<div class="sSec">POWER CURVE</div>`;
+  [["e","Early"],["m","Mid"],["l","Late"]].forEach(([k,l]) => {
+    const b = phaseAvg(draft.picks.blue.filter(Boolean), k), r = phaseAvg(draft.picks.red.filter(Boolean), k);
+    h += bar(l, b == null ? null : Math.round(b), r == null ? null : Math.round(r));
+  });
+  // traits
+  h += `<div class="sSec">STRENGTHS</div>`;
+  SUM_ROWS.forEach(([k,l,m]) => { h += bar(l, teamStat("blue", k, m), teamStat("red", k, m)); });
+  // takeaways
+  const edges = draftEdges();
+  if (edges.length){
+    h += `<div class="sSec">KEY POINTS</div><div class="sEdges">`;
+    edges.slice(0, 12).forEach(e => {
+      h += `<div class="sEdge ${e.side} ${e.warn ? "warn" : ""}">${e.warn ? "⚠ " : ""}${esc(e.text)}</div>`;
+    });
+    h += `</div>`;
+  } else {
+    h += `<div class="cntEmpty" style="margin-top:8px">Rate more champions to see a breakdown here.</div>`;
+  }
+  return h + `</div>`;
+}
 function renderDraft(content){
   ensureMetaSub();
   if (poolMode){ renderPool(content); return; }
@@ -2362,7 +2564,9 @@ function renderDraft(content){
   else { const due = dueSide();
     h += `<div class="dSub">${due ? `<b style="color:${due === "blue" ? "#6FC0FF" : "#ff8f8f"}">${due === "blue" ? "Blue" : "Red"}</b> to pick` : "Draft complete"}</div>` +
       `<div class="dBtnRow"><button class="dBtn ghost" id="dEditBans">Edit bans</button><button class="dBtn ghost" id="dReset">Reset draft</button>` +
-      `${user ? `<button class="dBtn ghost" id="poolOpen">☆ My pool</button>` : ""}${isOwner ? `<button class="dBtn ghost" id="rtOpen">✎ Rate</button>` : ""}</div>`;
+      `${user ? `<button class="dBtn ghost" id="poolOpen">☆ My pool</button>` : ""}${isOwner ? `<button class="dBtn ghost" id="rtOpen">✎ Rate</button>` : ""}` +
+      `<button class="dBtn ${showSummary ? "gold" : "ghost"}" id="dSummary">⚔ Team analysis</button></div>`;
+    if (showSummary || !due) h += draftSummaryHtml();
   }
   content.innerHTML = h + `</div>`; wireDraft(content);
 }
@@ -2452,7 +2656,8 @@ function wireDraft(content){
   content.querySelectorAll("[data-dclearslot]").forEach(b => b.onclick = () => { draft[dPick.kind === "ban" ? "bans" : "picks"][dPick.side][dPick.idx] = null; render(); });
   if ($("dToPick")) $("dToPick").onclick = () => { draft.phase = "pick"; dPick = {side:null,kind:null,idx:null}; render(); };
   if ($("dEditBans")) $("dEditBans").onclick = () => { draft.phase = "ban"; dPick = {side:null,kind:null,idx:null}; render(); };
-  if ($("dReset")) $("dReset").onclick = () => { newDraft(); render(); };
+  if ($("dReset")) $("dReset").onclick = () => { newDraft(); showSummary = false; render(); };
+  if ($("dSummary")) $("dSummary").onclick = () => { showSummary = !showSummary; render(); };
   if ($("rtOpen")) $("rtOpen").onclick = () => { ratingMode = true; rtChamp = null; rtSearch = ""; render(); };
   if ($("poolOpen")) $("poolOpen").onclick = () => { poolMode = true; render(); };
 }
