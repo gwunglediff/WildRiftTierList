@@ -355,6 +355,7 @@
   .mFlags { display: flex; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
   .nRow .rtn { flex: 1; white-space: normal; }
   .nRow.dim { opacity: 0.38; }
+  .rtTag.legacy { opacity: 0.5; border-style: dashed; border-color: #7a5a20; color: #C9A96A; text-decoration: line-through; }
   .trHead { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 1.5px; color: #C8AA6E; margin: 18px 0 4px; padding-top: 10px; border-top: 1px solid #22375A; }
   .nRow .mV { font-size: 10px; min-width: 26px; }
   .mFlags .mConf { margin-left: 0; }
@@ -2023,6 +2024,11 @@ function laneNote(key){
   if (big.length) out += " Counts extra for " + big.join(" & ") + ".";
   return out;
 }
+const MECH_DOC = "__mechanics";
+function customMechs(){ const d = cmeta[MECH_DOC]; return (d && Array.isArray(d.list)) ? d.list : []; }
+function validMechs(){ return TAGS.concat(customMechs().filter(t => TAGS.indexOf(t) < 0)); }
+// anything on a champ that isn't a curated or custom mechanic is dead vocabulary from the old tag system
+function legacyTagsOf(list){ const ok = validMechs(); return (list || []).filter(t => ok.indexOf(t) < 0); }
 function tagsOf(c){ return (cmeta[c] && cmeta[c].tags) || []; }
 function trOf(c, k){ const m = cmeta[c]; return m && m.tr && typeof m.tr[k] === "number" ? m.tr[k] : null; }
 function teamBest(list, k){ const v = list.map(c => trOf(c, k)).filter(x => x != null); return v.length ? Math.max.apply(null, v) : null; }
@@ -2268,7 +2274,7 @@ function draftRating(champ, lane, side){
   let gsum = 0, gc = 0;
   draft.picks[enemy].forEach(e => { if (e && e !== laneOpp){ const a = matchupAdv(champ, e); if (a != null){ gsum += a; gc++; } } });
   if (gc) score += (gsum / gc) * 0.25;   // comp counters live here — they need not be your laner
-  score += compBonus(champ, side) + compNeeds(champ, side) + dmgBalance(champ, side) +
+  score += compNeeds(champ, side) + dmgBalance(champ, side) +
            counterRisk(champ, side) + scalingFit(champ, side) + flexBonus(champ, side) +
            identityFactors(champ, side, lane) + archFit(champ, side) + synergyFit(champ, side, lane) +
            posBalance(champ, side) + draftOrderValue(champ, side) + banRelief(champ, lane);
@@ -2454,6 +2460,9 @@ function renderRatings(content){
   const champs = allChampList();
   let h = `<div class="rt"><div class="dBtnRow" style="justify-content:space-between;align-items:center"><button class="dBtn ghost" id="rtBack">‹ Back to draft</button><span class="dHead" style="margin:0;font-size:15px">RATE CHAMPIONS</span><span style="width:60px"></span></div>`;
   if (!rtChamp){
+    const dirty = allChampList().filter(c => legacyTagsOf(tagsOf(c)).length);
+    if (isOwner && dirty.length) h += `<div class="dBtnRow" style="justify-content:flex-start">` +
+      `<button class="dBtn ghost" id="clrAllLegacy">Clear old tags from ${dirty.length} champion${dirty.length === 1 ? "" : "s"}</button></div>`;
     h += `<div class="rtSel"><input id="rtSearch" placeholder="Search a champion to rate…" value="${esc(rtSearch)}"></div><div class="dChamps">`;
     h += champs.map(c => `<div class="dChamp" data-rtpick="${encodeURIComponent(c)}" data-cname="${esc(c.toLowerCase())}"><div class="dci" style="background-image:url('${iconUrl(c)}'),url('${iconUrl2(c)}')"></div><span class="dcn">${esc(c)}</span></div>`).join("");
     h += `</div></div>`; content.innerHTML = h; wireRatings(content); return;
@@ -2467,10 +2476,15 @@ function renderRatings(content){
       h += numRow("tr", k, l, rtDraft.tr && rtDraft.tr[k] != null ? rtDraft.tr[k] : null, 0, 100, d);
     });
     h += `</div>`;
-    const allTags = [...new Set([...TAGS, ...Object.values(cmeta).flatMap(m => (m && m.tags) || []), ...(rtDraft.tags || [])])];
     h += `<div class="trHead">MECHANICS — tap any that apply</div><div class="rtTags">` +
-      allTags.map(t => `<button class="rtTag ${(rtDraft.tags||[]).includes(t) ? "on" : ""}" data-rttag="${esc(t)}">${esc(t)}</button>`).join("") + `</div>`;
+      validMechs().map(t => `<button class="rtTag ${(rtDraft.tags||[]).includes(t) ? "on" : ""}" data-rttag="${esc(t)}">${esc(t)}</button>`).join("") + `</div>`;
     h += `<div class="rtSel" style="margin-top:12px"><input id="newTag" placeholder="Add your own mechanic…" maxlength="28"><button class="dBtn" id="addTag">Add</button></div>`;
+    const legacy = legacyTagsOf(rtDraft.tags);
+    if (legacy.length){
+      h += `<div class="trHead" style="color:#F0C070">OLD TAGS — replaced by the traits above</div>` +
+        `<div class="rtTags">` + legacy.map(t => `<button class="rtTag legacy" data-rttag="${esc(t)}">${esc(t)}</button>`).join("") + `</div>` +
+        `<div class="dBtnRow" style="justify-content:flex-start"><button class="dBtn ghost" id="clrLegacy">Clear these ${legacy.length}</button></div>`;
+    }
   } else if (rtTab === "lanes"){
     h += `<div id="nList">`;
     h += `<div class="dSub" style="text-align:left;margin:6px 0">Lane strength — HIGHER = stronger in that lane. Blank = fall back to their tier.</div>`;
@@ -2599,11 +2613,38 @@ async function saveRatings(){
 }
 function wireRatings(content){
   if ($("rtBack")) $("rtBack").onclick = () => { ratingMode = false; render(); };
+  if ($("clrAllLegacy")) $("clrAllLegacy").onclick = async () => {
+    const dirty = allChampList().filter(c => legacyTagsOf(tagsOf(c)).length);
+    if (!dirty.length) return;
+    showToast("Cleaning " + dirty.length + "…");
+    let done = 0;
+    for (const c of dirty){
+      try { await db.collection("champmeta").doc(c).set({tags: tagsOf(c).filter(t => validMechs().indexOf(t) >= 0)}, {merge: true}); done++; }
+      catch(e){ console.error(e); }
+    }
+    showToast("Cleared " + done + " champion" + (done === 1 ? "" : "s"));
+  };
   content.querySelectorAll("[data-rtpick]").forEach(b => b.onclick = () => { rtChamp = decodeURIComponent(b.dataset.rtpick); loadRtDraft(rtChamp); rtTab = "tags"; render(); });
   content.querySelectorAll("[data-rtclose]").forEach(b => b.onclick = () => { rtChamp = null; render(); });
   content.querySelectorAll("[data-rttab]").forEach(b => b.onclick = () => { rtTab = b.dataset.rttab; render(); });
   content.querySelectorAll("[data-rttag]").forEach(b => b.onclick = () => { const t = b.dataset.rttag; rtDraft.tags = rtDraft.tags || []; const i = rtDraft.tags.indexOf(t); if (i >= 0) rtDraft.tags.splice(i,1); else rtDraft.tags.push(t); render(); });
-  const addCustomTag = () => { const inp = $("newTag"); if (!inp) return; const v = inp.value.trim().toLowerCase(); if (!v) return; rtDraft.tags = rtDraft.tags || []; if (!rtDraft.tags.includes(v)) rtDraft.tags.push(v); render(); };
+  const addCustomTag = async () => {
+    const inp = $("newTag"); if (!inp) return;
+    const v = inp.value.trim().toLowerCase(); if (!v) return;
+    rtDraft.tags = rtDraft.tags || [];
+    if (!rtDraft.tags.includes(v)) rtDraft.tags.push(v);
+    // remember it so it shows up for every champion from now on
+    if (isOwner && validMechs().indexOf(v) < 0){
+      try { await db.collection("champmeta").doc(MECH_DOC).set({list: customMechs().concat([v])}); }
+      catch(e){ console.error(e); }
+    }
+    render();
+  };
+  if ($("clrLegacy")) $("clrLegacy").onclick = () => {
+    rtDraft.tags = (rtDraft.tags || []).filter(t => validMechs().indexOf(t) >= 0);
+    showToast("Old tags cleared — press Save");
+    render();
+  };
   if ($("addTag")) $("addTag").onclick = addCustomTag;
   if ($("newTag")) $("newTag").addEventListener("keydown", e => { if (e.key === "Enter") addCustomTag(); });
   content.querySelectorAll("[data-rtlane]").forEach(b => b.oninput = () => { rtDraft.lanes = rtDraft.lanes || {}; if (b.value === "") delete rtDraft.lanes[b.dataset.rtlane]; else rtDraft.lanes[b.dataset.rtlane] = +b.value; });
